@@ -9,10 +9,14 @@ extern "C" {
 #include <R.h>
 #include <Rinternals.h>
 #include <Rdefines.h>
+#include <R_ext/RS.h>
+#include <R_ext/Lapack.h>
 }
+
 /**
 Defines:
 */
+
 #define LOCUSLEN         5
 #define ALLELELEN        4
 
@@ -71,14 +75,14 @@ Defines:
 
 ///input/output of landscapes to/from metasim lib
 extern "C" SEXP read_landscape(SEXP fn);
-extern "C" SEXP convert_metasim_to_R(Landscape_statistics &L);
+//extern "C" SEXP convert_metasim_to_R(Landscape_statistics &L);
 extern "C" SEXP write_landscape(SEXP fn, SEXP Rland);
-extern "C" void convert_R_to_metasim(SEXP Rland, Landscape_statistics &L);
+//extern "C" void convert_R_to_metasim(SEXP Rland, Landscape_statistics &L);
 extern "C" SEXP getListElement(SEXP list, char *str);
 
 ///simulations
 ///run metasim on the landscape a certain number of times
-extern "C" SEXP iterate_landscape(SEXP numit, SEXP Rland, SEXP cmpress);
+extern "C" SEXP iterate_landscape(SEXP numit, SEXP Rland, SEXP cmpress, SEXP bypop);
 ///perform survival step on the landscape
 extern "C" SEXP survive_landscape(SEXP Rland);
 ///perform reproduce step on the landscape
@@ -111,5 +115,4 @@ extern "C" SEXP writeR(SEXP fn, SEXP Rland, SEXP ni);
 extern "C" SEXP writeMigrateDip(SEXP fn, SEXP Rland, SEXP ni);
 extern "C" SEXP writeReRat(SEXP fn, SEXP Rland, SEXP ni);
 
-
-extern "C" SEXP test();
+extern "C" SEXP test(SEXP mat1, SEXP mat2);

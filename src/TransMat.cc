@@ -17,7 +17,14 @@ In this file the transition matrix class is defined
 includes
 */
 
+
 #include <TransMat.h>
+
+#include <R.h>
+#include <Rinternals.h>
+#include <Rdefines.h>
+#include <R_ext/RS.h>
+#include <R_ext/Lapack.h>
 
 TransMat::TransMat (size_t s )
 {
@@ -85,19 +92,6 @@ void TransMat::SetMat(TransMat a)
 
 //
 
-/*
-TransMat & TransMat::operator= (TransMat &T)
-{
-  int i, j;
-  int s = T.Size();
-  for (i=0; i<s; i++)
-    for (j=0; j<s; j++)
-      {
-	this->SetElement(i,j,T.GetElement(i,j));
-      }
-  return *this;
-}
-*/
 
 
 ///Implementation of the random state algorithm
@@ -169,6 +163,128 @@ int TransMat::AnyFrom(size_t fs)
       tot = tot + Value();
     }
   return (tot>0);
+}
+
+void TransMat::Diag()
+{
+  size_t i,j;
+  for (i=0;i<tm.size();i++)
+    for (j=0;j<tm.size();j++)
+      if (i==j) 
+	tm[i][j]=1.0;
+      else
+	tm[i][j]=0.0;
+}
+
+double TransMat::Lambda()
+{
+  int i,j,k, n, lwork, info;
+  double *work, *wR, *wI, *left, *right, *xvals, tmp, maxval;
+  char jobVL[1], jobVR[1];
+  
+  n = int(tm.size());
+  xvals = new double[n*n];
+  
+  k=0;
+  for (i=0; i<n; i++)
+    for (j=0; j<n;j++)
+      {
+	xvals[k]=tm[j][i];
+	k++;
+      }
+  
+  //    vectors = !ov;
+  jobVL[0] = jobVR[0] = 'N';
+  left = right = (double *) 0;
+  wR = new double[n];
+  wI = new double[n];
+  /* ask for optimal size of work array */
+  lwork = -1;
+#ifdef HAVE_LAPACK
+  F77_CALL(dgeev)(jobVL, jobVR, &n, xvals, &n, wR, wI,
+		  left, &n, right, &n, &tmp, &lwork, &info);
+#else
+  F77_CALL(rgeev)(jobVL, jobVR, &n, xvals, &n, wR, wI,
+		  left, &n, right, &n, &tmp, &lwork, &info);
+#endif
+  if (info != 0)
+    error("error code %d from Lapack routine dgeev", info);
+  lwork = (int) tmp;
+  work = new double[lwork];
+#ifdef HAVE_LAPACK
+  F77_CALL(dgeev)(jobVL, jobVR, &n, xvals, &n, wR, wI,
+		  left, &n, right, &n, work, &lwork, &info);
+#else
+  F77_CALL(rgeev)(jobVL, jobVR, &n, xvals, &n, wR, wI,
+		  left, &n, right, &n, work, &lwork, &info);
+#endif
+  if (info != 0)
+    error("error code %d from Lapack routine dgeev", info);
+  
+  maxval=-1000000.0;
+  for (i = 0; i < n; i++)
+    {
+      if (wI[i]==0.0)
+	{
+	  if (wR[i]>maxval) maxval=wR[i];
+	}
+      
+    }
+  delete work;
+  delete wR;
+  delete wI;
+  delete xvals;
+
+  return maxval;
+}
+
+
+//matrix addition operator
+TransMat TransMat::operator+(TransMat TM)
+{
+  TransMat ret(TM.Size());
+  size_t f,t;
+
+  if (Size()==TM.Size())
+    {
+      for (f=0; f<ret.Size(); f++)
+	for (t=0;t<ret.Size();t++)
+	  {
+	    ret.SetElement(f,t,(GetElement(f,t)+TM.GetElement(f,t)));
+	  }
+    }
+  else
+    {
+      error("Matrices of different order in addition");
+    }
+  return ret;
+}
+
+//matrix multiplication operator
+TransMat TransMat::operator*(TransMat TM)
+{
+  TransMat ret(TM.Size());
+  size_t f,t,i;
+  double accum;
+
+  if (Size()==TM.Size())
+    {
+      for (f=0; f<ret.Size(); f++)
+	for (t=0;t<ret.Size();t++)
+	  {
+	    accum=0;
+	    for (i=0;i<ret.Size();i++)
+	      {
+		accum=accum+(GetElement(i,t)*TM.GetElement(f,i));
+	      }
+	    ret.SetElement(f,t,accum);
+	  }
+    }
+  else
+    {
+      error("Matrices of different order in multiplication");
+    }
+  return ret;
 }
 
 ostream &operator<<(ostream &stream, TransMat & TM)

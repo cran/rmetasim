@@ -39,9 +39,7 @@ private:
 
 public:
   TransMat ( size_t s=1 ) ;
-  //  TransMat (const TransMat &t, int s=1) ;
   ~TransMat () ;
-  //  virtual TransMat & operator= (TransMat &T);
 
   /// Sets a matrix cell value (returns a zero if successful)
   inline int SetElement(size_t lf, size_t lt, double val) 
@@ -143,8 +141,15 @@ void SetRandomFromStateVec();
    */
   int AnyFrom(size_t fs);
 
-  ///Inserter
+  void Diag();
+  //calculates the leading eigenvalue of the TransMatrix
+  double Lambda();
 
+  ///overloaded operators
+  TransMat operator+(TransMat TM);
+  TransMat operator*(TransMat TM);
+
+  ///Inserter
   friend ostream &operator<<(ostream &stream, TransMat & TM);
   ///extractor)
   friend istream &operator>>(istream &stream, TransMat & TM);

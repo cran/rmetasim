@@ -7,6 +7,7 @@ Allan Strand 9/17/01
 #include <Landscape.h>
 #include <FastAllele.h>
 #include <FastSeqAllele.h>
+#include <TransMat.h>
 #include <iostream>
 #include <fstream>
 #include <rmetasim.h>
@@ -823,11 +824,12 @@ SEXP convert_metasim_to_R(Landscape_statistics &L)
 
 ///Random number generation depends upon seed and RNG generator defined in the
   ///calling R enviroment
-SEXP iterate_landscape(SEXP numit, SEXP Rland, SEXP cmpress)
+  SEXP iterate_landscape(SEXP numit, SEXP Rland, SEXP cmpress, SEXP bypop)
 {
   Landscape_statistics L;
   int n,i=0;
-  int compress;
+  int compress, bp;
+  
 
   convert_R_to_metasim(Rland,L);
 
@@ -836,7 +838,7 @@ SEXP iterate_landscape(SEXP numit, SEXP Rland, SEXP cmpress)
 
   n = INTEGER(coerceVector(numit,INTSXP))[0];
   compress = INTEGER(coerceVector(cmpress,INTSXP))[0];
-
+  bp= INTEGER(coerceVector(bypop,INTSXP))[0];
 
   for (i=0;i<n;i++)
     {
@@ -846,6 +848,8 @@ SEXP iterate_landscape(SEXP numit, SEXP Rland, SEXP cmpress)
 
 	  L.Reproduce();
 	  L.Survive();
+
+	  L.LambdaAdjust(bp);
 
   	  L.LandCarry();
   	  L.HabCarry();
@@ -860,19 +864,6 @@ SEXP iterate_landscape(SEXP numit, SEXP Rland, SEXP cmpress)
     }
   L.LandCarry();
   L.HabCarry();
-
-  /*
-  //debug
-  OSTRM.open("test6.dat");
-  if (!OSTRM)
-    {
-      cerr <<"fn "<<"test.dat"<<endl;
-      error ("could not open output file name:");
-    }
-  OSTRM << L;
-  OSTRM.close();
-  //end debug
-  */
 
   return convert_metasim_to_R(L);
 }
@@ -1024,20 +1015,6 @@ SEXP l2w(SEXP Rland, SEXP numind)
 }
 
 
-
-SEXP test()
-  {
-    SEXP Indmat= PROTECT(allocVector(INTSXP,10000));
-    int i;
-    for (i=0; i<10000;i++)
-      {
-	INTEGER(Indmat)[i]=RandLibObj.poisson(3.0);
-      }
-
-    UNPROTECT(1);
-    return Indmat;
-  }
-
 /*
 Functions that produce text files for input into other programs. 
 */
@@ -1177,6 +1154,41 @@ SEXP writeR(SEXP fn, SEXP Rland, SEXP ni)
     OSTRM.close();
     return ScalarInteger(0);
 } 
+
+
+  SEXP test(SEXP mat1, SEXP mat2)
+  {
+    TransMat t1,t2,t4;
+    int sz1, sz2, j, i;
+    SEXP ret;
+    sz1 = INTEGER(coerceVector(getAttrib(mat1, R_DimSymbol), INTSXP))[0];
+    sz2 = INTEGER(coerceVector(getAttrib(mat2, R_DimSymbol), INTSXP))[0];
+    if (sz1!=sz2)
+      {
+	error("matrices must be of same order");
+	return ScalarReal(-1);
+      } else {
+      t1.SetSize(sz1);
+      t2.SetSize(t1.Size());
+      t4.SetSize(t1.Size());
+      t4.Diag();
+
+      for (j=0;j<sz1;j++)
+	{
+	  for (i=0;i<sz1;i++)
+	    {
+	      t1.SetElement(j,i,REAL(coerceVector(mat1, REALSXP))[i+j*sz1]);
+	      t2.SetElement(j,i,REAL(coerceVector(mat2, REALSXP))[i+j*sz1]);
+	    }
+	}
+      ret=PROTECT(allocVector(REALSXP,2));
+      REAL(ret)[0]=(t1+t2).Lambda();
+      REAL(ret)[1]=(t1*(t2+t4)).Lambda();
+      UNPROTECT(1);
+      return ret;
+    }
+  }
+
 
 
 } ///end of extern "C"
