@@ -1,5 +1,5 @@
 Package: rmetasim
-Version: 1.0.1
+Version: 1.0.2
 Author: Allan Strand <stranda@cofc.edu>, 
 	James Niehaus
 Maintainer: Allan Strand <stranda@cofc.edu>
@@ -15,4 +15,4 @@ Description: An interface between R and the metasim simulation engine.
 	     for simulating population genetics of complex population
 	     dynamics. Mol. Ecol. Notes, 2:373-376, 2002. (Please
              contact Allan Strand with comments, bug reports, etc).
-Packaged: Sat Sep 25 09:02:46 2004; astrand
+Packaged: Mon Nov  1 22:13:27 2004; astrand
