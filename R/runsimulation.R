@@ -104,3 +104,16 @@ advance.landscape <- function(Rland, seed=-1)
         print("Rland not a landscape object...exiting")
       }
   }
+
+compress.landscape <- function(Rland)
+    {
+    if (is.landscape(Rland))
+      {
+        .Call("compress_landscape",Rland,PACKAGE = "rmetasim")
+      }
+    else
+      {
+        print("Rland not a landscape object...exiting")
+        Rland
+      }
+  }

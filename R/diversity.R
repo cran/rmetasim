@@ -26,7 +26,7 @@ obs.het.landscape <- function(Rland)
   {
     tot <- 0
     rl <- matrix(0,nrow=Rland$intparam$habitats,ncol=length(Rland$loci))
-    for (j in 1:length(unique(populations(Rland))))
+    for (j in unique(populations(Rland)))
       {
         for (loc in 1:length(Rland$loci))
           {

@@ -559,7 +559,13 @@ void Survive();
     ***command: RandLibObj.FreeDiscreteLookup();
 
 */
-void CalculateMaleGameteClassVector(PackedIndividual pi);
+int CalculateMaleGameteClassVector(PackedIndividual pi);
+
+  /**
+This function goes through each of the classes and performs internal
+cleanups.  May increase speed, but there will be tradeoffs
+   */
+  void CompressInd();
 
   /**
 

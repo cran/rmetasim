@@ -146,7 +146,7 @@ is.landscape <- function(Rland=NULL,verb=TRUE,exact=FALSE)
 #check if the max number of classes corresponds to the number in demography        
         if (max(Rland$individuals[,1]>((Rland$intparam$habitats*Rland$intparam$stages)-1)))
           {
-            if (verb) {print("There are individuals in stages greater than demography allows")}
+            if (verb) {print("There are individuals in stages other than demography allows")}
             ok <- FALSE
           }
                                         #check if the number and ploidy of loci work out

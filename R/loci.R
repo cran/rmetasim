@@ -22,6 +22,23 @@ landscape.states <- function(lnum=1,Rland)
         {
           lmat <- as.data.frame(Rland$individuals[,c(TRUE,TRUE,TRUE,locusvec(Rland)==lnum)])
           st <- states(lnum,Rland)
+          lmat[,4] <- st$state[c(lmat[,4]+1)]
+
+          if (ploidy(Rland)[lnum]==2)
+            {
+              lmat[,5] <- st$state[c(lmat[,4]+1)]
+            }
+          lmat
+        }
+  }
+
+landscape.states.old <- function(lnum=1,Rland)
+  {
+    if(is.landscape(Rland))
+      if (lnum<=Rland$intparam$locusnum)
+        {
+          lmat <- as.data.frame(Rland$individuals[,c(TRUE,TRUE,TRUE,locusvec(Rland)==lnum)])
+          st <- states(lnum,Rland)
           stvec <- rep(NA,max(st$aindex+1))
           for (i in 1:length(stvec))
             {

@@ -97,6 +97,8 @@ extern "C" SEXP advance_landscape(SEXP Rland);
 
 extern "C" SEXP populate_Rland(SEXP Rland, SEXP Population_sizes);
 
+extern "C" SEXP clean_landscape(SEXP Rland);
+extern "C" SEXP compress_landscape(SEXP Rland);
 
 ///utility functions
 ///convert a landscape into a format that the weir fst calculations in R can use.
