@@ -1,0 +1,361 @@
+/*
+
+$Modified: astrand $
+
+Copyright (C) 1999 Allan E. Strand
+
+This file is part of Metasim
+*/
+
+/**
+   
+*/
+
+
+/*includes
+*/
+
+#include <RandLib.h>
+
+#ifndef RMATH
+RandLib::RandLib () 
+{
+  init();  
+}
+
+
+void RandLib::init()
+{
+   ///initialize the GNU rng
+  r = gsl_rng_alloc (gsl_rng_taus);
+  if (r!=NULL)
+    {
+        multinomial_lookup=NULL;
+	lookup_set=0;
+    }
+  else
+    {
+      cerr << "problem allocating the random number generator"<<endl;
+      assert (1==0);
+    }
+ 
+}
+
+
+RandLib::~RandLib () 
+{
+  //  if (gsl_rng_size(r)==12) {gsl_rng_free(r);}
+  //  FreeDiscreteLookup();
+}
+
+
+void RandLib::FreeDiscreteLookup()
+{
+  if ((lookup_set)&&(multinomial_lookup!=NULL)) {gsl_ran_discrete_free(multinomial_lookup);}
+  lookup_set=0;
+}
+
+int RandLib::CheckDiscreteLookup()
+{
+  return lookup_set;
+}
+
+void RandLib::SetDiscreteLookup(double *p, int ncat) //returns a randomly chosen
+                              //outcome from a multinomial distribution given in array
+                              //p, of length n
+     {
+       double lp[ncat], tot=0.0;
+       int i;
+       
+       for (i=0;i<(ncat-1);i++)
+	 {
+	   tot = tot + p[i];
+	   lp[i]=p[i];
+	 }
+       ///do different things if the passed vector totals to less than, equal to, or greater than 1
+       if ((tot>=0) && (tot < 1)) //the total of the passed vector on [0,1)
+	 {
+	   lp[ncat-1]=1-tot;
+	 }
+       else if (tot==1)
+	 {
+	   lp[ncat-1]=0;
+	 }
+       else if (tot > 1)
+	 {
+	   if (tot > 1.5) ///the total of the vector is really long.  something is wrong.
+	     {
+	       cerr <<"In Randlib.cc, the total of a vector passed to multinomial is much greater than 1:  "<<tot<<endl;
+	       assert(tot<1);
+	     }
+	   else
+	     {
+	       for (i=0;i<(ncat-1);i++)
+		 {
+		   lp[i]= p[i]/tot;
+		 }
+	       lp[ncat-1]=0;
+	     }
+	 }
+
+       /*
+       cerr <<"lp: ";
+       for (i=0;i<ncat;i++)
+	 {
+	   cerr << lp[i] << "  " ;
+	 }
+       cerr << endl;
+       cerr <<"p: ";
+       for (i=0;i<(ncat-1);i++)
+	 {
+	   cerr << lp[i] << "  " ;
+	 }
+       cerr << endl;
+       */
+       /*
+	 if (multinomial_lookup!=NULL)
+	 {
+	 gsl_ran_discrete_free(multinomial_lookup);
+	 }
+       */
+       multinomial_lookup = gsl_ran_discrete_preproc(ncat,lp);       
+       lookup_set=1;
+     }
+
+int RandLib::PickMultinomial()
+{
+  int rv;
+  if (multinomial_lookup!=NULL)
+    {
+      rv = int(gsl_ran_discrete(r,multinomial_lookup));
+    }
+  else
+    {
+      cerr << " SetDiscreteLookup has not been run properly";
+      rv=-1;
+      assert(1==0);
+    }
+  return int(rv);
+}
+
+int RandLib::multinomial(double *p, int ncat)
+{
+  int rv;
+
+  SetDiscreteLookup(p,ncat);
+  rv = PickMultinomial();
+
+  gsl_ran_discrete_free(multinomial_lookup);
+  lookup_set=0;
+
+  return rv;
+}
+
+///this function should return numbers from the range inclusive  of the endpoints
+int RandLib::unirange(int maxval)
+{
+  return gsl_rng_uniform_int(r,maxval+1);
+}
+
+double RandLib::uniform()
+{
+  return gsl_rng_uniform(r);
+}
+
+int RandLib::poisson(float mu)
+{
+  return gsl_ran_poisson(r,mu);
+}
+
+void RandLib::negexp_xy(double ix, double iy, double mu, double &newx, double &newy)
+{
+  double dir = uniform()* 2 * M_PI;
+  double dist = gsl_ran_exponential(r,mu);
+
+  newx = (sin(dir)*dist) + ix;
+  newy = (cos(dir)*dist) + iy;
+}
+
+double RandLib::negexp(double dist, double mu)
+{
+  return gsl_ran_exponential_pdf(dist,mu);
+}
+
+
+void RandLib::SetSeed(long int sd)
+{
+  gsl_rng_set(r,sd);
+}
+
+#else
+///begin random numbers based upon Rmath
+RandLib::RandLib () 
+{
+  init();  
+}
+
+
+void RandLib::init()
+{
+   ///initialize the GNU rng
+  r = gsl_rng_alloc (gsl_rng_taus);
+  if (r!=NULL)
+    {
+        multinomial_lookup=NULL;
+	lookup_set=0;
+    }
+  else
+    {
+      cerr << "problem allocating the random number generator"<<endl;
+      assert (1==0);
+    }
+ 
+}
+
+
+RandLib::~RandLib () 
+{
+  //  if (gsl_rng_size(r)==12) {gsl_rng_free(r);}
+  //  FreeDiscreteLookup();
+}
+
+
+void RandLib::FreeDiscreteLookup()
+{
+  if ((lookup_set)&&(multinomial_lookup!=NULL)) {gsl_ran_discrete_free(multinomial_lookup);}
+  lookup_set=0;
+}
+
+int RandLib::CheckDiscreteLookup()
+{
+  return lookup_set;
+}
+
+void RandLib::SetDiscreteLookup(double *p, int ncat) //returns a randomly chosen
+                              //outcome from a multinomial distribution given in array
+                              //p, of length n
+     {
+       double lp[ncat], tot=0.0;
+       int i;
+       
+       for (i=0;i<(ncat-1);i++)
+	 {
+	   tot = tot + p[i];
+	   lp[i]=p[i];
+	 }
+       ///do different things if the passed vector totals to less than, equal to, or greater than 1
+       if ((tot>=0) && (tot < 1)) //the total of the passed vector on [0,1)
+	 {
+	   lp[ncat-1]=1-tot;
+	 }
+       else if (tot==1)
+	 {
+	   lp[ncat-1]=0;
+	 }
+       else if (tot > 1)
+	 {
+	   if (tot > 1.5) ///the total of the vector is really long.  something is wrong.
+	     {
+	       cerr <<"In Randlib.cc, the total of a vector passed to multinomial is much greater than 1:  "<<tot<<endl;
+	       assert(tot<1);
+	     }
+	   else
+	     {
+	       for (i=0;i<(ncat-1);i++)
+		 {
+		   lp[i]= p[i]/tot;
+		 }
+	       lp[ncat-1]=0;
+	     }
+	 }
+       
+       multinomial_lookup = gsl_ran_discrete_preproc(ncat,lp);       
+       lookup_set=1;
+     }
+
+int RandLib::PickMultinomial()
+{
+  int rv;
+  if (multinomial_lookup!=NULL)
+    {
+      rv = int(gsl_ran_discrete(r,multinomial_lookup));
+    }
+  else
+    {
+      cerr << " SetDiscreteLookup has not been run properly";
+      rv=-1;
+      assert(1==0);
+    }
+  return int(rv);
+}
+
+int RandLib::multinomial(double *p, int ncat)
+{
+  int rv;
+
+  SetDiscreteLookup(p,ncat);
+  rv = PickMultinomial();
+
+  gsl_ran_discrete_free(multinomial_lookup);
+  lookup_set=0;
+
+  return rv;
+}
+
+///this function should return numbers from the range inclusive  of the endpoints
+int RandLib::unirange(int maxval)
+{
+  return gsl_rng_uniform_int(r,maxval+1);
+}
+
+double RandLib::uniform()
+{
+  return gsl_rng_uniform(r);
+}
+
+int RandLib::poisson(float mu)
+{
+  return gsl_ran_poisson(r,mu);
+}
+
+void RandLib::negexp_xy(double ix, double iy, double mu, double &newx, double &newy)
+{
+  double dir = uniform()* 2 * M_PI;
+  double dist = gsl_ran_exponential(r,mu);
+
+  newx = (sin(dir)*dist) + ix;
+  newy = (cos(dir)*dist) + iy;
+}
+
+double RandLib::negexp(double dist, double mu)
+{
+  return gsl_ran_exponential_pdf(dist,mu);
+}
+
+
+void RandLib::SetSeed(long int sd)
+{
+  gsl_rng_set(r,sd);
+}
+
+#endif
+
+
+
+
+/**
+Declaration  of a global RandLib 'RandLibObj';
+ */
+
+RandLib RandLibObj;
+
+
+/*
+;;; Local Variables: ***
+;;; mode: C++ ***
+;;; minor-mode: font-lock ***
+;;; End: ***
+*/
+
+
+
