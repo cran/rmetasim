@@ -50,14 +50,20 @@ is.landscape <- function(Rland=NULL,verb=TRUE,exact=FALSE)
           {
             if
             (
-             (min(dim(Rland$demo$localdem[[i]]$LocalS)==c(Rland$intparam$stages,Rland$intparam$stages))==0) ||
-             (min(dim(Rland$demo$localdem[[i]]$LocalR)==c(Rland$intparam$stages,Rland$intparam$stages))==0)  ||
-             (min(dim(Rland$demo$localdem[[i]]$LocalM)==c(Rland$intparam$stages,Rland$intparam$stages))==0)
-            )
+             (
+              dim(Rland$demo$localdem[[i]]$LocalS)!=c(Rland$intparam$stages,Rland$intparam$stages) ||
+              dim(Rland$demo$localdem[[i]]$LocalR)!=c(Rland$intparam$stages,Rland$intparam$stages) ||
+              dim(Rland$demo$localdem[[i]]$LocalM)!=c(Rland$intparam$stages,Rland$intparam$stages)
+              )
+             )
               {
-                if (verb) {print("One or more of the local demography matrices is not of the correct dimensions")}
+                if (verb) {
+                  print("One or more of the local demography matrices is not of the correct dimensions")
+                  print(paste("Rland$inparame$stages",Rland$intparam$stages))
+                }
                 ok <- FALSE
               }
+            
             if (max(apply(Rland$demography$localdem[[i]]$LocalS,2,sum))>1)
               {
                 if (verb) {print(paste("Local survival matrix",i,"has a column that sums to a number greater than one"))}
@@ -79,6 +85,7 @@ is.landscape <- function(Rland=NULL,verb=TRUE,exact=FALSE)
                 if (verb) {print(paste("One or more of the epoch paramters is of incorrect dimension in epoch",i))}
                 ok <- FALSE
               }
+
             if (Rland$switchparam$randdemo==1||length(Rland$demography$localdem)==1)#still needs to check when more than one localdem and not random placement of demographies
               {
                 for (j in 1:length(Rland$demography$localdem))
@@ -86,11 +93,12 @@ is.landscape <- function(Rland=NULL,verb=TRUE,exact=FALSE)
                     strt <- seq(1,dim(Rland$demo$epochs[[i]]$S)[1],dim(Rland$demography$localdem[[j]]$LocalS)[1])
                     stp <- strt+(dim(Rland$demography$localdem[[j]]$LocalS)[1]-1)
                     slice <- cbind(strt,stp)
+#                    print(slice)
                     tmpS <- Rland$demography$epochs[[i]]$S
                     if (Rland$intparam$habitats!=1)
                       for (l in 1:Rland$intparam$habitats)
                         {
-                          tmpS[slice[l,],slice[l,]] <- Rland$demography$localdem[[j]]$LocalS
+                          tmpS[c(slice[l,1]:slice[l,2]),c(slice[l,1]:slice[l,2])] <- Rland$demography$localdem[[j]]$LocalS
                         }
                     if (max(apply(tmpS,2,sum))>1)
                       {
