@@ -13,7 +13,7 @@
 
 \examples{
   exampleland <- new.example.landscape()
-  exampleland <- simulate.landscape(exampleland, 4)
+  exampleland <- sim.landscape(exampleland, 4)
   exampleland.clean <- compress.landscape(exampleland)
   rm(exampleland)
 }

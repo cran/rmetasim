@@ -14,7 +14,7 @@ resolve inconsistencies in a 'hand-built' landscape}
 
 \examples{
   exampleland <- new.example.landscape()
-  exampleland <- simulate.landscape(exampleland, 4)
+  exampleland <- sim.landscape(exampleland, 4)
   exampleland.clean <- clean.landscape(exampleland)
   rm(exampleland)
 }

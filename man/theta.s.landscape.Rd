@@ -21,7 +21,7 @@ theta.k.landscape, theta.h.landscape
 }
 \examples{
   exampleland <- new.example.landscape()
-  exampleland <- simulate.landscape(exampleland, 4)
+  exampleland <- sim.landscape(exampleland, 4)
 
   library(ape)
   theta.s.mat <- theta.s.landscape(exampleland)

@@ -24,7 +24,7 @@ ids for the columns in the \code{rland$individuals} matrix.
 }
 \examples{
   exampleland <- new.example.landscape()
-  exampleland <- simulate.landscape(exampleland, 4)
+  exampleland <- sim.landscape(exampleland, 4)
   locusvec(exampleland)
   ploidy(exampleland)
 }

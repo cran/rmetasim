@@ -24,16 +24,16 @@
   the new generations demographic conditions if such conditions can
   vary.  The other functions implement carrying capacity, local
   extinction, reproduction, and survival/growth, respectively.  The
-  function \code{simulate.landscape()} bundles the functionality of these
+  function \code{sim.landscape()} bundles the functionality of these
   components into a single function.
 }
 
 \seealso{
-  \code{simulate.landscape}
+  \code{sim.landscape}
   }
 \examples{
   exampleland <- new.example.landscape()
-  exampleland <- simulate.landscape(exampleland, 4)
+  exampleland <- sim.landscape(exampleland, 4)
   exampleland
   rm(exampleland)
 }

@@ -21,7 +21,7 @@ allelefreq.landscape, obs.het.landscape, exp.het.landscape, Fwright.landscape, F
 }
 \examples{
   exampleland <- new.example.landscape()
-  exampleland <- simulate.landscape(exampleland, 4)
+  exampleland <- sim.landscape(exampleland, 4)
   allelefreq.landscape(exampleland,tbl.out=TRUE)
   allelefreq.landscape(exampleland,tbl.out=FALSE)
   rm(exampleland)
