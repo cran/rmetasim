@@ -1,0 +1,5 @@
+PKG_CXXFLAGS = -Wall -finline-functions -frename-registers -funroll-loops -I./ -I../../ 
+PKG_CFLAGS =  -Wall -finline-functions -frename-registers -funroll-loops -I./ -I../../ 
+#PKG_CXXFLAGS = -Wall -I./ -I../../ 
+#PKG_CFLAGS =  -I./ -I../../ 
+PKG_LIBS =  -L/usr/local/lib  -lm

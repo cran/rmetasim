@@ -1,0 +1,38 @@
+\name{landscape.states}
+\alias{landscape.states}
+\alias{states}
+\title{return a matrix containing actual genotypes for a particular locus}
+
+\description{return a matrix containing the states of the alleles in genotypes for a particular locus
+}
+\usage{
+  landscape.states(lnum=1,Rland)
+}
+\arguments{
+  \item{lnum}{the locus to return}
+  \item{Rland}{the Rmetasim landscape object}
+}
+
+
+\value{
+  matrix
+}
+
+\details{ Returns a matrix with rows = \code{dim(rland$individuals)[1]}.  The
+first three columns correspond to the class (and two placeholder
+variables) of an individual.  Here rland is a
+  landscape object.  The remaining   columns (1 if haploid, 2 if
+  diploid) contain the states of the alleles for the selected loci}
+
+\seealso{
+  landscape.locus
+  }
+}
+\examples{
+  exampleland <- new.example.landscape()
+  exampleland <- simulate.landscape(exampleland, 4)
+  print("Allele frequencies at locus 1")
+  table(landscape.locus(1,exampleland)[,c(-1,-2,-3)]) 
+  rm(exampleland)
+}
+\keyword{misc}

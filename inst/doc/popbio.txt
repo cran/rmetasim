@@ -1,0 +1,99 @@
+Demography in each sub-population is controlled primarily by two
+matrices, S and R, but a third matrix is important for determining
+male function.  The entire landscape is also controlled by three
+matrices which expand this idea to include movement among populations.
+
+The third matrix essentially models gamete production.  It
+essentially assumes a situation where males donate gametes to females
+who then produce a particular number of offspring determined by the
+second matrix.
+
+So if you wanted to take a metasim model and calculate the rate of
+increase (lambda) you would combine matrices 1 and 2.  If the three
+matrices are called S(urvival), R(eproduction), and M(ale function),
+respectively, matrix M gives the probability that male gametes are
+produced by certain classes and donated to other classes.  The rate of
+increase is the leading eigenvalue of matrices S+R (easy to calculate
+in matlab, octave, R, etc..).  The values in the R matrix refer to
+means of a Poisson distribution of offspring number.  
+
+An example is probably helpful. I'll provide two, the first models
+reproduction in hermaphrodites and the second dioecious organisms. In
+both cases there are three demographic classes: juveniles, small
+adults, and large adults.  In the second case, there are two sexes
+(obviously, if they are dioecious).
+
+EXAMPLE 1
+     0    0    0
+S =  0.6  0.1  0
+     0    0.5  0.7
+
+     0    1    3
+R =  0    0    0
+     0    0    0
+
+     0    0    0
+M =  0    0.1  0.3
+     0    0.1  0.6
+
+In this example, the Lefkovitch matrix is:
+       0    1    3
+S+R =  0.6  0.1  0
+       0    0.5  0.7
+
+Interpreting the male function matrix is a bit complicated.  In this
+case, if there are equal numbers of individuals in classes 2 and 3,
+individuals of class 3 are three times as likely as those in class 2
+of fertilizing individuals in class 2 (0.1 * 3 = 0.3).  Also,
+individuals in class 3 are six times more likely to contribute sperm
+than those in class 2 (0.1 * 6 = 0.6).  If there are different numbers
+of individuals in classes 2 and 3 (call these numbers n2 and n3), the
+probability of an individual in class 2 being fertilized by sperm from
+an individual in class 2 is equal to (n2*0.1)/(n2+n3).  Likewise the
+probability of an individual in class 2 being fertilized by one in
+class 3 is (n3*0.3)/(n2+n3).  To date I have simplified this by using
+a male matrix like this:
+
+     0    0    0
+M =  0    1    1
+     0    1    1
+
+In this case, the probability of individuals in class 2 being
+fertilized by sperm from those in class 2 is equal to n2/(n2+n3), or
+the proportion of the total number of potential males that occupy that
+class.
+
+EXAMPLE 2
+The matrices get bigger if you want dioecy
+
+       0    0    0    0    0    0
+       0    0    0    0    0    0
+S =    0.6  0    0.1  0    0    0
+       0    0.6  0    0.1  0    0
+       0    0    0.5  0    0.7  0
+       0    0    0    0.5  0    0.7
+
+       0    0    0    1    0    3
+       0    0    0    1    0    3
+R =    0    0    0    0    0    0
+       0    0    0    0    0    0
+       0    0    0    0    0    0
+       0    0    0    0    0    0  
+
+       0    0    0    0    0    0
+       0    0    0    0    0    0
+M =    0    0    0    0    0    0
+       0    0    1    0    1    0
+       0    0    0    0    0    0
+       0    0    1    0    1    0
+
+In this example, classes 1 and 2 are juvenile males and females,
+respectively.  Classes 3 and 4 represent male and female small adults
+and classes 5 and 6 represent male and female large adults.
+
+The value of lambda associated with S+R in this model equals that in
+example 1.  You can see that quite a bit of flexiblity is possible.
+For example you could model different survivorship and growth rates of
+males versus females or a host of different mating systems.  This
+comes at the cost of increased complexity compared to example 1, of
+course.

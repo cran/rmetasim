@@ -1,0 +1,19 @@
+useDynLib(rmetasim)
+
+export(read.landscape,  write.landscape, simulate.landscape, is.landscape)
+export(popstruct, landscape.to.rtheta, allelecount.landscape)
+export(new.landscape.empty, write.landscape.foreign)
+export(new.epoch, new.epoch.island, new.individuals, new.intparam.land)
+export(new.local.demo, new.locus)
+export(exp.het.landscape, new.example.landscape)
+export(obs.het.landscape, demography.landscape, allelefreq.landscape)
+export(Fst.landscape, FWright.landscape, new.switchparam.land)
+export(new.floatparam.land,theta.h.landscape,theta.k.landscape,theta.s.landscape)
+export(survive.landscape, reproduce.landscape, carry.landscape, extinct.landscape)
+export(advance.landscape)
+#export(test.landscape.function)
+export(populations,landscape.locus,landscape.states)
+
+#utility functions
+export(locusvec,states,ploidy)
+

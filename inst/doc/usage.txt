@@ -1,0 +1,149 @@
+Here are some edited questions and answers that I have had with
+metasim users.  Thanks, Allan Strand stranda@cofc.edu, 2/12/03
+
+The basic instructions are embedded in the example input files.  See
+the README file in the examples/data subdirectory, in particular the wf
+subdirectory.
+
+Typing "metasim -h" will also provide some information.
+
+Also, let me say that I am happy to provide interactive support
+running the program.  I am very interested in people trying it out.
+Please feel free to contact me with further questions.
+
+====================================
+
+
+> The simulation options in Metasim look promising to do some scenario
+> testing with microsatellite data. I'm not able to run the test file
+> however. I enter 'metasim' at the dos prompt but get only a blinking
+> cursor. How should the input file be read into the program?
+>=20
+> Kind regards,
+> Peter
+>=20
+>=20
+
+Hi XXX,
+
+I hope the program can be of use to you.  After unpacking the zipped
+file, copy the file:
+
+  metasim-bin-win/examples/data/wf/wf2d1e.dat
+
+to
+
+  metasim-bin-win/bin
+
+or wherever else you choose to put the binaries.
+
+If you type "metasim -h" at the msdos prompt, you will get a short help
+message.
+
+To get the example file to run, type "metasim -f wf2d1e"
+
+***IMPORTANT***
+note that the ".dat" ending is not included on this line, if you use
+the filename "wf2d1e.dat", the program will look for "wf2d1e.dat.dat"
+
+As you might guess, I'm interested in how this program could be used.
+Would you mind telling me a bit more about your intended uses?  Please
+feel free to contact me with any other questions, and I will answer as
+soon as possible.  Also, if (when) you see bugs or would like to make
+suggestions, could you let me know?
+
+cheers,
+Allan
+
+----begin next response
+
+
+First some general questions:
+
+
+Do you have a good idea of the demography in the captive and wild
+populations?  This is something for which metasim is uniquely suited.
+If you are going to simulate a wright-fisher population and not worry
+about demography, AND you would like to simulate only two populations,
+you can use EASYPOP as well as metasim.
+
+
+> Dear Allan,
+>=20
+
+project details removed
+
+>=20
+> I think there is a error in the example input files (wf1d1e...) since the
+> allele frequencies don't add up to 1 (but 0.85). So, I adjusted the freq.
+> of allele 5 in locus 3 from 0.1 to 0.25.=20
+
+Yes there is a sloppy setup of that (and maybe other files).  The
+parser for metasim warns you if the frequencies for alleles do not add
+to one (as you saw).  If the deviation from one is small (like below)
+I ignore it and chalk it up to rounding errors.  When the program
+produces the error message, it also rescales the frequencies so that
+they sum to 1.
+
+> I'm now getting two output files:
+> stages and savedstate.
+
+"stages" gives the number of individuals in each demographic class over
+time, it is mostly useful for demographic modeling.
+
+"savedstate" is a file that is produced every 10 or 50 years of a
+simulation (the actual number depends on how I compiled that binary).
+This file saves the entire state of the simulation and can be used to
+start a simulation back up, after the computer crashes, etc.  New
+versions of savedstate overwrite old ones as the program runs.
+
+If you want the state saved every "x" years and have those saved
+states persist, use the "-i x" command line option to metasim.
+
+Provided they are named correctly (with a .dat ending), either the
+savedstate file or any of the intermediate files produced by the -i
+command line option can be used as direct input into metasim or
+metatrans.
+
+> How do I proceed with metatrans? With savedstate as input I get again the
+> message that the sum of allele frequencies add up to 1.001.
+
+see my comment about ignoring this type of rounding error
+
+metatrans just reads the metasim format files and converts them into a
+format that could be used by other programs.  Output from metatrans -h
+is included below
+
+
+metatrans 1.0
+
+Usage: metatrans [OPTIONS]...
+   -h         --help               Print help and exit
+   -V         --version            Print version and exit
+   -fSTRING   --input-file STRING  Input File prefix
+   -sINT      --sample-size INT    Number of ind. to sample from each pop
+   -l         --landscape          Flag for LandscapeFile Output (default=off)
+   -b         --biosys             Flag for Biosys Output (default=off)
+   -p         --genpop             Flag for genpop Output (default=off)
+   -m         --mr                 Flag for MicroRat Output (default=off)
+   -g         --GDA                Flag for GDA  Output (default=off)
+   -A         --arlequin           Flag for Diploid Arlequin Output (default=off)
+   -R         --R                  Flag for R Output (default=off)
+   -v         --verbose            Says stuff during execution (default=off)
+
+so you could type
+
+"metatrans -f wf1d1e -g -s50 "
+
+and metatrans should produce a file in GDA readable format from the
+metasim format file called "wf1d1e.dat".  50 individuals will be
+sampled at random from each population in the simulation, even if the
+population is much larger in the file.  The idea is that you can
+examine the effects of evolutionary process as well as the sampling
+process that goes with any emprirical study.
+
+These converters should all work, but I am sure there are plenty of
+bugs.  I personally only use -R and to a lesser extent -g because of
+the analyses that I favor, so they are the best tested.  LandscapeFile
+format is the same as the inputs for metasim.
+

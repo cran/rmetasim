@@ -1,0 +1,457 @@
+#
+# These routines are designed to automate the process of creating the rather complicated
+# landscape object.
+#
+#
+#
+#
+
+#
+# initialize the basic landscape object
+#
+new.landscape.empty <- function()
+{
+#    list(list(RndChooseProb=NULL,StartGen=NULL,Extinct=NULL,Carry=NULL,Localprob=NULL,S=NULL,R=NULL,M=NULL))
+  tmpdemo <- list(localdem=NULL,epochs=NULL)
+#    list(localdem=list(list(LocalS=NULL,LocalR=NULL,LocalM=NULL)),epochs=NULL)
+  rland <- list(intparam=NULL,switchparam=NULL,floatparam=NULL,demography=tmpdemo,loci=NULL,individuals=NULL)
+  rland
+}
+
+new.landscape.default <- function()
+{
+  rland <- new.landscape.empty()
+  rland <- new.intparam.land(rland)
+  rland <- new.floatparam.land(rland)
+  rland <- new.switchparam.land(rland)
+  rland
+}
+
+new.example.landscape <- function()
+{
+  rland <- NULL
+  rland <- new.landscape.empty()
+  
+  rland <- new.intparam.land(rland, h=2, s=2)
+  rland <- new.switchparam.land(rland,mp=0)
+  rland <- new.floatparam.land(rland)
+
+
+  S <- matrix(c(0, 0,
+                1, 0), byrow=TRUE, nrow = 2)
+  R <- matrix(c(0, 1.1,
+                0, 0), byrow=TRUE, nrow = 2)
+  M <- matrix(c(0, 0,
+                0, 1), byrow=TRUE, nrow = 2)
+  rland <- new.local.demo(rland,S,R,M)
+  
+  S <- matrix(rep(0,16), nrow = 4)
+  R <- matrix(rep(0,16), nrow = 4)
+  M <- matrix(rep(0,16), nrow = 4)
+  
+  rland <- new.epoch(rland,S=S,R=R,M=M,carry=c(1000,1000))
+  
+  rland <- new.locus(rland,type=0,ploidy=2,mutationrate=0.001,transmission=0,numalleles=5)
+  rland <- new.locus(rland,type=1,ploidy=1,mutationrate=0.005,numalleles=3,frequencies=c(.2,.2,.6))
+  rland <- new.locus(rland,type=2,ploidy=2,mutationrate=0.007,transmission=0,numalleles=6,allelesize=75)
+  
+  rland <- new.individuals(rland,c(50,0,50,0))
+  rland
+}
+
+#
+# these routines set up the list of intparams with some sort of reasonable defaults
+# the first within a landscape, the second independantly
+
+new.intparam.land <- function(rland,h=1,s=1,cg=0,ce=0,totgen=1000,maxland=200000)
+{
+  rland$intparam <- list(h,s,0,0,cg,ce,totgen,0,maxland)
+  names(rland$intparam) <- c("habitats","stages","locusnum","numepochs","currentgen","currentepoch","totalgens","numdemos","maxlandsize")
+  rland
+}
+  
+new.intparam <- function(h=1,s=2,l=1,ne=1,cg=0,ce=0,totgen=1,nd=1,maxland=200000)
+{
+  rl <- list(h,s,l,ne,cg,ce,totgen,nd,maxland)
+  names(rl) <- c("habitats","stages","locusnum","numepochs","currentgen","currentepoch","totalgens","numdemos","maxlandsize")
+  rl
+}
+
+
+#
+# these routines set up the list of floatparams with some sort of reasonable defaults
+# the first within a landscape, the second independantly
+
+new.floatparam.land <- function(rland, s=0)
+{
+  rland$floatparam <- list(s)
+  names(rland$floatparam) <- c("selfing")
+  rland
+}
+
+new.floatparam <- function(s=0)
+{
+  rl <- list(s)
+  names(rl) <- c("selfing")
+  rl
+}
+
+
+#
+# these routines set up the list of switchparams with some sort of reasonable defaults
+# the first within a landscape, the second independantly
+
+new.switchparam.land <- function(rland, re=0,rd=0,mp=1)
+{
+  rland$switchparam <- list(re,rd,mp)
+  names(rland$switchparam) <- c( "randepoch","randdemo","multp")
+  rland
+}
+
+new.switchparam <- function(re=1,rd=1,mp=1)
+{
+  rl <- list(re,rd,mp)
+  names(rl) <- c( "randepoch","randdemo","multp")
+  rl
+}
+
+#
+# is.nsquare
+#
+# is a square matrix with size n x n
+
+is.nsquare <- function(M,n)
+{
+  ((dim(M)[1] == dim(M)[2]) && (dim(M)[1] == n))
+}
+
+#
+# new.local.demo
+#
+# Initializes local demographies.  This function is going to require the number of stages 
+# in each demography (from "intparam").  This number could also be calculated from user input.
+# Will also require three actual matrices (S,R,M for survival, reproduction,
+# and male function, respecively) input by user.  Each matrix also has to be the same size.
+
+new.local.demo <- function(rland,S,R,M)
+{
+  if (is.null(rland$demography$localdem))
+    {
+      rland$demography$localdem <- list(NULL)
+      demonum <- 1
+    }
+  else
+    {
+      demonum <- length(rland$demography$localdem) + 1
+      rland$demography$localdem[[demonum]] <- list(LocalS=NULL,LocalR=NULL,LocalM=NULL)
+    }
+
+  if (is.nsquare(S,rland$intparam$stages) && 
+      is.nsquare(R,rland$intparam$stages) && 
+      is.nsquare(M,rland$intparam$stages))
+    {
+      rland$demography$localdem[[demonum]]$LocalS <- S    
+      rland$demography$localdem[[demonum]]$LocalR <- R    
+      rland$demography$localdem[[demonum]]$LocalM <- M
+      rland$intparam$numdemos <- length(rland$demography$localdem) 
+    }
+  else
+    {
+      stop("Matricies do not conform to stages set in intparam!")
+    }
+  rland
+}
+
+# 
+# new.epoch
+#
+# initializes an epoch.  This includes creating landscape matrices that describe survival,
+# reproduction and male function. These matrices are square and have numbers of cols and rows
+# equal to the number of pops times number of demographic stages within pops
+# (intparam$habitats * intparam$stages)
+#
+# It also needs to specify the extinction rates and carrying
+# capacities of each population (intparam$habitats)
+#
+# finally, the function needs to define the probability of selecting particular local
+# demographies for each population.  (this occurs if switchparam$randdemo==1)
+#
+
+new.epoch <- function(rland,S=NULL,R=NULL,M=NULL,epochprob=1,startgen=0,extinct=NULL,carry=NULL,localprob=NULL)
+{
+  if (is.null(rland$demography$epochs))
+    {
+      rland$demography$epochs <- list(NULL)
+      epochnum <- 1
+    }
+  else
+    {
+      epochnum <- length(rland$demography$epochs) + 1
+      rland$demography$epochs[[epochnum]] <- list(RndChooseProb=NULL,StartGen=NULL,Extinct=NULL,
+                                                  Carry=NULL,Localprob=NULL,S=NULL,R=NULL,M=NULL)
+    }
+  
+  rland$demography$epochs[[epochnum]]$RndChooseProb <- epochprob
+  rland$demography$epochs[[epochnum]]$StartGen <- startgen
+  if (is.null(extinct))
+    {
+      extinct <- rep(0, rland$intparam$habitats)
+    }  
+  if (length(extinct) == rland$intparam$habitats)
+    {
+      rland$demography$epochs[[epochnum]]$Extinct <- extinct
+    }
+  else
+    {
+      stop("Wrong size for extinct vector", dim((extinct)))
+    }
+  
+  if (is.null(carry)) 
+    {
+      carry <- rep(1000, rland$intparam$habitats)
+    }
+  if (length(carry) == rland$intparam$habitats)
+    {
+      rland$demography$epochs[[epochnum]]$Carry <- carry
+    }
+  else
+    {
+      stop("Wrong size for carry vector")
+    }
+
+  numdem <- length(rland$demography$localdem)
+  if (is.null(localprob)) 
+    {
+      localprob <- rep(1/numdem, numdem)
+    }
+  if (length(localprob == numdem))
+    {
+      rland$demography$epochs[[epochnum]]$Localprob <- localprob
+    }
+  else
+    {
+      stop("Wrong size for localprob vector")
+    }
+
+  matrixsize <- rland$intparam$habitats * rland$intparam$stages
+  
+  if (is.null(S))
+    {
+      S <- matrix(rep(0, matrixsize * matrixsize),ncol=matrixsize,nrow=matrixsize)
+    }
+
+  if (is.null(R))
+    {
+      R <- matrix(rep(0, matrixsize * matrixsize),ncol=matrixsize,nrow=matrixsize)
+    }
+
+  if (is.null(M))
+    {
+      M <- matrix(rep(0, matrixsize * matrixsize),ncol=matrixsize,nrow=matrixsize)
+    }
+
+  if (is.nsquare(S,matrixsize) && 
+      is.nsquare(R,matrixsize) && 
+      is.nsquare(M,matrixsize))
+    {
+      rland$demography$epochs[[epochnum]]$S <- S
+      rland$demography$epochs[[epochnum]]$R <- R
+      rland$demography$epochs[[epochnum]]$M <- M
+      rland$intparam$numepochs <- length(rland$demography$epochs)
+    }
+  else
+    {
+      stop("S, R, and M matricies are not the correct size")
+    }
+  rland
+}
+
+
+
+#
+# new.epoch.island
+#
+# populates elements in the landscape matrices (S,R,M) in such a way that migration behaves
+# like wright's island model.
+
+new.epoch.island <- function(rland,s,sfrom,sto,m,mfrom,mto,f,ffrom,fto,
+                             epochprob=1,startgen=0,extinct=NULL,carry=NULL,localprob=NULL)
+{
+  stages <- rland$intparam$stages
+  matrixsize <- rland$intparam$habitats * stages
+
+  if  (!((length(sfrom) == stages) && (length(sto) == stages) &&
+         (length(mfrom) == stages) && (length(mto) == stages) &&
+         (length(ffrom) == stages) && (length(fto) == stages)))
+    {
+      stop("from and to vectors not the correct length")
+    }
+
+  S <- matrix(rep(0, (matrixsize * matrixsize)), nrow = matrixsize, ncol = matrixsize)
+  R <- matrix(rep(0, (matrixsize * matrixsize)), nrow = matrixsize, ncol = matrixsize)
+  M <- matrix(rep(0, (matrixsize * matrixsize)), nrow = matrixsize, ncol = matrixsize)
+
+  for (i in 1:matrixsize)
+    for (j in 1:matrixsize)
+      {
+        toindex <- ((i-1) %% stages) + 1
+        fromindex <- ((j-1) %% stages) + 1
+        if (sfrom[fromindex] && sto[toindex])
+          S[i, j] <- s
+        if (mfrom[fromindex] && mto[toindex])
+          R[i, j] <- m
+        if (ffrom[fromindex] && fto[toindex])
+          M[i, j] <- f
+      }
+
+  rland <- new.epoch(rland,S,R,M,epochprob,startgen,extinct,carry,localprob)
+#  rland$demography$epochs[[1]]$S <- S
+#  rland$demography$epochs[[1]]$R <- R
+#  rland$demography$epochs[[1]]$M <- M
+
+  rland
+}
+
+#
+# new.locus
+#
+# This function should create a locus that is populated with alleles.
+# it is passed the: type, ploidy, mutation rate, transmission, number of alleles, allele size
+# (needed only for alleles of type 2) and vector representing the frequency of each allele
+# (if empty, allelic distribution is uniform)
+#
+#
+# the function should then create a list of alleles: assign 0 to allele birth date,
+# assign proportion based upon the frequency vector, assign state depending upon allele type
+#
+#
+
+new.locus <- function(rland,type=0,ploidy=1,mutationrate=0,transmission=1,numalleles=2,allelesize=50,frequencies=NULL)
+{
+  if (!(is.list(rland$loci)))
+    {
+      rland$loci <- list(list(type=0,ploidy=0,trans=0,rate=0,alleles=0))
+      locusnum <- 1
+    }
+  else
+    {
+      locusnum <- length(rland$loci) + 1
+      rland$loci[[locusnum]] <- list(type=0,ploidy=0,rate=0,trans=0,alleles=0)
+    }
+
+  rland$intparam$locusnum <- locusnum
+  
+  if(type >= 0 && type <= 2)
+    {
+      rland$loci[[locusnum]]$type <- typelookup(type)
+    }
+  else
+    {
+      stop("Invalid type of locus")
+    }
+
+  if(ploidy == 1 || ploidy == 2)
+    {
+      rland$loci[[locusnum]]$ploidy <- ploidy
+    }
+  else
+    {
+      stop("Invalid ploidy count")
+    }
+
+  rland$loci[[locusnum]]$rate <- mutationrate
+
+  if(transmission == 0 || transmission == 1)
+    {
+      rland$loci[[locusnum]]$trans <- transmission
+    }
+  else
+    {
+      stop("Invalid transmission number")
+    }
+
+  if(numalleles >= 0)
+    {
+      rland$loci[[locusnum]]$alleles <- makealleles(type,numalleles,allelesize,frequencies)
+    }
+  else
+    {
+      stop("Need non-negative numbers of alleles")
+    }
+
+  rland
+}
+
+typelookup <- function(type)
+  {
+    type <- type + 251
+    type
+  }
+
+makealleles <- function(type,numalleles,allelesize,frequencies)
+{
+  retval <- 0
+
+  if(is.null(frequencies))
+    {
+      frequencies <- rep(1.0/numalleles, numalleles)
+    }
+
+  if(length(frequencies) != numalleles)
+    {
+      stop("Frequency list is not the right size")
+    }
+  
+  if(type == 0 || type == 1)
+    {
+      retval <- vector("list", numalleles)
+      for (x in 1:numalleles)
+        {
+          retval[[x]]$aindex <- x - 1
+          retval[[x]]$birth <- 0
+          retval[[x]]$prop <- frequencies[x]
+          retval[[x]]$state <- x
+        }
+    }
+  else if(type == 2)
+    {
+      retval <- vector("list", numalleles)
+      for (x in 1:numalleles)
+        {
+          retval[[x]]$aindex <- x -1
+          retval[[x]]$birth <- 0
+          retval[[x]]$prop <- frequencies[x]
+          retval[[x]]$state <- geneseq(allelesize)
+        }
+    }
+  retval          
+}
+
+geneseq <- function(size)
+  {
+    if(size <= 0)
+      {
+        stop("Allelesize must be positive")
+      }
+    retval <- floor(runif(size)*4)
+    retval[retval==0] <- 'A'
+    retval[retval==1] <- 'T'
+    retval[retval==2] <- 'G'
+    retval[retval==3] <- 'C'
+    paste(retval, sep="", collapse="")
+  }
+    
+
+#
+# new.individuals
+#
+# should take the landscape as it stands and use the c++ method Landscape::popsizeset to populate
+# the landscape with individuals, this function does expect a distribution of individuals for
+# each habitat*stage  combination in the landscape
+#
+
+new.individuals <- function(rland, PopulationSizes)
+  {
+    rland <- .Call("populate_Rland",rland,PopulationSizes,PACKAGE="rmetasim")
+    rland
+  }
