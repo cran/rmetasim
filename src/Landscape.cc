@@ -654,7 +654,7 @@ void Landscape::Survive()
    type double 
 
 */
-void Landscape::CalculateMaleGameteClassVector(PackedIndividual pi)
+int Landscape::CalculateMaleGameteClassVector(PackedIndividual pi)
 {
 
   int i,sz;
@@ -704,10 +704,12 @@ void Landscape::CalculateMaleGameteClassVector(PackedIndividual pi)
 	    }
 	}
       RandLibObj.SetDiscreteLookup(p,sz);
+      return 1;
     }
   else 
     {
       RandLibObj.FreeDiscreteLookup();
+      return 0;
       //      cerr << "no individuals in any of the donating classes in CalculateMaleGameteClassVector"<<endl;
     }
 }
@@ -719,7 +721,7 @@ PackedIndividual Landscape::FindMate(PackedIndividual pi)
   int mc;
 
   mc = RandLibObj.PickMultinomial();
-  tmpI.SetClass(-1);
+  //  tmpI.SetClass(-1);
 
   tmpI = I[mc].GetRandomInd();
   /*
@@ -772,9 +774,12 @@ void Landscape::Reproduce()
   int q,noff ;
   size_t j, k, l, sz, lsz ;
   sz = nhab * s;
+  CompressInd();
+  //  cerr<<"Entering L.Reproduce"<<endl;
 
   for (k=0;k<sz;k++)
     {
+      //      cerr << "Trying to reproduce from class: "<<k<<endl;
       if (R[e].AnyFrom(k)) ///find out if offspring can be produced by this class
 	{
 	  R[e].SetFromState(k);
@@ -792,7 +797,9 @@ void Landscape::Reproduce()
 		}
 	      indx = I[k].GetCurrentIndex();
 	      ///decides where pollen comes from 
-	      CalculateMaleGameteClassVector(searchI);
+	      if (CalculateMaleGameteClassVector(searchI))
+		{
+
 
 /**
 
@@ -844,41 +851,28 @@ PAckedIndividual.h
 
 
 */
-	      for (j=0;j<sz;j++)
-		{
-		  R[e].SetToState(j);
-		  ///pick a number of offspring from a Poisson dist with mean=R[tostate,fromstate]
-		  //noff = R[e].PoissonOffspring(eigenratio);
-		  noff = R[e].PoissonOffspring(1);
-
-		  if (RandLibObj.CheckDiscreteLookup()==0)
+		  for (j=0;j<sz;j++)
 		    {
-		      noff=0;
-		    }
+		      R[e].SetToState(j);
+		      ///pick a number of offspring from a Poisson dist with mean=R[tostate,fromstate]
+		      //noff = R[e].PoissonOffspring(eigenratio);
+		      noff = R[e].PoissonOffspring(1);
+		      
+		      if (RandLibObj.CheckDiscreteLookup()==0)
+			{
+			  noff=0;
+			}
 
-		  if (noff>0)
-		    {
-		      I[k].SetCurrentLastRep(t);
-		      I[k].SetCurrentNumOff(noff);
-
-/*
+		      if (noff>0)
+			{
+			  I[k].SetCurrentLastRep(t);
+			  I[k].SetCurrentNumOff(noff);
+			  
+			  /*
 choosing mate.  At this point the effects of genotype upon the mates
 ability to produce pollen could be inserted.
  */
-		      if (!multiple_paternity)///all offspring from one father
-			{
-			  if (RandLibObj.uniform()<self)
-			    {
-			      mate = searchI;
-			    }
-			  else
-			    {
-			      mate = FindMate(searchI);
-			    }
-			}
-		      for (q=0;q<noff;q++)
-			{
-			  if (multiple_paternity)///each offspring the product of mixed mating
+			  if (!multiple_paternity)///all offspring from one father
 			    {
 			      if (RandLibObj.uniform()<self)
 				{
@@ -889,25 +883,43 @@ ability to produce pollen could be inserted.
 				  mate = FindMate(searchI);
 				}
 			    }
-
-			  ///"do the deed" between searchI and mate. tmpI is the baby
+			  for (q=0;q<noff;q++)
+			    {
+			      if (multiple_paternity)///each offspring the product of mixed mating
+				{
+				  if (RandLibObj.uniform()<self)
+				    {
+				      mate = searchI;
+				    }
+				  else
+				    {
+				      mate = FindMate(searchI);
+				    }
+				}
+			      
+			      ///"do the deed" between searchI and mate. tmpI is the baby
+			      if (mate.GetClass()>-1)//if no mate, no offspring
+				{
 				  tmpI = searchI.repro_sex(searchI,mate,t,Atbls);
 				  tmpI.SetClass(j);
 				  
 				  ///this could/should be made user selectable
-				    tmpI.SetSex(0);
-				    tmpI.SetGen(t);
-				    tmpI.Change(-1);
-				    tmpI.Birth(t,Atbls);
-				    err = 0;
-				    if (I[j].AddIndividual(tmpI)<0)
-				      {
-					cerr << "adding an individual failed" << endl;
-				      }
-			} //q
-		    }//end if noff>0
-		} //j
-	      RandLibObj.FreeDiscreteLookup();
+				  tmpI.SetSex(0);
+				  tmpI.SetGen(t);
+				  tmpI.Change(-1);
+				  tmpI.Birth(t,Atbls);
+				  err = 0;
+				  if (I[j].AddIndividual(tmpI)<0)
+				    {
+				      cerr << "adding an individual failed" << endl;
+				    }
+				}
+			    } //q
+			
+			}//end if noff>0
+		    }//j
+		  RandLibObj.FreeDiscreteLookup();
+		}//are there males?
 	      I[k].NextIndividual();
 	    }//l
 	} //if R[e].AnyFrom
@@ -949,6 +961,16 @@ void Landscape::Extirpate()
 	      I[cl].ClearClass(t,Atbls);
 	    }
 	}
+    }
+}
+
+void Landscape::CompressInd()
+{
+  int j,sz;
+  sz=I.size();
+  for (j=0; j<sz; j++)
+    {
+      I[j].CompressClass(1);
     }
 }
 
@@ -1053,6 +1075,16 @@ void Landscape::LandCarry()
     {
       CarryState(size_t(pr*I[j].size()),j);
     }
+}
+
+void Landscape::GCAlleles()
+{
+  int i;
+  for (i=0;i<getloci();i++)
+    {
+      Atbls[i]->CalcProps();
+      Atbls[i]->GCAlleles();
+    }  
 }
 
 ostream &Landscape::WriteLoci(ostream &stream)
@@ -1382,6 +1414,7 @@ istream &operator>>(istream & stream, Landscape &l)
 			  }
 			l.popsizeset(p);
 			indflag=1;
+			l.GCAlleles();
 		      }
 		    else
 		      {
@@ -1419,7 +1452,7 @@ istream &operator>>(istream & stream, Landscape &l)
       cerr << "asked for random epochs, but did not include probabilities" <<endl; ;
       assert(1==2);
     }
-
+  l.GCAlleles();
   return stream;
 }
 
@@ -2353,4 +2386,3 @@ vector <int>  Landscape_statistics::Rmat(int numind)
 ;;; minor-mode: font-lock ***
 ;;; End: ***
 */
-

@@ -29,6 +29,8 @@ files.
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <ext/algorithm>
+
 #include <string>
 
 /**

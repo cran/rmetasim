@@ -60,7 +60,33 @@ void DemoClass::ClearClass (int t,AlleleLookTbl &Atbls)
   UNUSED.clear();
   maxind=0;
 }
+/*
+int DemoClass::GetRandomIndex ()
+{
+  int c=0;
+  //  int f=0;
+  int indx;
+  map<int,PackedIndividual,less <int> >::iterator iiter;
 
+  if (I.size()>0)
+    {
+      iiter=I.begin();
+      indx = RandLibObj.unirange(I.size());
+      c=0;
+      while ((c!=indx)&&(iiter!=I.end()))
+	  {
+	    iiter++;
+	    c++;
+	  }	
+
+      return (*iiter).first;
+    }
+  else
+    {
+      return -1;
+    }
+}  
+*/
 int DemoClass::GetRandomIndex ()
 {
   int f=0;

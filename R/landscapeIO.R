@@ -18,4 +18,10 @@ write.landscape <- function(rland, fn = "filename")
       .Call("write_landscape",fn,rland,PACKAGE = "rmetasim")
   }
 
+clean.landscape <- function(rland)
+  {
+    if (is.landscape(rland))
+      .Call("clean_landscape",rland,PACKAGE = "rmetasim")
+  }
+
 

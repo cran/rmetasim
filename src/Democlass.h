@@ -71,12 +71,37 @@ inline  PackedIndividual GetIndividual(int ind=0)
 
 int GetRandomIndex();
 
+
 inline PackedIndividual GetRandomInd()
     {
-      return GetIndividual(GetRandomIndex());
+      PackedIndividual tmpI;
+      tmpI.SetClass(-1);
+      int indx= GetRandomIndex();
+      if (indx>0)
+	{
+	  return GetIndividual(indx);
+	}
+      else
+	{
+	return tmpI;
+	}
     }  
 
-
+  /*
+inline PackedIndividual GetRandomInd()
+  {
+      PackedIndividual tmpI;
+      map<int,PackedIndividual,less <int> >::iterator biter,fiter;
+      map<int,PackedIndividual,less<int> > res;
+      insert_iterator < map<int,PackedIndividual,less<int> > >  resi(res) ;
+      tmpI.SetClass(-1);
+      biter=I.begin();
+      fiter=I.end();
+      
+      __gnu_cxx::random_sample_n(biter,fiter,resi,1);
+      return  tmpI;
+    }  
+  */
 inline void ResetIndividuals()
     {
       nextind = I.begin(); 

@@ -297,7 +297,9 @@ void R_to_metasim_loci(SEXP inlist, Landscape_statistics& L)
       }
 
     L.reserveclasses();
-    
+
+    //    	cerr <<"in convert to ind about to do rows"<<endl;
+
     for (j=0;j<nr;j++)
       {
 	L.SetUpInd(ind);
@@ -308,21 +310,26 @@ void R_to_metasim_loci(SEXP inlist, Landscape_statistics& L)
 	i++;
 	ind.SetGen(INTEGER(coerceVector(inmat, INTSXP))[j+ i*nr]);
 	i++;
+
+	//	cerr<<"adding an individuals genotype "<<endl;
 	
 	for (l=0;l<L.getloci();l++)
 	  {
 	    for (k=0;k<L.LocusGetPloidy(l); k++)
 	      {
+
 		ind.SetAllele(l,k,INTEGER(coerceVector(inmat, INTSXP))[j+ i*nr]);
 		i++;
 	      }
 	  }
-#ifdef RDEBUG
-	cerr<<"adding an individual "<<endl;
-#endif
+	//#ifdef RDEBUG
+	//	cerr<<"adding an individual "<<endl;
+	//#endif
 	L.addIndividual(ind,-1);
+	//	cerr<<"done adding an individual "<<endl;
       }
   }
+
 
 void convert_R_to_metasim(SEXP Rland, Landscape_statistics &L)
 {
@@ -330,12 +337,21 @@ void convert_R_to_metasim(SEXP Rland, Landscape_statistics &L)
       {
 	error( "R landscape object should be a list");
       }
+    
     R_to_metasim_ints(getListElement(Rland,INTEGERPARAMS),L);
     R_to_metasim_switches(getListElement(Rland,SWITCHPARAMS),L);
     R_to_metasim_float(getListElement(Rland,FLOATPARAMS),L);
+    
     R_to_metasim_demography(getListElement(Rland,DEMOPARAMS),L);
+    
     R_to_metasim_loci(getListElement(Rland,LOCIPARAMS),L);
+    
     R_to_metasim_ind(getListElement(Rland,INDPARAMS),L);
+    
+    //    cerr <<"done converting ind"<<endl;
+    //update allele frequencies in the landscape so they accurately reflect those in the Rland object
+    L.GCAlleles();
+
 
 }
 
@@ -352,6 +368,7 @@ SEXP write_landscape(SEXP fn, SEXP Rland)
 	return ScalarInteger(1);
       }
     convert_R_to_metasim(Rland,L);  
+
     OSTRM << L;
     OSTRM.close();
     return ScalarInteger(0);
@@ -830,7 +847,6 @@ SEXP convert_metasim_to_R(Landscape_statistics &L)
   int n,i=0;
   int compress, bp;
   
-
   convert_R_to_metasim(Rland,L);
 
   L.ChooseEpoch();
@@ -844,26 +860,48 @@ SEXP convert_metasim_to_R(Landscape_statistics &L)
     {
       if ((L.getgens()>L.getCgen())&&(L.PopSize()!=0))
 	{
-  	  L.Extirpate();
+	  //	  cerr << L.PopSize()<<endl;
 
-	  L.Reproduce();
-	  L.Survive();
+  	  if (L.PopSize()>0) {L.Extirpate();
+	    //	    cerr << "L.Extirpate();"<<endl;
+	  }
+	  if (L.PopSize()>0) {
+	    //	    cerr << "L.Reproduce();"<<endl;
+	    L.Reproduce();
+	  }
+	  if (L.PopSize()>0) {L.Survive();
+	    //	    cerr << "L.Survive();"<<endl;
+	  }
 
-	  L.LambdaAdjust(bp);
+	  if (L.PopSize()>0) {L.LambdaAdjust(bp);
+	    //	    cerr << "L.LambdaAdjust(bp);"<<endl;
+	  }
 
-  	  L.LandCarry();
-  	  L.HabCarry();
+  	  if (L.PopSize()>0) {L.LandCarry();
+	    //	    cerr << "L.LandCarry();"<<endl;
+	  }
+  	  if (L.PopSize()>0) {L.HabCarry();
+	    //	    cerr << "L.HabCarry();"<<endl;
+	  }
 
-	  L.Advance();
+	  if (L.PopSize()>0) {L.Advance();
+	    //	    cerr << "L.Advance();"<<endl;
+	  }
 	}
     }
 
   if (compress)
     {
-      L.Survive();
+      if (L.PopSize()>0) {L.Survive();
+	//	cerr << "L.Survive(); compress true"<<endl;
+      }
     }
-  L.LandCarry();
-  L.HabCarry();
+  if (L.PopSize()>0) {L.LandCarry();
+    //    cerr << "last L.LandCarry();"<<endl;
+  }
+  if (L.PopSize()>0) {L.HabCarry();
+    //    cerr << "last L.HabCarry();"<<endl;
+  }
 
   return convert_metasim_to_R(L);
 }
@@ -971,6 +1009,23 @@ vector<int> sexp_int_to_vector(SEXP thelist)
   
   return retval;    
 }
+
+extern "C" SEXP compress_landscape(SEXP Rland)
+  {
+    Landscape_statistics L;
+    convert_R_to_metasim(Rland,L);  
+    L.CompressInd();
+    return convert_metasim_to_R(L);
+  }
+
+extern "C" SEXP clean_landscape(SEXP Rland)
+  {
+    Landscape_statistics L;
+    convert_R_to_metasim(Rland,L);  
+    
+    return convert_metasim_to_R(L);
+  }
+
 
 SEXP populate_Rland(SEXP Rland, SEXP Population_sizes)
   {
