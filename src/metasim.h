@@ -37,6 +37,8 @@ UTILITY MACROS
 
 ///#define RDEBUG
 
+#define HAVE_LAPACK
+
 #endif /*METASIM_H*/
 /*
 ;;; Local Variables: ***

@@ -1,0 +1,105 @@
+/* eigen.c */
+
+
+
+#include "Eigen.h"
+
+#define HAVE_LAPACK
+
+extern "C" {
+
+SEXP rmetaunscramble(const double* imaginary, int n,
+		const double* vecs)
+{
+    int i, j;
+    SEXP s = allocMatrix(CPLXSXP, n, n);
+
+    for (j = 0; j < n; j++) {
+	if (imaginary[j] != 0) {
+	    int j1 = j + 1;
+	    for (i = 0; i < n; i++) {
+		COMPLEX(s)[i+n*j].r = COMPLEX(s)[i+n*j1].r = vecs[i + j * n];
+		COMPLEX(s)[i+n*j1].i = -(COMPLEX(s)[i+n*j].i = vecs[i + j1 * n]);
+	    }
+	    j = j1;
+	} else {
+	    for (i = 0; i < n; i++) {
+		COMPLEX(s)[i+n*j].r = vecs[i + j * n];
+		COMPLEX(s)[i+n*j].i = 0.0;
+	    }
+	}
+    }
+    return s;
+}
+
+
+SEXP rmetamodLa_rg(SEXP x)
+{
+    Rboolean complexValues;
+    int i, n, lwork, info, *xdims;
+    double *work, *wR, *wI, *left, *right, *xvals, tmp;
+    char jobVL[1], jobVR[1];
+    SEXP ret, nm, val;
+
+    xdims = INTEGER(coerceVector(getAttrib(x, R_DimSymbol), INTSXP));
+    n = xdims[0];
+    if (n != xdims[1])
+	error("x must be a square numeric matrix");
+
+    xvals = (double *) R_alloc(n * n, sizeof(double));
+    /* work on a copy of x */
+    Memcpy(xvals, REAL(x), (size_t) (n * n));
+
+    //    vectors = !ov;
+    jobVL[0] = jobVR[0] = 'N';
+    left = right = (double *) 0;
+    wR = (double *) R_alloc(n, sizeof(double));
+    wI = (double *) R_alloc(n, sizeof(double));
+    /* ask for optimal size of work array */
+    lwork = -1;
+#ifdef HAVE_LAPACK
+    F77_CALL(dgeev)(jobVL, jobVR, &n, xvals, &n, wR, wI,
+		    left, &n, right, &n, &tmp, &lwork, &info);
+#else
+    F77_CALL(rgeev)(jobVL, jobVR, &n, xvals, &n, wR, wI,
+		    left, &n, right, &n, &tmp, &lwork, &info);
+#endif
+    if (info != 0)
+	error("error code %d from Lapack routine dgeev", info);
+    lwork = (int) tmp;
+    work = (double *) R_alloc(lwork, sizeof(double));
+#ifdef HAVE_LAPACK
+    F77_CALL(dgeev)(jobVL, jobVR, &n, xvals, &n, wR, wI,
+		    left, &n, right, &n, work, &lwork, &info);
+#else
+    F77_CALL(rgeev)(jobVL, jobVR, &n, xvals, &n, wR, wI,
+		    left, &n, right, &n, work, &lwork, &info);
+#endif
+    if (info != 0)
+	error("error code %d from Lapack routine dgeev", info);
+
+    complexValues = Rboolean(FALSE);
+    for (i = 0; i < n; i++)
+      if (wI[i] != 0.0) { complexValues = Rboolean(TRUE); break; }
+    ret = PROTECT(allocVector(VECSXP, 1));
+    nm = PROTECT(allocVector(STRSXP, 1));
+    SET_STRING_ELT(nm, 0, mkChar("values"));
+    setAttrib(ret, R_NamesSymbol, nm);
+    if (complexValues) {
+	val = allocVector(CPLXSXP, n);
+	for (i = 0; i < n; i++) {
+	    COMPLEX(val)[i].r = wR[i];
+	    COMPLEX(val)[i].i = wI[i];
+	}
+	SET_VECTOR_ELT(ret, 0, val);
+    } else {
+    val = allocVector(REALSXP, n);
+    for (i = 0; i < n; i++)
+      REAL(val)[i] = wR[i];
+    SET_VECTOR_ELT(ret, 0, val);
+    }
+    UNPROTECT(2);
+    return ret;
+}
+
+} //extern "C"

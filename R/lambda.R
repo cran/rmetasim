@@ -12,3 +12,9 @@ rm.lambda <- function(Rland)
      }
   rl
 }
+
+
+lambda.demomat <- function(m)
+    {
+      .Call("landlambda",m,PACKAGE = "rmetasim")
+    }

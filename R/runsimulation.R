@@ -7,7 +7,7 @@
 #is assigned to R's random number seed.  The type of RNG is inherited from the
 #calling environment
 #
-simulate.landscape <- function(Rland, numit, seed=-1, compress=FALSE)
+simulate.landscape <- function(Rland, numit, seed=-1, compress=FALSE, adj.lambda=0)
   {
     if (is.landscape(Rland))
       {
@@ -15,7 +15,7 @@ simulate.landscape <- function(Rland, numit, seed=-1, compress=FALSE)
           {
             set.seed(seed)
           }
-        .Call("iterate_landscape",as.integer(numit),Rland,as.integer(compress),PACKAGE = "rmetasim")
+        .Call("iterate_landscape",as.integer(numit),Rland,as.integer(compress),as.integer(adj.lambda),PACKAGE = "rmetasim")
       }
     else
       {

@@ -996,6 +996,52 @@ void Landscape::HabCarry(int k)
     }
 }
 
+void Landscape::LambdaAdjust(int bypop)
+{
+  int i, j, k, l, bigto, bigfrom;
+  double pred_l, sim_l, adjrate;
+  TransMat diag, Spopmat, Rpopmat;
+  if (bypop)
+    {
+      if (bypop==1) 
+	{
+	  diag.SetSize(s);
+	  Spopmat.SetSize(s);
+	  Rpopmat.SetSize(s);
+	  for (i=0;i<nhab;i++)
+	    {
+	      for (j=0;j<s;j++)
+		for (k=0;k<s;k++)
+		{
+		  bigto = (i*s)+k;
+		  bigfrom = (i*s)+j;
+		  Spopmat.SetElement(k,j,S[e].GetElement(bigto,bigfrom));
+		  Rpopmat.SetElement(k,j,S[e].GetElement(bigto,bigfrom));
+		}
+	      pred_l = (Spopmat+Rpopmat).Lambda();
+	      sim_l = (Spopmat*(Rpopmat+diag)).Lambda();
+	      adjrate = pred_l/sim_l;
+	      for (l=(i*s);l<((i*s)+s);l++)
+		{
+		  CarryState(int(round(double(I[l].size())*adjrate)),l);
+		}
+	    }
+	}
+      else
+	{
+	  diag.SetSize(s*nhab);
+	  pred_l = (S[e]+R[e]).Lambda();
+	  sim_l = (S[e]*(R[e]+diag)).Lambda();
+	  adjrate = pred_l/sim_l;
+	  
+	  for (i=0;i<(s*nhab);i++)
+	    {
+	      CarryState(int(round(double(I[i].size())*adjrate)),i);
+	    }
+	}
+    } //if bypop is ne 0;
+}
+  
 void Landscape::LandCarry()
 {
   size_t j, sz;

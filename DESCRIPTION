@@ -1,11 +1,11 @@
 Package: rmetasim
-Version: 1.0.0
+Version: 1.0.1
 Author: Allan Strand <stranda@cofc.edu>, 
 	James Niehaus
 Maintainer: Allan Strand <stranda@cofc.edu>
-Date: 2004-8-5
+Date: 2004-9-20
 Depends: ape
-Title: rmetasim
+Title: An individual-based population genetic simulation environment
 License: GPL
 Description: An interface between R and the metasim simulation engine.
 	     Facilitates the use of the metasim engine to build and run
@@ -15,5 +15,4 @@ Description: An interface between R and the metasim simulation engine.
 	     for simulating population genetics of complex population
 	     dynamics. Mol. Ecol. Notes, 2:373-376, 2002. (Please
              contact Allan Strand with comments, bug reports, etc).
-URL: http://linum.cofc.edu:software.html
-Packaged: Sun Aug  8 16:54:37 2004; astrand
+Packaged: Sat Sep 25 09:02:46 2004; astrand

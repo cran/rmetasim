@@ -7,9 +7,9 @@
 #is assigned to R's random number seed.  The type of RNG is inherited from the
 #calling environment
 #
-test.landscape.function <- function()
+test.landscape.function <- function(m1,m2)
   {
-    .Call("test",PACKAGE = "rmetasim")
+    .Call("test",m1,m2,PACKAGE = "rmetasim")
   }
 
 
