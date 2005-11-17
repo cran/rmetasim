@@ -29,7 +29,7 @@ obs.het.landscape, exp.het.landscape, FWright.landscape
 }
 \examples{
   exampleland <- new.example.landscape()
-  exampleland <- simulate.landscape(exampleland, 4)
+  exampleland <- sim.landscape(exampleland, 4)
   Fst <- Fst.landscape(exampleland,verb=TRUE)
   Fst
   rm(exampleland,Fst)

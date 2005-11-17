@@ -20,7 +20,7 @@ obs.het.landscape, exp.het.landscape, allelefreq.landscape, Fst.landscape
 \examples{
   exampleland <- new.example.landscape()
   FWright.landscape(exampleland)
-  exampleland <- simulate.landscape(exampleland, 4)
+  exampleland <- sim.landscape(exampleland, 4)
   FWright.landscape(exampleland)
   rm(exampleland)
 }

@@ -1,6 +1,6 @@
 useDynLib(rmetasim)
 
-export(read.landscape,  write.landscape, simulate.landscape, is.landscape, clean.landscape)
+export(read.landscape,  write.landscape, sim.landscape, is.landscape, clean.landscape)
 export(popstruct, landscape.to.rtheta, allelecount.landscape)
 export(new.landscape.empty, write.landscape.foreign)
 export(new.epoch, new.epoch.island, new.individuals, new.intparam.land)

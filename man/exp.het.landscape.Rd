@@ -23,7 +23,7 @@ obs.het.landscape, Fst.landscape
 }
 \examples{
   exampleland <- new.example.landscape()
-  exampleland <- simulate.landscape(exampleland, 4)
+  exampleland <- sim.landscape(exampleland, 4)
   exphet <- exp.het.landscape(exampleland)
   rm(exampleland)
 }

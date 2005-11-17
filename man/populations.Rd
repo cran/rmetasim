@@ -25,7 +25,7 @@
 }
 \examples{
   exampleland <- new.example.landscape()
-  exampleland <- simulate.landscape(exampleland, 4)
+  exampleland <- sim.landscape(exampleland, 4)
   hist(populations(exampleland),main="Distribution of population size in landscape")
   rm(exampleland)
 }
