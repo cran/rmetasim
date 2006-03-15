@@ -22,7 +22,7 @@
 \seealso{
   landscape.locus, landscape.ploidy
   }
-
+}
 \examples{
   exampleland <- landscape.new.example()
   exampleland <- landscape.simulate(exampleland, 4)

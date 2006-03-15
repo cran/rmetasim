@@ -1,23 +1,34 @@
-\name{landscape.new.epoch}
-\alias{landscape.new.epoch}
-\title{Create an Epoch}
+\name{landscape.new.epoch.step}
+\alias{landscape.new.epoch.step}
+\title{Create a stepping-stone migration model}
 
 \description{
-  Create an epoch for a Rmetasim landscape object}
+  Create an epoch for a Rmetasim landscape object that follows the
+  conventions of island  migration models where all populations exchange migrants at equal rates}
 \usage{
   ## must be called AFTER integer, switch, and float params have
-  ##   been created and after the demography has been created
-  ## S, R, and M matricies must be square matricies of size X by X
-  ##   where X = rland$intparam$stages*rland$intparam$habitats
+  ## been created and after the demography has been created
 
-  rland <- landscape.new.epoch(rland,S=Smatrix,R=Rmatrix,M=Mmatrix,epochprob=1,startgen=0,extinct=NULL,carry=NULL,localprob=NULL)
+  rland <- landscape.new.epoch.step(rland,s,sfrom,sto,m,mfrom,mto,f,ffrom,fto,
+                            epochprob=1,startgen=0,extinct=NULL,carry=NULL,localprob=NULL)
 }
 \arguments{
   \item{rland}{partially created landscape object, required}
-  \item{S}{(default=NULL) Survivablity matrix for epoch, NULL gives no movement between subpopulations (0 matrix)}
-  \item{R}{(default=NULL) female Reproduction matrix for epoch, NULL gives no dispersal between subpopulations (0 matrix)}
-  \item{M}{(default=NULL) Male reporduction matrix for epoch, NULL gives
-    no sperm or pollen movement between subpopulations (0 matrix)}
+  \item{s}{Rate of migration by individuals}
+  \item{sfrom}{vector of lifecycle stages in which the individuals
+    migrate from their current subpopulation, must be
+    rland$intparam$stages in length}
+  \item{sto}{vector of lifecycle stages in which the individuals arrive
+    in a new subpopulation, must be rland$intparam$stages in length}
+  \item{m}{Rate of migration by newborns}
+  \item{mfrom}{vector of lifecycle stages in which the newborns leave
+    their subpopulation, must be rland$intparam$stages in length}
+  \item{mto}{vector of lifecycle stages in which the newborns arrive
+    at their new subpopulation, must be rland$intparam$stages in length}
+  \item{f}{Rate of sperm/pollen movement}
+  \item{ffrom}{vector of lifecycle stages in which the males produce
+    sperm/pollen, must be rland$intparam$stages in length}
+  \item{fto}{???}
   \item{epochprob}{(default=1) probability of choosing this epoch randomly if randepoch==1}
   \item{startgen}{(default=0) generation in which this epoch starts}
   \item{extinct}{(default=NULL) vector of extinction probabilities per
@@ -39,28 +50,10 @@
   exampleland <- landscape.new.switchparam(exampleland)
   exampleland <- landscape.new.local.demo(exampleland,exampleS,exampleR,exampleM)
 
-  ## nonsense matricies
-  exampleS <- matrix(c(rep(0,4),
-                rep(1,4),
-                rep(0,4),
-                rep(1,4)), nrow = 4)
-  exampleR <- matrix(c(rep(0.5,4),
-                rep(0,4),
-                rep(0.5,4),
-                rep(0,4)), nrow = 4)
-  exampleM <- matrix(c(rep(0,4),
-                rep(.25,4),
-                rep(0,4),
-                rep(0,4)), nrow = 4)
-
-  ## defaults
-  exampleland<- landscape.new.epoch(exampleland,exampleS,exampleR,exampleM)
+  exampleland <- landscape.new.epoch.island(exampleland,.1,c(0,1),c(0,1),.3,c(0,1),c(1,0),.5,c(1,0),c(0,1))
 
   exampleland$demography$epochs[[1]]
 
-  rm(exampleS)
-  rm(exampleR)
-  rm(exampleM)
   rm(exampleland)
 }
 \keyword{misc}

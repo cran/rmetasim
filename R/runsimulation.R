@@ -7,23 +7,19 @@
 ### C++ code in rmetasim 
 ###
 
-landscape.coerce <- function(rland,noind=F)
+landscape.coerce <- function(rland)
   {
     rland$intparam <- lapply(rland$intparam,as.integer)
     rland$switchparam <- lapply(rland$switchparam,as.integer)
-    rland$floatparam <- lapply(rland$floatparam,as.real)
-    
     rland$loci <- lapply(rland$loci,function(x)
                          {
                            x$type <- as.integer(x$type)
                            x$ploidy <- as.integer(x$ploidy)
                            x$trans <- as.integer(x$trans)
-                           x$rate <- as.real(x$rate)
                            x$alleles <- lapply(x$alleles,function(y,typ)
                                                {
                                                  y$aindex <- as.integer(y$aindex)
                                                  y$birth <- as.integer(y$birth)
-                                                 y$prop <- as.real(y$prop)
                                                  if (typ!=253)
                                                    {
                                                      y$state <- as.integer(y$state)
@@ -33,11 +29,7 @@ landscape.coerce <- function(rland,noind=F)
                                                typ=x$type)
                            x
                          })
-    if (!rland$switchparam$densdepdemo)
-      {
-        rland$demography$localdemK <- rland$demography$localdem
-      }
-    if (!noind)  {rland$individuals <- matrix(as.integer(rland$individuals),nrow=dim(rland$individuals)[1])}
+    rland$individuals <- matrix(as.integer(rland$individuals),nrow=dim(rland$individuals)[1])
     rland
   }
 ####

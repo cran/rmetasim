@@ -232,7 +232,7 @@ protected:
   int nextID;
 
   ///The maximum number of individuals allowed in the landscape
-  int maxlandsz;
+  long maxlandsz;
   ///is multiple paternity allowed? 0=single father, 1=every child has a randomly selected father 
   int multiple_paternity ;
   /**

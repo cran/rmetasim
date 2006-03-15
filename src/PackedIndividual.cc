@@ -29,7 +29,6 @@ PackedIndividual::PackedIndividual (int c, int sx, int g, int nl)
   Change(g-1);
   SetLastRep(0);
   SetNumOff(0);
-  id=0;mid=0;pid=0;
 }
 
 PackedIndividual::~PackedIndividual ()
