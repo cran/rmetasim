@@ -10,7 +10,7 @@ landscape.locus <- function(lnum=1,Rland)
     if(is.landscape(Rland))
       if (lnum<=Rland$intparam$locusnum)
         {
-          Rland$individuals[,c(TRUE,TRUE,TRUE,locusvec(Rland)==lnum)]
+          Rland$individuals[,c(rep(TRUE,landscape.democol()),locusvec(Rland)==lnum)]
         }
   }
 
@@ -20,41 +20,16 @@ landscape.states <- function(lnum=1,Rland)
     if(is.landscape(Rland))
       if (lnum<=Rland$intparam$locusnum)
         {
-          lmat <- as.data.frame(Rland$individuals[,c(TRUE,TRUE,TRUE,locusvec(Rland)==lnum)])
+          lmat <- as.data.frame(Rland$individuals[,c(rep(TRUE,landscape.democol()),locusvec(Rland)==lnum)])
           st <- states(lnum,Rland)
-          lmat[,4] <- st$state[c(lmat[,4]+1)]
-
+          lmat[,landscape.democol()+1] <- st$state[sapply(lmat[,landscape.democol()+1],function(x,aindex){which(aindex==x)},aindex=st$aindex)]
           if (ploidy(Rland)[lnum]==2)
             {
-              lmat[,5] <- st$state[c(lmat[,4]+1)]
+              lmat[,landscape.democol()+2] <- st$state[sapply(lmat[,landscape.democol()+2],function(x,aindex){which(aindex==x)},aindex=st$aindex)]
             }
           lmat
         }
   }
-
-landscape.states.old <- function(lnum=1,Rland)
-  {
-    if(is.landscape(Rland))
-      if (lnum<=Rland$intparam$locusnum)
-        {
-          lmat <- as.data.frame(Rland$individuals[,c(TRUE,TRUE,TRUE,locusvec(Rland)==lnum)])
-          st <- states(lnum,Rland)
-          stvec <- rep(NA,max(st$aindex+1))
-          for (i in 1:length(stvec))
-            {
-              stvec[st$aindex[i]+1] <- st$state[i]
-            }
-
-          lmat[,4] <- stvec[lmat[,4]+1]
-
-          if (ploidy(Rland)[lnum]==2)
-            {
-              lmat[,5] <- stvec[lmat[,5]+1]
-            }
-          lmat
-        }
-  }
-
 
 #returns a vector of ploidys for all loci
 ploidy<- function(Rland)
@@ -88,7 +63,7 @@ states<-function(lnum=1,Rland)
         {
           ain<-c();
           sta<-c();
-          locin <- landscape.locus(lnum,Rland)[,c(-1,-2,-3)]
+          locin <- landscape.locus(lnum,Rland)[,c(-1:-(landscape.democol()))]
 #          print(locin)
           ainds <- unique(c(locin))
 #          print(ainds)
@@ -107,7 +82,8 @@ states<-function(lnum=1,Rland)
 
 indxfreq <-function(lnum=1,Rland)
   {
-    lv<-landscape.locus(lnum,Rland)[,c(FALSE,FALSE,FALSE,rep(TRUE,(ncol(locus(lnum,Rland))-3)))];
+    lv<-landscape.locus(lnum,Rland)[,c(rep(FALSE,landscape.democol()),
+                                           rep(TRUE,(ncol(locus(lnum,Rland))-landscape.democol())))];
     if (ploidy(Rland)[lnum]==1)
       {
         table(populations(Rland),lv)

@@ -1,3 +1,27 @@
+ver 1.1.0
+3/25/06 Fixed bug in conversion between rmetasim objects and internal
+c++ representations.  Added code to parse Arlequin files into rmetasim
+objects
+
+3/25/06 IMPORTANT!!! Added three columns to individuals object between
+the demographic information and the genetic information.  They store
+an individuals unique ID, it's mothers unique ID and fathers unique
+ID.  This can be used to track family structure over multiple
+generations.  Right now, rmetasim does nothing but create and assign
+these IDs properly.  This change alters the text file structure of
+rmetasim and will have dire repurcussions for anyone who directly
+accesses the individual objects and does not account for the addtional
+three columns.  All of the rmetasim functions should work correctly.
+
+If individuals are created outside of the c++ backend, they should be
+given appropriate IDs Zero for mother and father indicates individuals
+created de novo
+
+Several new functions have been defined to work with these objects.  
+
+
+
+
 ver 1.0.5
 11/16/05  To accomodate changes in R 2.2 that implemented the S3 base
 'simulate', changed the central function simulate.landscape() to sim.landscape()

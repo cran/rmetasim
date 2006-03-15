@@ -29,7 +29,8 @@ demography.landscape <- function(Rland)
       chisq <- sum(((obdist-exdist)^2)/exdist)
       df <- length(obdist)-1
       prob <- 1-pchisq(chisq,df)
-      loclist <- list(lambda=l[which(Re(l)==max(Re(l)))],statedist=statedist,obdist=obdist,exdist=exdist,chisq=chisq,df=df,prob=prob)
+      loclist <- list(lambda=l[which(Re(l)==max(Re(l)))],statedist=statedist,
+                      obdist=obdist,exdist=exdist,chisq=chisq,df=df,prob=prob)
       rl[[rlcnt]] <- loclist
       rlcnt <- rlcnt+1
     }

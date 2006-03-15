@@ -31,7 +31,7 @@ variables) of an individual.  Here rland is a
   exampleland <- new.example.landscape()
   exampleland <- sim.landscape(exampleland, 4)
   print("Allele frequencies at locus 1")
-  table(landscape.locus(1,exampleland)[,c(-1,-2,-3)]) 
+  table(landscape.locus(1,exampleland)[,c(-1:-(landscape.democol()))]) 
   rm(exampleland)
 }
 \keyword{misc}

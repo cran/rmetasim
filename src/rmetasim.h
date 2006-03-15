@@ -19,7 +19,7 @@ Defines:
 
 #define LOCUSLEN         5
 #define ALLELELEN        4
-
+#define NONGENOTYPECOLS  6
 
 ///names of parameters in the simulation.  Used as names in lists
 
@@ -39,6 +39,7 @@ Defines:
 #define	FINALAGE	 "totalgens"    
 #define	DNUMNAME	 "numdemos"     
 #define	MAXLANDNAME	 "maxlandsize"  
+#define NEXTIDNAME       "nextid"
 
 #define TYPENAME	 "type"    
 #define	PLOIDYNAME	 "ploidy"  
@@ -52,6 +53,7 @@ Defines:
 #define	STATENAME	 "state"   
 
 #define LOCALDEMNM       "localdem"
+#define LOCALDEMKNM      "localdemK"
 #define EPOCHDEMNM       "epochs"
 
 #define LCLSMATNM        "LocalS"
@@ -70,7 +72,9 @@ Defines:
 #define RANDEPOCHN       "randepoch"
 #define RANDDEMON 	 "randdemo" 
 #define MULTPNAME        "multp"
-
+///KKM 5.20.05..............................................................
+#define DENSDEP     "densdepdemo"
+///.........................................................................
 #define SELFRATENAME     "selfing"
 
 ///input/output of landscapes to/from metasim lib
@@ -100,10 +104,17 @@ extern "C" SEXP populate_Rland(SEXP Rland, SEXP Population_sizes);
 extern "C" SEXP clean_landscape(SEXP Rland);
 extern "C" SEXP compress_landscape(SEXP Rland);
 
+extern "C" SEXP num_demo_cols();
 ///utility functions
 ///convert a landscape into a format that the weir fst calculations in R can use.
 extern "C" SEXP l2w(SEXP Rland, SEXP numind);
 
+///
+///this is C code to calculate relatedness
+///
+
+extern "C" SEXP relateinternal(SEXP ind, SEXP acnp);
+ 
 
 ///output functions
 ///convert landscapes to various formats
@@ -118,3 +129,4 @@ extern "C" SEXP writeMigrateDip(SEXP fn, SEXP Rland, SEXP ni);
 extern "C" SEXP writeReRat(SEXP fn, SEXP Rland, SEXP ni);
 
 extern "C" SEXP test(SEXP mat1, SEXP mat2);
+

@@ -207,6 +207,11 @@ protected:
   /// a flag to tell whether the demographies are chosen at random from demoProbVec
   int rdemo;
 
+  ///KKM 5.20.05..............................................................
+  /// a flag to tell whether demography is density dependent
+  int densdepdemo;
+  ///........................................................................
+
   /// a counter of the current epoch
   int e   ;
 
@@ -222,6 +227,9 @@ protected:
 
   ///the percentage of deviation allowed when imposing carrying capacity
   double habdelta;
+
+  ///counter for the next individual.  Usually the total number of births in a landscape, though can roll over at MAXIDS
+  int nextID;
 
   ///The maximum number of individuals allowed in the landscape
   long maxlandsz;
@@ -254,6 +262,15 @@ protected:
 
   std::vector<LocalMat> LM;
 
+  ///KKM 5.20.05...............................................................
+  ///A vector of Local Matrix Types.  These represent the demography within populations
+  ///near carrying capacity when density dependence is used and can be used to
+  ///along with the LM matrices to interpolate the diagonal elements of S, R, and M.
+  ///The length of this vector is the same as the number of different within-pop demographies possible
+
+  std::vector<LocalMat> LMK;
+  ///..........................................................................
+
   ///This structure is a vector of length nep.  Each element is is a
   ///vector of probabilities of observing a particular local
   ///demography of type LocalMat. The length of each of these
@@ -285,6 +302,9 @@ public:
   inline void setself(double slf=0) {self=slf;}
   inline void setmultp(int mp=1) {multiple_paternity=mp;}
   inline void setranddemo(int rd=1) {rdemo=rd;}
+  ///KKM 5.20.05...........................................................
+  inline void setdensdep(int dd=0) {densdepdemo=dd;}
+  ///......................................................................
   inline void setgens(int gn=2) {ngen=gn;}
   inline void setCgen(int cg) {t=cg;}
   inline void setCepoch(int ce) {e=ce;}
@@ -300,6 +320,7 @@ public:
          void setndemo(int nd=1);
          void sethabs(int h=1);
          void setstages(int stg=2);
+  inline void setnextID(int newid=1) {nextID=newid;}
   inline void setloci() {nloc=Atbls.size();}
          void setepochprob(int ce, double prob);
          void setepochstart(int ce, int strt);
@@ -322,7 +343,11 @@ public:
   inline int getgens() {return ngen;}
   inline int getrandepoch() {return randepoch;}
   inline int getranddemo() {return rdemo;}
+  ///KKM 5.20.05.............................................................
+  inline int getdensdep() {return densdepdemo;}
+  ///........................................................................
   inline int getndemo() {return ndemo;}
+  inline int getnextID() {return nextID;}
   inline int getMaxLandSize() {return maxlandsz;}
 
   void init(int h=1, int stg=2, int loc=0, int ep=1, int nd=1, int gn=1);
@@ -351,19 +376,40 @@ public:
   inline double getLRmatElement(int d, size_t t, size_t f)  {return LM[d].GetRlocalVal(f,t);}
   inline double getLMmatElement(int d, size_t t, size_t f)  {return LM[d].GetMlocalVal(f,t);}
 
+  ///KKM 5.20.05..............................................................
+  inline void setLSKmatElement(int d, size_t t, size_t f, double val) {LMK[d].SetSlocalVal(f,t,val);}
+  inline void setLRKmatElement(int d, size_t t, size_t f, double val) {LMK[d].SetRlocalVal(f,t,val);}
+  inline void setLMKmatElement(int d, size_t t, size_t f, double val) {LMK[d].SetMlocalVal(f,t,val);}
+
+  inline double getLSKmatElement(int d, size_t t, size_t f)  {return LMK[d].GetSlocalVal(f,t);}
+  inline double getLRKmatElement(int d, size_t t, size_t f)  {return LMK[d].GetRlocalVal(f,t);}
+  inline double getLMKmatElement(int d, size_t t, size_t f)  {return LMK[d].GetMlocalVal(f,t);}
+  ///KKM.......................................................................
+
 inline void ConstructDemoMatrix()
   {
-    if (ndemo)
-      {
-	if (rdemo)
-	  {
-	    RandomlyConstructDemoMatrix();
-	  }
-	else
-	  {
-	    SequentiallyConstructDemoMatrix();
-	  }
+    if (ndemo){
+	   if (rdemo){
+         ///KKM 6.7.05........................................................
+         if (densdepdemo){
+           RandomDensityDependentDemoMatrix();
+         }
+         else {
+         ///..................................................................
+            RandomlyConstructDemoMatrix();
+         }
       }
+	   else{
+         ///KKM 6.7.05........................................................
+         if (densdepdemo){
+           SequentialDensityDependentDemoMatrix();
+         }
+         else {
+         ///..................................................................
+	        SequentiallyConstructDemoMatrix();
+         }
+      }
+    }
   }
   /**
 
@@ -380,6 +426,17 @@ inline void ConstructDemoMatrix()
    */
 void SequentiallyConstructDemoMatrix();
 
+///KKM....................................................................
+  /**
+
+  Works the same as SequentiallyConstructDemoMatrix(), except values
+  entered into the sub-matrices are interpolated from the values at
+  zero population density and carrying capacity.
+
+   */
+void SequentialDensityDependentDemoMatrix();
+///...........................................................................
+
   /**
 
      This function randomly selects sub-matrices from the vector of
@@ -394,7 +451,15 @@ void SequentiallyConstructDemoMatrix();
    */
 void RandomlyConstructDemoMatrix();
 
+/*/KKM 6.7.05.................................................................
 
+  Works the same as SequentiallyConstructDemoMatrix(), except values
+  entered into the sub-matrices are interpolated from the values at
+  zero population density and carrying capacity.
+
+   */
+void RandomDensityDependentDemoMatrix();
+///............................................................................
   /*
     set the population characteristic vectors
    */

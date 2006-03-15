@@ -9,6 +9,7 @@ write.landscape.foreign <- function(rland, numi=24, fn = "foreign", fmt="GDA")
 {
   if  (is.landscape(rland))
     {
+      if (is.null(numi)) {numi <- (-1)}
       if (fmt %in% c("GDA","Gda","gda"))
         {
           .Call("writeGDA",fn,rland,numi,PACKAGE = "rmetasim")

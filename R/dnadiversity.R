@@ -28,18 +28,19 @@ basediff<-function(lnum=1,Rland)
 #
 # produce a table of mismatches for a particular locus
 #
-mismatchdist<-function(lnum=1,Rland)
+landscape.mismatchdist<-function(lnum=1,Rland)
   {
     bd<-basediff(lnum,Rland);
     sl<-bd[[1]];
     dmat<-bd[[2]];
     lt<-landscape.locus(lnum,Rland);
-    itbl<-table(lt[,4:ncol(lt)]);
+    itbl<-table(lt[,(landscape.democol()+1):ncol(lt)]);
     ttbl<-as.table(table(c(0,seq(max(dmat))))*0);
     for (n in names(itbl))
       {
 #        print(paste("Working on: ",n))
         mtbl<-as.table(table(dmat[seq(along=sl)[sl==as.numeric(n)],])*itbl[[n]]);
+        print(n)
         for (cn in names(mtbl))
           {
             ttbl[[cn]]<-ttbl[[cn]]+mtbl[[cn]];
