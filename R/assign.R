@@ -57,7 +57,7 @@ assignmentTest <- function(Rland, verbose=F)
     for (curInd in 1:nInd)
       {
         myProb <- indProb[curInd,]
-        myPop <- populations(Rland)[curInd]
+        myPop <- landscape.populations(Rland)[curInd]
         misassigned[[1]][which(sampleset == curInd)] <-
           !(myProb[myPop] == max(myProb))
       }
@@ -74,7 +74,7 @@ sampleFromSubPopulations <- function (Rland, sampleSize)
 {
   sample <- c()
   nPops <- Rland$intparam$habitats
-  pops <- populations(Rland)
+  pops <- landscape.populations(Rland)
   for (x in 1:nPops) {
     sample <- c(sample, sample(which(pops == x), sampleSize))
   }
@@ -88,30 +88,30 @@ countPopulation <- function (nPop, Rland)
   }
   else
   {
-    sum(populations(Rland) == nPop)
+    sum(landscape.populations(Rland) == nPop)
   }
 }
 
 indxfreqWithout <-function(IndNum, lnum=1, Rland)
   {
     lv<-landscape.locus(lnum,Rland)[,c(FALSE,FALSE,FALSE,rep(TRUE,(ncol(landscape.locus(lnum,Rland))-3)))];
-    if (ploidy(Rland)[lnum]==1)
+    if (landscape.ploidy(Rland)[lnum]==1)
       {
         lv<-lv[-IndNum]
-        table(populations(Rland)[-IndNum],lv)
+        table(landscape.populations(Rland)[-IndNum],lv)
       }
     else
       {        
         lv<-lv[-IndNum,]
         lv <- c(lv[,1],lv[,2])
-        table(rep(populations(Rland)[-IndNum],2),lv)
+        table(rep(landscape.populations(Rland)[-IndNum],2),lv)
       }
   }
 
 indxfreqNormal <- function(IndNum, lnum=1, Rland)
   {
     nPops <- Rland$intparam$habitats
-    myPop <- populations(Rland)[IndNum]
+    myPop <- landscape.populations(Rland)[IndNum]
 
     freq <- indxfreqWithout(IndNum, lnum, Rland)
     for(x in 1:nPops)
@@ -124,7 +124,7 @@ indxfreqNormal <- function(IndNum, lnum=1, Rland)
           {
             geneCount <- countPopulation(x,Rland)
           }
-        geneCount <- geneCount * ploidy(Rland)[lnum]
+        geneCount <- geneCount * landscape.ploidy(Rland)[lnum]
 
 	freq[x,] <- freq[x,] / geneCount
       }
@@ -160,7 +160,7 @@ lociAIndex <- function(freq, curInd, curLoci, Rland)
 getMyAlleleIndex <- function(freq, curInd, curLoci, Rland)
   {
     myAllele <- landscape.locus(lnum=curLoci, Rland)[curInd,c(-1,-2,-3)]
-    if (ploidy(Rland)[curLoci] == 1)
+    if (landscape.ploidy(Rland)[curLoci] == 1)
     {
       rv <- which(as.numeric(colnames(freq))==myAllele)
     }

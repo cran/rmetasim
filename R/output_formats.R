@@ -5,7 +5,7 @@
 #  }
 
 
-write.landscape.foreign <- function(rland, numi=24, fn = "foreign", fmt="GDA")
+landscape.write.foreign <- function(rland, numi=24, fn = "foreign", fmt="GDA")
 {
   if  (is.landscape(rland))
     {

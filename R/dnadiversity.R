@@ -9,7 +9,7 @@ basediff<-function(lnum=1,Rland)
       if (Rland$intparam$locusnum>=lnum)
         if (Rland$loci[[lnum]]$type==253)
           {
-            sl<-states(lnum,Rland);
+            sl<-landscape.locus.states(lnum,Rland);
             rmat<-matrix(0,nrow=length(sl[[1]]),ncol=length(sl[[1]]));
             for (i in 1:length(sl[[1]]))
               for (j in i:length(sl[[1]]))
@@ -40,7 +40,6 @@ landscape.mismatchdist<-function(lnum=1,Rland)
       {
 #        print(paste("Working on: ",n))
         mtbl<-as.table(table(dmat[seq(along=sl)[sl==as.numeric(n)],])*itbl[[n]]);
-        print(n)
         for (cn in names(mtbl))
           {
             ttbl[[cn]]<-ttbl[[cn]]+mtbl[[cn]];
@@ -60,7 +59,7 @@ mismatch.pop <- function(Rland,pop=c(1:Rland$intparam$habitats))
     for (i in pop)
       {
         popland <- Rland
-        popland$individuals <- Rland$individuals[populations(Rland)==i,]
+        popland$individuals <- Rland$individuals[landscape.populations(Rland)==i,]
         for (j in 1:length(popland$loci))
           {
             tbldf <- as.data.frame(mismatchdist(lnum=j,popland))

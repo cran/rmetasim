@@ -495,6 +495,7 @@ read in landscapes
 
     int e,i=0,j=0;
     int sz=0,d=0;
+    char nbuf[64];
 
     SEXP LDemol = PROTECT(allocVector(VECSXP, L.getndemo()));
 
@@ -585,14 +586,14 @@ read in landscapes
 	SET_STRING_ELT(Demovn, 7, mkChar(MNAME      )); 
 
 	setAttrib(Demov, R_NamesSymbol, Demovn);
-    
 
+	sprintf(nbuf,"%d%",e);
+  
 #ifdef RDEBUG
 	cerr <<"Setting epoch name: e="<<e<<endl;
+	Rprintf("epoch set %d \n",e);
 #endif
-
-	SET_STRING_ELT(Epochsn,e,ScalarString(ScalarInteger(i)));
-	
+	SET_STRING_ELT(Epochsn,e,mkChar(nbuf));
 	///Probabilityc of choosing an epoch
 	SET_VECTOR_ELT(Demov,0,ScalarReal(L.getepochprob(e)));
 	
@@ -890,7 +891,7 @@ SEXP convert_metasim_to_R(Landscape_statistics &L)
     SET_VECTOR_ELT(Retlist, 5, metasim_to_R_ind(L));
 
     ///Names of elements in the return list
-    SEXP Retlistn = PROTECT(allocVector (VECSXP,6));
+    SEXP Retlistn = PROTECT(allocVector (STRSXP,6));
     
     SET_STRING_ELT(Retlistn, 0, mkChar(INTEGERPARAMS));
     SET_STRING_ELT(Retlistn, 1, mkChar(SWITCHPARAMS));
@@ -900,7 +901,8 @@ SEXP convert_metasim_to_R(Landscape_statistics &L)
     SET_STRING_ELT(Retlistn, 5, mkChar(INDPARAMS));
     setAttrib(Retlist, R_NamesSymbol, Retlistn);
 
-    UNPROTECT(2);
+    ///    PrintValue(Retlistn);
+
     ///    Atbls_clear();
     return Retlist;
 }

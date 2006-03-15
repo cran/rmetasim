@@ -14,7 +14,7 @@
 }
 
 \examples{
-  exampleland <- new.example.landscape()
+  exampleland <- landscape.new.example()
   is.landscape(exampleland)
   rm(exampleland)
 }

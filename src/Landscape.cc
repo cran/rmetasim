@@ -1083,7 +1083,7 @@ void Landscape::CarryState(size_t maxsz, int i)
 {
   int numdel,k;
   //KKM 8.1.05..................................................................
-  int max;
+  size_t max;
   
   //setting the hard ceiling on abundance at 110% of carrying capacity when density
   //dependence is active.  That way, long-term average abundance is closer to K.

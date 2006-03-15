@@ -1,4 +1,12 @@
 ver 1.1.0
+
+10/10/06 Eliminated out of date documentation.  Need to develop a
+Vignette for the package.  This is High on the TODO list
+
+9/29/06 Tried to make rmetasim function names more consistent by
+appending 'lansdscape' to the front of them.  This should reduce
+naming collision problems with base and other packages in R
+
 3/25/06 Fixed bug in conversion between rmetasim objects and internal
 c++ representations.  Added code to parse Arlequin files into rmetasim
 objects

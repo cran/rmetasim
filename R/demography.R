@@ -1,7 +1,7 @@
 #
 #
 #
-demography.landscape <- function(Rland)
+landscape.demography <- function(Rland)
 {
   #this routine is not ready for use.
   rl <- vector("list",length=Rland$intparam$habitats+1)

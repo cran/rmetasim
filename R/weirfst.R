@@ -420,11 +420,11 @@ landscape.to.rtheta.old <- function(Rland,loci=NULL,pops=NULL,samp=20)
         loci <- 1:length(Rland$loci)
       }
     gn <- NULL
-    p <- populations(Rland)
+    p <- landscape.populations(Rland)
 
     for (loc in loci)
       {
-        if (ploidy(Rland)[loc]==1)
+        if (landscape.ploidy(Rland)[loc]==1)
           {
             thislocus <- cbind(p,rep(loc,length(p)),rep(0,length(p)),c(1:length(p)),landscape.locus(loc,Rland)[,c(1,4)])
           }

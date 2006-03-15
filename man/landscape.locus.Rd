@@ -24,12 +24,12 @@ variables) of an individual.  Here rland is a
   diploid) contain the allele indices for the various loci}
 
 \seealso{
-  populations
+  landscape.populations
   }
 }
 \examples{
-  exampleland <- new.example.landscape()
-  exampleland <- sim.landscape(exampleland, 4)
+  exampleland <- landscape.new.example()
+  exampleland <- landscape.simulate(exampleland, 4)
   print("Allele frequencies at locus 1")
   table(landscape.locus(1,exampleland)[,c(-1:-(landscape.democol()))]) 
   rm(exampleland)
