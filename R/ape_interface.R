@@ -10,7 +10,7 @@ theta.h.landscape <- function(rland)
         rland.tmp$individuals <- rland.tmp$individuals[populations(rland.tmp)==i,]
         for (j in 1:length(rland$loci))
           {
-            alleledist <- as.factor(landscape.locus(lnum=j,rland.tmp)[,c(-1,-2,-3)])
+            alleledist <- as.factor(landscape.locus(lnum=j,rland.tmp)[,c(-1:-(landscape.democol()))])
             if (length(unique(alleledist))>1)
               retval[i,j] <- theta.h(alleledist)
             else
@@ -30,7 +30,7 @@ theta.k.landscape <- function(rland)
         rland.tmp$individuals <- rland.tmp$individuals[populations(rland.tmp)==i,]
         for (j in 1:length(rland$loci))
           {
-            alleledist <- as.factor(landscape.locus(lnum=j,rland.tmp)[,c(-1,-2,-3)])
+            alleledist <- as.factor(landscape.locus(lnum=j,rland.tmp)[,c(-1:-(landscape.democol()))])
             if (length(unique(alleledist))>1)
               retval[i,j] <- theta.k(alleledist)
             else
@@ -80,7 +80,7 @@ tajima.d.landscape <- function(rland)
             retval[i,j] <- NA
             if ((rland$loci[[j]]$type==253))
               {
-                alleledist <- as.factor(landscape.locus(lnum=j,rland.tmp)[,c(-1,-2,-3)])
+                alleledist <- as.factor(landscape.locus(lnum=j,rland.tmp)[,c(-1:-(landscape.democol()))])
                 if (length(unique(alleledist))>1)
                   theta.ewens <- c(theta.k(alleledist),0)
                 else

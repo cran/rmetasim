@@ -168,6 +168,23 @@ void Landscape::setndemo(int nd)
     {
       LM[i].SetSize(s);
     }
+///KKM 6.2.05..................................................................
+#ifdef RDEBUG
+  cerr << "REserving space for LMK" <<endl;
+#endif
+  LMK.resize(ndemo);
+#ifdef RDEBUG
+  cerr << "done REserving space for LMK" <<endl;
+#endif
+
+#ifdef RDEBUG
+  cerr << "Setting sizes of LMK matrices to: "<<s <<endl;
+#endif
+  for (i=0;i<ndemo;i++)
+    {
+      LMK[i].SetSize(s);
+    }
+///............................................................................
 #ifdef RDEBUG
   cerr << "Resizing the demoProbVecs to ndemo="<<ndemo <<endl;
 #endif
@@ -188,20 +205,6 @@ void Landscape::setndemo(int nd)
 void Landscape::sethabs(int h) 
 {
   nhab=h;
-  /*
-  if ((h*s)==S[0].Size())  ///there should always be an epoch 0
-    {
-      nhab=h;
-    }
-  else
-    {
-      nhab=h;
-#ifdef RDEBUG
-      cerr << "sethabs: resetting the transition matrices" <<endl;
-#endif
-      
-    }
-  */
 }
 
 void Landscape::setstages(int stg) { s=stg; }
@@ -216,7 +219,6 @@ void Landscape::init(int h, int stg, int loc, int ep, int nd, int gn)
   cerr << "Running: sethabs(h)" <<endl;
 #endif
   sethabs(h);
-
 #ifdef RDEBUG
   cerr << "Running: setstages(stg)" <<endl;
 #endif
@@ -265,6 +267,9 @@ void Landscape::init(int h, int stg, int loc, int ep, int nd, int gn)
 
   ///HABDELTA is precision when inplementing carrying capacity via Carry()
   habdelta = HABDELTA;
+
+  setnextID(1);
+
 #ifdef RDEBUG
   cerr << "end of init" <<endl;
 #endif
@@ -465,6 +470,46 @@ void Landscape::SequentiallyConstructDemoMatrix()
       rm++;
     }
 }
+///KKM 6.6.05...............................................................
+void Landscape::SequentialDensityDependentDemoMatrix()
+{
+
+  int fr,to;
+  int i,rm;
+  int newto,newfr;
+  double ValZero,ValK,NewVal;
+
+  rm=0;
+  for (i=0;i<nhab;i++)
+    {
+      if (rm>=ndemo)
+	{
+	  rm=0;
+	}
+      for (fr=0;fr<s;fr++)
+	{
+	  for (to=0;to<s;to++)
+	    {
+	      newto = (s*i)+to ;
+	      newfr = (s*i)+fr ;
+         ValZero = LM[rm].GetSlocalVal(fr,to);
+         ValK = LMK[rm].GetSlocalVal(fr,to);
+         NewVal = (ValK-ValZero)*(double (PopSize(i))/double(kvec[e][i]))+ValZero;
+	      S[e].SetElement(newfr,newto,NewVal);
+         ValZero = LM[rm].GetRlocalVal(fr,to);
+         ValK = LMK[rm].GetRlocalVal(fr,to);
+         NewVal = (ValK-ValZero)*(double (PopSize(i))/double(kvec[e][i]))+ValZero;
+	      R[e].SetElement(newfr,newto,NewVal);
+         ValZero = LM[rm].GetMlocalVal(fr,to);
+         ValK = LMK[rm].GetMlocalVal(fr,to);
+         NewVal = (ValK-ValZero)*(double (PopSize(i))/double(kvec[e][i]))+ValZero;
+	      M[e].SetElement(newfr,newto,NewVal);
+	    }
+	}
+      rm++;
+    }
+}
+///........................................................................
 void Landscape::RandomlyConstructDemoMatrix()
 {
 
@@ -496,6 +541,49 @@ void Landscape::RandomlyConstructDemoMatrix()
     }
 }
 
+///KKM 6.7.05..................................................................
+void Landscape::RandomDensityDependentDemoMatrix()
+{
+
+  double p[ndemo];
+  int fr,to;
+  int i,rm;
+  int newto,newfr;
+  double ValZero,ValK,NewVal;
+
+  //set the probs of the multinomial distribution to pass to the rng
+  for (i=0;i<ndemo;i++)
+    {
+      p[i]=demoProbVec[e][i];
+    }
+
+  for (i=0;i<nhab;i++)
+    {
+      rm = RandLibObj.multinomial(p,ndemo);
+      for (fr=0;fr<s;fr++)
+	{
+	  for (to=0;to<s;to++)
+	    {
+	      newto = (s*i)+to ;
+	      newfr = (s*i)+fr ;
+         ValZero = LM[rm].GetSlocalVal(fr,to);
+         ValK = LMK[rm].GetSlocalVal(fr,to);
+         NewVal = (ValK-ValZero)*(double (PopSize(i))/double(kvec[e][i]))+ValZero;
+	      S[e].SetElement(newfr,newto,NewVal);
+         ValZero = LM[rm].GetRlocalVal(fr,to);
+         ValK = LMK[rm].GetRlocalVal(fr,to);
+         NewVal = (ValK-ValZero)*(double (PopSize(i))/double(kvec[e][i]))+ValZero;
+	      R[e].SetElement(newfr,newto,NewVal);
+         ValZero = LM[rm].GetMlocalVal(fr,to);
+         ValK = LMK[rm].GetMlocalVal(fr,to);
+         NewVal = (ValK-ValZero)*(double (PopSize(i))/double(kvec[e][i]))+ValZero;
+	      M[e].SetElement(newfr,newto,NewVal);
+	    }
+	}
+    }
+}
+///............................................................................
+
 void Landscape::popsizeset(std::vector<int> &ps)
 {
   int i,j,psz;
@@ -506,6 +594,8 @@ void Landscape::popsizeset(std::vector<int> &ps)
   psz=ps.size();
 
   totpop = 0;
+
+  nextID = 1;
 
   for (i=0; i<psz; i++)
     {
@@ -523,6 +613,10 @@ void Landscape::popsizeset(std::vector<int> &ps)
 	  Ind.SetRandGenotype(Atbls);
 	  Ind.Change(-1);
 	  Ind.SetLastRep(-1);
+	  Ind.SetID(nextID);
+	  nextID=nextID+1;
+	  Ind.SetMID(0);
+	  Ind.SetPID(0);
 	  Ind.SetNumOff(0);
 	  Ind.Birth(-1,Atbls);
 	  I[i].AddIndividual(Ind);
@@ -904,8 +998,19 @@ ability to produce pollen could be inserted.
 				  tmpI.SetClass(j);
 				  
 				  ///this could/should be made user selectable
-				  tmpI.SetSex(0);
+				  tmpI.SetSex(0);///would require some more code modifications, but might be worth it
 				  tmpI.SetGen(t);
+				  tmpI.SetMID(searchI.GetID());
+				  tmpI.SetPID(mate.GetID());
+				  tmpI.SetID(nextID);
+				  if (nextID>MAXIDS) 
+				    {
+				      nextID=1;
+				    }
+				  else
+				    {
+				      nextID=nextID+1;
+				    }
 				  tmpI.Change(-1);
 				  tmpI.Birth(t,Atbls);
 				  err = 0;
@@ -977,10 +1082,18 @@ void Landscape::CompressInd()
 void Landscape::CarryState(size_t maxsz, int i)
 {
   int numdel,k;
+  //KKM 8.1.05..................................................................
+  int max;
+  
+  //setting the hard ceiling on abundance at 110% of carrying capacity when density
+  //dependence is active.  That way, long-term average abundance is closer to K.
+  if (densdepdemo == 1) max = int(floor(0.5 + maxsz*1.1));
+  else max = maxsz;
+  //............................................................................
 
-  if (maxsz<I[i].size())
+  if (max<I[i].size())
     {
-      numdel = (I[i].size()-maxsz);
+      numdel = (I[i].size()-max);
       for (k=0;k<numdel;k++)
 	{
 	  I[i].RemoveRandomInd(t,Atbls);
@@ -1113,8 +1226,10 @@ ostream &operator<<(ostream &stream, Landscape &l)
   stream << "ngen      " <<" "<< l.ngen<< endl;
   stream << "cgen      " <<" "<< l.t<< endl;
   stream << "self      " <<" "<< l.self<< endl;
+  stream << "nextID    " <<" "<< l.nextID<< endl;
   stream << "multp     " <<" "<< l.multiple_paternity<< endl;
   stream << "maxlandsz " <<" "<< l.maxlandsz<< endl;
+  stream << "densdep   " <<" "<< l.densdepdemo<<endl;
 
   stream << endl;
 
@@ -1311,9 +1426,17 @@ istream &operator>>(istream & stream, Landscape &l)
 		  {
 		    stream >> l.multiple_paternity;
 		  }
+		else if (c=="nextID")
+		  {
+		    stream >> l.nextID;
+		  }
 		else if (c=="maxlandsz")
 		  {
 		    stream >> l.maxlandsz;
+		  }
+		else if (c=="densdep")
+		  {
+		    stream >> l.densdepdemo;
 		  }
 		else if (c=="epochvec")
 		  {

@@ -414,7 +414,7 @@ void SeqAlleleTbl::Scan(istream &stream)
   if (tprop != 1.0) //primitive error checking
     {
 #ifdef RDEBUG
-      cerr << "Proportions of alleles at locus do not total to 1! Instead, they total to: " << tprop << endl;
+      //      cerr << "Proportions of alleles at locus do not total to 1! Instead, they total to: " << tprop << endl;
 #endif
     }
 }		 

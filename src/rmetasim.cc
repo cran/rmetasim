@@ -1,8 +1,6 @@
 /* 
 Allan Strand 9/17/01   
-
-
- */
+*/
 
 #include <Landscape.h>
 #include <FastAllele.h>
@@ -41,6 +39,7 @@ extern "C" {
     L.setgens((asInteger(getListElement(inlist,FINALAGE   ))));
     L.setndemo((asInteger(getListElement(inlist,DNUMNAME   ))));
     L.setMaxLandSize((asInteger(getListElement(inlist,MAXLANDNAME))));
+    L.setnextID((asInteger(getListElement(inlist,NEXTIDNAME))));
   }
   
   void R_to_metasim_switches(SEXP inlist, Landscape_statistics &L)
@@ -49,6 +48,9 @@ extern "C" {
     L.assignRandEpoch((asInteger(getListElement(inlist,RANDEPOCHN))));
     L.setranddemo((asInteger(getListElement(inlist,RANDDEMON))));
     L.setmultp(asInteger(getListElement(inlist,MULTPNAME)));
+    ///KKM 5.20.05..................................................
+    L.setdensdep(asInteger(getListElement(inlist,DENSDEP)));
+    ///.............................................................
   }
 
   void R_to_metasim_float(SEXP inlist, Landscape_statistics &L)
@@ -60,15 +62,15 @@ extern "C" {
   void R_to_metasim_demography(SEXP inlist, Landscape_statistics &L)
   {
     int e,i=0,j=0,d=0;
-    int en,ld, sz, estrt;
+    int en,ld,ldK, sz, estrt;
     double epr;
 
     double *ev, *dv;
     int *kv;
 
     
-    ld= length(getListElement(inlist,LOCALDEMNM)); ///number of local demos
-    en = length(getListElement(inlist,EPOCHDEMNM));///number of epochs
+    ld= length((getListElement(inlist,LOCALDEMNM))); ///number of local demos
+    en = length((getListElement(inlist,EPOCHDEMNM)));///number of epochs
 
 
      kv = (int *) R_alloc(long(L.gethabs()), sizeof(int));
@@ -146,6 +148,31 @@ extern "C" {
 	UNPROTECT(1);
       }
     UNPROTECT(1);
+    ///KKM 5.27.05/...........................................................
+    SEXP LdemosK = getListElement(inlist,LOCALDEMKNM);
+    PROTECT(LdemosK);
+    ldK= length(getListElement(inlist,LOCALDEMKNM)); ///number of local demos
+    for (d=0;d<ldK;d++)
+      {
+	SEXP LvecK = VECTOR_ELT(LdemosK,d);
+  if (L.getdensdep()){
+	  PROTECT(LvecK);
+	  ///Local Matrices
+	  sz = INTEGER(coerceVector(getAttrib(getListElement(LvecK,LCLSMATNM), R_DimSymbol), INTSXP))[0];
+	  for (j=0;j<sz;j++)
+	    {
+	      for (i=0;i<sz;i++)
+	        {
+		  L.setLSKmatElement(d,i,j,REAL(coerceVector(getListElement(LvecK,LCLSMATNM), REALSXP))[i+j*sz]);
+		  L.setLRKmatElement(d,i,j,REAL(coerceVector(getListElement(LvecK,LCLRMATNM), REALSXP))[i+j*sz]);
+		  L.setLMKmatElement(d,i,j,REAL(coerceVector(getListElement(LvecK,LCLMMATNM), REALSXP))[i+j*sz]);
+	        }
+	    }
+	  UNPROTECT(1);
+     }
+    }
+    UNPROTECT(1);
+///.........................................................................
 #ifdef RDEBUG
     cerr << "Finished converting for all local demographies"<<endl;
 #endif    
@@ -164,7 +191,7 @@ void R_to_metasim_loci(SEXP inlist, Landscape_statistics& L)
     int ltype;
     
     AlleleTbl *AT;
-    AT =NULL;
+    AT = NULL;
 
     for (l=0; l<nloc;l++)///loop across loci
       {
@@ -282,7 +309,7 @@ void R_to_metasim_loci(SEXP inlist, Landscape_statistics& L)
     nr = dims[0];
     nc = dims[1];
 
-    i=3 ;///number of non genotypic categories
+    i=NONGENOTYPECOLS ;///number of non genotypic categories
 
     for (j=0;j<L.getloci();j++)
       {
@@ -298,8 +325,8 @@ void R_to_metasim_loci(SEXP inlist, Landscape_statistics& L)
 
     L.reserveclasses();
 
-    //    	cerr <<"in convert to ind about to do rows"<<endl;
-
+    //       	cerr <<"in convert to ind about to do rows"<<endl;
+    //	cerr<<nr<< " rows"<<endl;
     for (j=0;j<nr;j++)
       {
 	L.SetUpInd(ind);
@@ -310,14 +337,20 @@ void R_to_metasim_loci(SEXP inlist, Landscape_statistics& L)
 	i++;
 	ind.SetGen(INTEGER(coerceVector(inmat, INTSXP))[j+ i*nr]);
 	i++;
+	ind.SetID(INTEGER(coerceVector(inmat,INTSXP))[j+ i*nr]);
+	i++;
+	ind.SetMID(INTEGER(coerceVector(inmat, INTSXP))[j+ i*nr]);
+	i++;
+	ind.SetPID(INTEGER(coerceVector(inmat, INTSXP))[j+ i*nr]);
+	i++;
 
-	//	cerr<<"adding an individuals genotype "<<endl;
-	
+	//    cerr<<"adding an individuals genotype "<<endl;
+	//    cerr<<"about to set up the loci"	<<endl;
+	//	cerr <<" j: "<<j;
 	for (l=0;l<L.getloci();l++)
 	  {
 	    for (k=0;k<L.LocusGetPloidy(l); k++)
 	      {
-
 		ind.SetAllele(l,k,INTEGER(coerceVector(inmat, INTSXP))[j+ i*nr]);
 		i++;
 	      }
@@ -383,8 +416,8 @@ read in landscapes
   SEXP metasim_to_R_ints(Landscape_statistics &L)
   {
     ///allocate the scalar values that describe the landscape to 'Slist'
-    SEXP Slistn = PROTECT(allocVector (STRSXP,9));
-    SEXP Slist = PROTECT(allocVector (VECSXP,9));
+    SEXP Slistn = PROTECT(allocVector (STRSXP,10));
+    SEXP Slist = PROTECT(allocVector (VECSXP,10));
     
     SET_STRING_ELT(Slistn, 0, mkChar(HABNAMES    )); 
     SET_STRING_ELT(Slistn, 1, mkChar(STAGENAME   )); 
@@ -395,6 +428,7 @@ read in landscapes
     SET_STRING_ELT(Slistn, 6, mkChar(FINALAGE    )); 
     SET_STRING_ELT(Slistn, 7, mkChar(DNUMNAME    )); 
     SET_STRING_ELT(Slistn, 8, mkChar(MAXLANDNAME ));
+    SET_STRING_ELT(Slistn, 9, mkChar(NEXTIDNAME  ));
 
     setAttrib(Slist, R_NamesSymbol, Slistn);
     
@@ -407,25 +441,36 @@ read in landscapes
     SET_VECTOR_ELT(Slist, 6, ScalarReal(L.getgens()));
     SET_VECTOR_ELT(Slist, 7, ScalarReal(L.getndemo()));
     SET_VECTOR_ELT(Slist, 8, ScalarReal(L.getMaxLandSize()));
+    SET_VECTOR_ELT(Slist, 9, ScalarReal(L.getnextID()));
     UNPROTECT(2);
     return Slist;
   }
 
   SEXP metasim_to_R_switches(Landscape_statistics &L)
   {
-    ///allocate the boolean switch values that describe the landscape to 'Swlist'
+/*    ///allocate the boolean switch values that describe the landscape to 'Swlist'
     SEXP Swlist = PROTECT(allocVector (VECSXP,3));
     SEXP Swlistn = PROTECT(allocVector (STRSXP,3));
-    
-    SET_STRING_ELT(Swlistn, 0, mkChar(RANDEPOCHN)); 
-    SET_STRING_ELT(Swlistn, 1, mkChar(RANDDEMON )); 
-    SET_STRING_ELT(Swlistn, 2, mkChar(MULTPNAME)); 
-    
+    ///KKM 5.20.05..........................................................*/
+    SEXP Swlist = PROTECT(allocVector (VECSXP,4));
+    SEXP Swlistn = PROTECT(allocVector (STRSXP,4));
+
+    SET_STRING_ELT(Swlistn, 0, mkChar(RANDEPOCHN));
+    SET_STRING_ELT(Swlistn, 1, mkChar(RANDDEMON ));
+    SET_STRING_ELT(Swlistn, 2, mkChar(MULTPNAME));
+    ///KKM 5.20.05..........................................................
+    SET_STRING_ELT(Swlistn, 3, mkChar(DENSDEP));
+    ///.....................................................................
+
+
     setAttrib(Swlist, R_NamesSymbol, Swlistn);
     
     SET_VECTOR_ELT(Swlist, 0, ScalarReal(L.getrandepoch()));
     SET_VECTOR_ELT(Swlist, 1, ScalarReal(L.getranddemo()));
     SET_VECTOR_ELT(Swlist, 2, ScalarReal(L.getmultp()));
+    ///KKM 5.20.05..........................................................
+    SET_VECTOR_ELT(Swlist, 3, ScalarReal(L.getdensdep()));
+    ///.....................................................................
     UNPROTECT(2);
     return Swlist;  
   }
@@ -484,7 +529,42 @@ read in landscapes
 	SET_VECTOR_ELT(LDemol,d,LDemos);
 	UNPROTECT(5);
       }
- 
+///KKM 6.2.05.................................................................
+    SEXP LDemolK = PROTECT(allocVector(VECSXP, L.getndemo()));
+
+   if (L.getdensdep() == 1){
+    for (d=0;d<L.getndemo();d++)
+      {
+	SEXP LDemosK = PROTECT(allocVector(VECSXP, 3));
+	SEXP LDemosnK = PROTECT(allocVector(STRSXP, 3));
+	SET_STRING_ELT(LDemosnK, 0, mkChar(LCLSMATNM));
+	SET_STRING_ELT(LDemosnK, 1, mkChar(LCLRMATNM));
+	SET_STRING_ELT(LDemosnK, 2, mkChar(LCLMMATNM));
+	setAttrib(LDemosK, R_NamesSymbol, LDemosnK);
+
+	SEXP LSKMat = PROTECT(allocMatrix(REALSXP, sz, sz));
+	SEXP LRKMat = PROTECT(allocMatrix(REALSXP, sz, sz));
+	SEXP LMKMat = PROTECT(allocMatrix(REALSXP, sz, sz));
+	for (j=0;j<sz;j++)
+	  {
+	    for (i=0;i<sz;i++)
+	      {
+		REAL(coerceVector(LSKMat, REALSXP))[i+j*sz] = L.getLSKmatElement(d,i,j);
+		REAL(coerceVector(LRKMat, REALSXP))[i+j*sz] = L.getLRKmatElement(d,i,j);
+		REAL(coerceVector(LMKMat, REALSXP))[i+j*sz] = L.getLMKmatElement(d,i,j);
+	      }
+	  }
+#ifdef RDEBUG
+	cerr <<"Setting local demos at K"<<endl;
+#endif
+	SET_VECTOR_ELT(LDemosK,0,LSKMat);
+	SET_VECTOR_ELT(LDemosK,1,LRKMat);
+	SET_VECTOR_ELT(LDemosK,2,LMKMat);
+	SET_VECTOR_ELT(LDemolK,d,LDemosK);
+	UNPROTECT(5);
+      }
+  }
+///............................................................................
     ///Epoch vectors: these are lists nep long that contain demography lists
     ///this way demography can change in every epoch
     SEXP Epochs = PROTECT(allocVector(VECSXP, L.getepochs()));
@@ -579,15 +659,27 @@ read in landscapes
 	SET_VECTOR_ELT(Epochs,e,Demov);
 	UNPROTECT(8);
       }
-    SEXP Demography = PROTECT(allocVector(VECSXP, 2));
-    SEXP Demographyn = PROTECT(allocVector(STRSXP, 2));
-    SET_STRING_ELT(Demographyn, 0, mkChar(LOCALDEMNM)); 
-    SET_STRING_ELT(Demographyn, 1, mkChar(EPOCHDEMNM)); 
+    ///KKM 6.2.05 made dimension of next two vectors 3 instead of 2............
+    SEXP Demography = PROTECT(allocVector(VECSXP, 3));
+    SEXP Demographyn = PROTECT(allocVector(STRSXP, 3));
+    ///........................................................................
+
+    SET_STRING_ELT(Demographyn, 0, mkChar(LOCALDEMNM));
+    SET_STRING_ELT(Demographyn, 1, mkChar(EPOCHDEMNM));
+
+    ///KKM 6.2.05..............................................................
+    SET_STRING_ELT(Demographyn, 2, mkChar(LOCALDEMKNM));
+    ///........................................................................
+
     setAttrib(Demography, R_NamesSymbol, Demographyn);
     SET_VECTOR_ELT(Demography,0,LDemol);
     SET_VECTOR_ELT(Demography,1,Epochs);
 
-    UNPROTECT(5);
+    ///KKM 6.2.05..............................................................
+    SET_VECTOR_ELT(Demography,2,LDemolK);
+    ///........................................................................
+
+    UNPROTECT(6);
     return Demography;
   }
   
@@ -724,7 +816,7 @@ read in landscapes
     int nr=0;
     int ci=0;
 
-    nc = 3; ///the first three columns are class, sex, and gen
+    nc = NONGENOTYPECOLS; ///the first three columns are class, sex, and gen, next three are id, mom id, dad id
 
     for (j=0;j<L.getloci();j++)
       {
@@ -753,6 +845,12 @@ read in landscapes
 		INTEGER(coerceVector(Indmat, INTSXP))[nr+ci*tr] = ind.GetSex();
 		ci++;
 		INTEGER(coerceVector(Indmat, INTSXP))[nr+ci*tr] = ind.GetGen();
+		ci++;
+		INTEGER(coerceVector(Indmat, INTSXP))[nr+ci*tr] = ind.GetID();
+		ci++;
+		INTEGER(coerceVector(Indmat, INTSXP))[nr+ci*tr] = ind.GetMID();
+		ci++;
+		INTEGER(coerceVector(Indmat, INTSXP))[nr+ci*tr] = ind.GetPID();
 		ci++;
 		for (j=0;j<L.getloci();j++)
 		  {
@@ -1210,6 +1308,10 @@ SEXP writeR(SEXP fn, SEXP Rland, SEXP ni)
     return ScalarInteger(0);
 } 
 
+  SEXP num_demo_cols()
+  {
+    return ScalarInteger(NONGENOTYPECOLS);
+  }
 
   SEXP test(SEXP mat1, SEXP mat2)
   {
@@ -1242,6 +1344,146 @@ SEXP writeR(SEXP fn, SEXP Rland, SEXP ni)
       UNPROTECT(1);
       return ret;
     }
+  }
+
+  ///helper function for relateinternal
+  double freq(int loc, int allele, int ar, int afrq[][4])
+  {
+    int i;
+    double frq=0;
+    for (i=0; i<ar; i++)
+      {
+	if ((afrq[i][1]==loc)&&(afrq[i][2]==allele))
+	  {
+	    frq=double(afrq[i][3])/double(afrq[i][4]);
+	    break;
+	  }
+      }
+    ///		    assert(frq==0.0);
+    return frq;
+  }
+
+
+
+  SEXP relateinternal(SEXP ind, SEXP acnp)
+  {
+    int i,j,k,l, x, y, loc;
+    int nr, nc;
+    int ar, ac;
+    int *dims = INTEGER(coerceVector(getAttrib(ind, R_DimSymbol), INTSXP));
+    nr = dims[0];
+    nc = dims[1];
+    int indmat[nr][nc];
+
+    int *adims = INTEGER(coerceVector(getAttrib(acnp, R_DimSymbol), INTSXP));
+    ar = adims[0];
+    ac = adims[1];
+    int afmat[ar][ac];
+    
+    double denom, numer, frq, reffreq, partfreq;
+
+    SEXP relmat= PROTECT(allocMatrix(REALSXP,nr,nr));
+
+    for (j=0;j<nr;j++)
+      {
+	for (l=0;l<nc;l++)
+	  {
+	    indmat[j][l]=INTEGER(coerceVector(ind,INTSXP))[j + l*nr];
+	    ///	    cerr<<indmat[j][l]<< " ";
+	  }
+	///	cerr<<endl;
+      }
+
+    for (j=0;j<ar;j++)
+      {
+	for (l=0;l<ac;l++)
+	  {
+	    afmat[j][l]=INTEGER(coerceVector(acnp,INTSXP))[j+l*ar];
+	    ///cerr<<afmat[j][l]<< " ";
+	  }
+	///cerr << endl;
+      }
+
+    ///main loop
+    for (x=0; x<nr; x++)
+      {
+	for (y=0; y<nr; y++)
+	  {
+	    denom=0;
+	    numer=0;
+	    loc=0;
+	    for (l=0; l<(nc/2); l++)
+	      {
+		///work on the demoninator for first allelic position
+		if (indmat[x][loc]==indmat[x][loc+1])
+		  {
+		    reffreq=1;
+		  }
+		else
+		  {
+		    reffreq=0.5;
+		  }
+
+		frq=0.0;
+		for (i=0; i<ar; i++)
+		  {
+		    if ((afmat[i][0]==l+1)&&(afmat[i][1]==indmat[x][loc]))
+		      {
+			frq=double(afmat[i][2])/double(afmat[i][3]);
+		      }
+		  }
+		///cerr <<"l "<<l<<" loc "<<loc<<" x "<<x<<" y "<<y<<" i "<<i<< " frq k=1 "<<frq<<" allele "<<indmat[x][loc]<<endl;
+
+		if (frq==0.0)
+		  {
+		    //		    cerr << "loc " << loc << " x "<<x<< " y "<<y<<" l "<<l<< " frq " << frq<< endl;
+		    //		    assert(frq==0.0);
+		  }
+
+		denom = denom + (reffreq - frq)  ;
+		if ((indmat[x][loc]==indmat[y][loc])||(indmat[x][loc]==indmat[y][loc+1]))
+		  {
+		    if (indmat[y][loc]==indmat[y][loc+1])
+		      partfreq=1;
+		    else
+		      partfreq=0.5;
+		  }
+		else
+		  partfreq=0;
+		numer=numer+(partfreq - frq);
+		///second allelic position
+		if (indmat[x][loc]!=indmat[x][loc+1])
+		  {
+		    reffreq = 0.5;
+		    frq=0;
+		    for (i=0; i<ar; i++)
+		      {
+			if ((afmat[i][0]==l+1)&&(afmat[i][1]==indmat[x][loc+1]))
+			  frq=double(afmat[i][2])/double(afmat[i][3]);
+		      }
+		    ///		    assert(frq==0.0);
+		    ///		    denom = denom + (reffreq - freq(l+1,indmat[x][loc+1],ar,afmat));
+		    denom = denom + (reffreq - frq);
+		  }
+		if (indmat[y][loc]!=indmat[y][loc+1])
+		  {
+		    if ((indmat[x][loc+1]==indmat[y][loc])||(indmat[x][loc+1]==indmat[y][loc+1]))
+		      {
+			partfreq=0.5;
+		      }
+		    else
+		      {
+			partfreq=0;
+		      }
+		    numer = numer + (partfreq - frq);
+		  }
+		loc=loc+2;
+	      }
+	    REAL(coerceVector(relmat, REALSXP))[x+y*nr] = double(numer)/double(denom);
+	  }
+      }
+    UNPROTECT(1);
+    return relmat;
   }
 
 

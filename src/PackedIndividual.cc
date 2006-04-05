@@ -192,7 +192,6 @@ void PackedIndividual::SetRandGenotype(AlleleLookTbl &Atbls)
     }
 }
 
-
 PackedIndividual  PackedIndividual::repro_sex(PackedIndividual & SO1, PackedIndividual & SO2, int t, AlleleLookTbl &Atbls)
 {
   int i;
@@ -200,7 +199,7 @@ PackedIndividual  PackedIndividual::repro_sex(PackedIndividual & SO1, PackedIndi
   PackedIndividual pi(SO1), ti0, ti1;
   pi.resetLoci(Atbls);
 
-  //  assert(SO2.IsGenotypeSet());
+  ///  assert(SO2.IsGenotypeSet());
 
   ti0 = SO1.MakeGamete(Atbls);
   ti1 = SO2.MakeGamete(Atbls);
@@ -214,7 +213,7 @@ PackedIndividual  PackedIndividual::repro_sex(PackedIndividual & SO1, PackedIndi
       assert(l>=0); 
       pi.G[((i * MAXPLOIDY) + 1)] = l;
 
-      //swap alleles so that diploid heterozygotes are sorted
+      ///swap alleles so that diploid heterozygotes are sorted
       if (PL[i]==2)
 	{ 
 	  if ((pi.G[((i * MAXPLOIDY) + 1)] >= 0) && (pi.G[((i * MAXPLOIDY) + 0)] > pi.G[((i * MAXPLOIDY) + 1)] ))
@@ -225,6 +224,8 @@ PackedIndividual  PackedIndividual::repro_sex(PackedIndividual & SO1, PackedIndi
     }
   return pi;
 }
+
+
 
 PackedIndividual  PackedIndividual::repro_asex(PackedIndividual & SO, int t)
 {
@@ -308,7 +309,7 @@ ostream & operator<<(ostream & stream, PackedIndividual &ind)
 {
   int j,i,is;
 
-  stream << ind.GetClass() << " " << ind.GetSex() << " " << ind.GetGen() << "  ";
+  stream << ind.GetClass() << " " << ind.GetSex() << " " << ind.GetGen() << "  "<<ind.GetID()<<" "<<ind.GetMID()<<" "<<ind.GetPID()<<" ";
 
   for (j=0;j<ind.nloc;j++)
     {
@@ -327,7 +328,7 @@ istream & operator>>(istream & stream, PackedIndividual &ind)
 {
   int i, is, j;
 
-  stream >> ind.cl >> ind.sex >> ind.gen;
+  stream >> ind.cl >> ind.sex >> ind.gen >> ind.id >> ind.mid >> ind.pid;
 
   for (j=0;j<ind.nloc;j++)
     {

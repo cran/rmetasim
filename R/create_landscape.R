@@ -12,7 +12,12 @@
 new.landscape.empty <- function()
 {
 #    list(list(RndChooseProb=NULL,StartGen=NULL,Extinct=NULL,Carry=NULL,Localprob=NULL,S=NULL,R=NULL,M=NULL))
-  tmpdemo <- list(localdem=NULL,epochs=NULL)
+# KKM 5.20.05................................................................
+  #old version
+  #tmpdemo <- list(localdem=NULL,epochs=NULL)
+  #new version
+  tmpdemo <- list(localdem=NULL,localdemK=NULL,epochs=NULL)
+#............................................................................
 #    list(localdem=list(list(LocalS=NULL,LocalR=NULL,LocalM=NULL)),epochs=NULL)
   rland <- list(intparam=NULL,switchparam=NULL,floatparam=NULL,demography=tmpdemo,loci=NULL,individuals=NULL)
   rland
@@ -101,17 +106,18 @@ new.floatparam <- function(s=0)
 # these routines set up the list of switchparams with some sort of reasonable defaults
 # the first within a landscape, the second independantly
 
-new.switchparam.land <- function(rland, re=0,rd=0,mp=1)
+                                        # KKM 5.20.05 new versions..................................................
+new.switchparam.land <- function(rland, re=0,rd=0,mp=1,dd=0)
 {
-  rland$switchparam <- list(re,rd,mp)
-  names(rland$switchparam) <- c( "randepoch","randdemo","multp")
+  rland$switchparam <- list(re,rd,mp,dd)
+  names(rland$switchparam) <- c( "randepoch","randdemo","multp","densdepdemo")
   rland
 }
 
-new.switchparam <- function(re=1,rd=1,mp=1)
+new.switchparam <- function(re=1,rd=1,mp=1,dd=0)
 {
-  rl <- list(re,rd,mp)
-  names(rl) <- c( "randepoch","randdemo","multp")
+  rl <- list(re,rd,mp,dd)
+  names(rl) <- c( "randepoch","randdemo","multp","densdepdemo")
   rl
 }
 
@@ -133,8 +139,9 @@ is.nsquare <- function(M,n)
 # Will also require three actual matrices (S,R,M for survival, reproduction,
 # and male function, respecively) input by user.  Each matrix also has to be the same size.
 
-new.local.demo <- function(rland,S,R,M)
+new.local.demo <- function(rland,S,R,M,k=0)
 {
+ if (k==0){  #matrix at ZPD or there is no density dependence
   if (is.null(rland$demography$localdem))
     {
       rland$demography$localdem <- list(NULL)
@@ -146,19 +153,47 @@ new.local.demo <- function(rland,S,R,M)
       rland$demography$localdem[[demonum]] <- list(LocalS=NULL,LocalR=NULL,LocalM=NULL)
     }
 
-  if (is.nsquare(S,rland$intparam$stages) && 
-      is.nsquare(R,rland$intparam$stages) && 
+  if (is.nsquare(S,rland$intparam$stages) &&
+      is.nsquare(R,rland$intparam$stages) &&
       is.nsquare(M,rland$intparam$stages))
     {
-      rland$demography$localdem[[demonum]]$LocalS <- S    
-      rland$demography$localdem[[demonum]]$LocalR <- R    
+      rland$demography$localdem[[demonum]]$LocalS <- S
+      rland$demography$localdem[[demonum]]$LocalR <- R
       rland$demography$localdem[[demonum]]$LocalM <- M
-      rland$intparam$numdemos <- length(rland$demography$localdem) 
+      rland$intparam$numdemos <- length(rland$demography$localdem)
     }
   else
     {
       stop("Matricies do not conform to stages set in intparam!")
     }
+  } #end if k==0
+
+  else{ #k==1; matrix at carrying capacity
+  if (is.null(rland$demography$localdemK))
+    {
+      rland$demography$localdemK <- list(NULL)
+      demonumK <- 1
+    }
+  else
+    {
+      demonumK <- length(rland$demography$localdemK) + 1
+      rland$demography$localdemK[[demonumK]] <- list(LocalS=NULL,LocalR=NULL,LocalM=NULL)
+#      if (demonumK > rland$intparam$numdemos) NEED AN ERROR TRAP HERE
+    }
+
+  if (is.nsquare(S,rland$intparam$stages) &&
+      is.nsquare(R,rland$intparam$stages) &&
+      is.nsquare(M,rland$intparam$stages))
+    {
+      rland$demography$localdemK[[demonumK]]$LocalS <- S
+      rland$demography$localdemK[[demonumK]]$LocalR <- R
+      rland$demography$localdemK[[demonumK]]$LocalM <- M
+    }
+  else
+    {
+      stop("Matrices do not conform to stages set in intparam!")
+    }
+  } #end else
   rland
 }
 
@@ -326,60 +361,51 @@ new.epoch.island <- function(rland,s,sfrom,sto,m,mfrom,mto,f,ffrom,fto,
 #
 #
 
-new.locus <- function(rland,type=0,ploidy=1,mutationrate=0,transmission=1,numalleles=2,allelesize=50,frequencies=NULL)
+#
+# new locus that takes into account allele states (needed to import coalescence sims)
+#
+
+new.locus <- function (rland, type = 0, ploidy = 1, mutationrate = 0, transmission = 1, 
+    numalleles = 2, allelesize = 50, frequencies = NULL, states = NULL) 
 {
-  if (!(is.list(rland$loci)))
-    {
-      rland$loci <- list(list(type=0,ploidy=0,trans=0,rate=0,alleles=0))
-      locusnum <- 1
+    if (!(is.list(rland$loci))) {
+        rland$loci <- list(list(type = 0, ploidy = 0, trans = 0, 
+            rate = 0, alleles = 0))
+        locusnum <- 1
     }
-  else
-    {
-      locusnum <- length(rland$loci) + 1
-      rland$loci[[locusnum]] <- list(type=0,ploidy=0,rate=0,trans=0,alleles=0)
+    else {
+        locusnum <- length(rland$loci) + 1
+        rland$loci[[locusnum]] <- list(type = 0, ploidy = 0, 
+            rate = 0, trans = 0, alleles = 0)
     }
-
-  rland$intparam$locusnum <- locusnum
-  
-  if(type >= 0 && type <= 2)
-    {
-      rland$loci[[locusnum]]$type <- typelookup(type)
+    rland$intparam$locusnum <- locusnum
+    if (type >= 0 && type <= 2) {
+        rland$loci[[locusnum]]$type <- typelookup(type)
     }
-  else
-    {
-      stop("Invalid type of locus")
+    else {
+        stop("Invalid type of locus")
     }
-
-  if(ploidy == 1 || ploidy == 2)
-    {
-      rland$loci[[locusnum]]$ploidy <- ploidy
+    if (ploidy == 1 || ploidy == 2) {
+        rland$loci[[locusnum]]$ploidy <- ploidy
     }
-  else
-    {
-      stop("Invalid ploidy count")
+    else {
+        stop("Invalid ploidy count")
     }
-
-  rland$loci[[locusnum]]$rate <- mutationrate
-
-  if(transmission == 0 || transmission == 1)
-    {
-      rland$loci[[locusnum]]$trans <- transmission
+    rland$loci[[locusnum]]$rate <- mutationrate
+    if (transmission == 0 || transmission == 1) {
+        rland$loci[[locusnum]]$trans <- transmission
     }
-  else
-    {
-      stop("Invalid transmission number")
+    else {
+        stop("Invalid transmission number")
     }
-
-  if(numalleles >= 0)
-    {
-      rland$loci[[locusnum]]$alleles <- makealleles(type,numalleles,allelesize,frequencies)
+    if (numalleles >= 0) {
+        rland$loci[[locusnum]]$alleles <- makealleles(type, numalleles, 
+            allelesize, frequencies, states)
     }
-  else
-    {
-      stop("Need non-negative numbers of alleles")
+    else {
+        stop("Need non-negative numbers of alleles")
     }
-
-  rland
+    rland
 }
 
 typelookup <- function(type)
@@ -388,7 +414,9 @@ typelookup <- function(type)
     type
   }
 
-makealleles <- function(type,numalleles,allelesize,frequencies)
+
+
+makealleles <- function(type,numalleles,allelesize,frequencies,states)
 {
   retval <- 0
 
@@ -407,10 +435,16 @@ makealleles <- function(type,numalleles,allelesize,frequencies)
       retval <- vector("list", numalleles)
       for (x in 1:numalleles)
         {
-          retval[[x]]$aindex <- x - 1
+          retval[[x]]$aindex <- x 
           retval[[x]]$birth <- 0
           retval[[x]]$prop <- frequencies[x]
-          retval[[x]]$state <- x
+          if (is.null(states))
+            {
+              retval[[x]]$state <- x
+            } else
+          {
+            retval[[x]]$state <- states[x]
+          }
         }
     }
   else if(type == 2)
@@ -418,10 +452,15 @@ makealleles <- function(type,numalleles,allelesize,frequencies)
       retval <- vector("list", numalleles)
       for (x in 1:numalleles)
         {
-          retval[[x]]$aindex <- x -1
+          retval[[x]]$aindex <- x 
           retval[[x]]$birth <- 0
           retval[[x]]$prop <- frequencies[x]
-          retval[[x]]$state <- geneseq(allelesize)
+          if (is.null(states))
+            {
+              retval[[x]]$state <- geneseq(allelesize)
+            } else {
+              retval[[x]]$state <- states[x]
+            }
         }
     }
   retval          
@@ -454,4 +493,13 @@ new.individuals <- function(rland, PopulationSizes)
   {
     rland <- .Call("populate_Rland",rland,PopulationSizes,PACKAGE="rmetasim")
     rland
+  }
+
+#
+# a convenience function that provides the highest column number for demographic information in
+# the individuals matrix
+#
+landscape.democol <- function()
+  {
+    .Call("num_demo_cols",PACKAGE="rmetasim")
   }

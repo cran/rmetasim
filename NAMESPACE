@@ -16,4 +16,6 @@ export(populations,landscape.locus,landscape.states)
 export(modify.landscape.epoch)
 #utility functions
 export(locusvec,states,ploidy)
-
+export(landscape.mismatchdist)
+export(landscape.democol)
+#export(relate.landscape)

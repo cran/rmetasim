@@ -50,15 +50,17 @@ private:
   /// the number of offspring produced last gen
   int noff;
   ///demographic age or stage of the individual
-  short cl;
+  int cl;
   ///sexuality 0=herm, 1=female, 2=male
-  short sex;
+  int sex;
+  ///id mothers id and fathers id, respectively
+  int id, mid, pid;
   ///The number of loci
   int nloc;
   ///array of the ploidy for each locus
-  short PL[MAXLOCI];
+  int PL[MAXLOCI];
   ///linearized matrix of diploid genotypes of the ind.
-  short G[MAXLOCI * MAXPLOIDY];
+  int G[MAXLOCI * MAXPLOIDY];
 
 public:
   PackedIndividual(int c=0, int sx=0, int g=0, int nl=0);
@@ -75,6 +77,13 @@ public:
 
   void SetGen(int newgen=0);
   int GetGen();
+
+  inline  void SetID(int newid=0) {id=newid;}
+  inline int GetID() {return id;}
+  inline void SetMID(int newid=0) {mid=newid;}
+  inline int GetMID() {return mid;}
+  inline void SetPID(int newid=0) {pid=newid;}
+  inline int GetPID() {return pid;}
 
   void SetLoci(AlleleLookTbl &Atbls);
 
