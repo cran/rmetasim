@@ -10,13 +10,13 @@
 ###}
 ###
 
-relate.landscape <- function(rland)
+landscape.relate <- function(rland)
   {
     ##calculate the allele frequecies for each locus ignoring the population designations
     ##haploid loci are not removed here, but will not be used in relatedness calcs
-    acdf <- allelecount.landscape(rland)
+    acdf <- landscape.allelecount(rland)
     acnp <- aggregate(acdf$Freq,by=list(loc=acdf$loc,allele=acdf$allele),sum)
-    acnp$tot <- rep(dim(rland$individuals)[1],dim(acnp)[1]) * ploidy(rland)[acnp$loc]
+    acnp$tot <- rep(dim(rland$individuals)[1],dim(acnp)[1]) * landscape.ploidy(rland)[acnp$loc]
     acnp$Freq <- acnp$x/acnp$tot
     acnp$loc <- as.numeric(as.character(acnp$loc))
     acnp$allele <- as.numeric(as.character(acnp$allele))

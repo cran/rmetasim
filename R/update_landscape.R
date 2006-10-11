@@ -2,7 +2,7 @@
 # these are functions that update elements of a landscape (often requested)
 # AES 1/1/05
 #
-modify.landscape.epoch <- function(rland,epoch=1,S=NULL,R=NULL,M=NULL,epochprob=NULL,startgen=NULL,extinct=NULL,carry=NULL,localprob=NULL)
+landscape.modify.epoch <- function(rland,epoch=1,S=NULL,R=NULL,M=NULL,epochprob=NULL,startgen=NULL,extinct=NULL,carry=NULL,localprob=NULL)
   {
     if (!is.null(rland$demography$epochs[[epoch]]))
         {

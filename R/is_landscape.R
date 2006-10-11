@@ -150,7 +150,7 @@ is.landscape <- function(Rland=NULL,verb=TRUE,exact=FALSE)
             ok <- FALSE
           }
                                         #check if the number and ploidy of loci work out
-        if (dim(Rland$individuals)[2]!=(landscape.democol() + sum(ploidy(Rland))))
+        if (dim(Rland$individuals)[2]!=(landscape.democol() + sum(landscape.ploidy(Rland))))
           {
             if (verb) {print("The number of loci do not correspond to the number of columns in $individuals\nThis indicates a problem with locus number and/or ploidy")}
             ok <- FALSE

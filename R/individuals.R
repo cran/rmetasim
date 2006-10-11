@@ -1,7 +1,7 @@
 #Allan Strand 9/29/01
 #
 #returns a vector of populations assignments for each individual in Rland
-populations <- function(Rland)
+landscape.populations <- function(Rland)
   {
     if (is.landscape(Rland))
       {

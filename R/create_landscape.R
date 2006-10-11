@@ -9,7 +9,7 @@
 #
 # initialize the basic landscape object
 #
-new.landscape.empty <- function()
+landscape.new.empty <- function()
 {
 #    list(list(RndChooseProb=NULL,StartGen=NULL,Extinct=NULL,Carry=NULL,Localprob=NULL,S=NULL,R=NULL,M=NULL))
 # KKM 5.20.05................................................................
@@ -23,23 +23,23 @@ new.landscape.empty <- function()
   rland
 }
 
-new.landscape.default <- function()
+landscape.new.default <- function()
 {
-  rland <- new.landscape.empty()
-  rland <- new.intparam.land(rland)
-  rland <- new.floatparam.land(rland)
-  rland <- new.switchparam.land(rland)
+  rland <- landscape.new.empty()
+  rland <- landscape.new.intparam(rland)
+  rland <- landscape.new.floatparam(rland)
+  rland <- landscape.new.switchparam(rland)
   rland
 }
 
-new.example.landscape <- function()
+landscape.new.example <- function()
 {
   rland <- NULL
-  rland <- new.landscape.empty()
+  rland <- landscape.new.empty()
   
-  rland <- new.intparam.land(rland, h=2, s=2)
-  rland <- new.switchparam.land(rland,mp=0)
-  rland <- new.floatparam.land(rland)
+  rland <- landscape.new.intparam(rland, h=2, s=2)
+  rland <- landscape.new.switchparam(rland,mp=0)
+  rland <- landscape.new.floatparam(rland)
 
 
   S <- matrix(c(0, 0,
@@ -48,19 +48,19 @@ new.example.landscape <- function()
                 0, 0), byrow=TRUE, nrow = 2)
   M <- matrix(c(0, 0,
                 0, 1), byrow=TRUE, nrow = 2)
-  rland <- new.local.demo(rland,S,R,M)
+  rland <- landscape.new.local.demo(rland,S,R,M)
   
   S <- matrix(rep(0,16), nrow = 4)
   R <- matrix(rep(0,16), nrow = 4)
   M <- matrix(rep(0,16), nrow = 4)
   
-  rland <- new.epoch(rland,S=S,R=R,M=M,carry=c(1000,1000))
+  rland <- landscape.new.epoch(rland,S=S,R=R,M=M,carry=c(1000,1000))
   
-  rland <- new.locus(rland,type=0,ploidy=2,mutationrate=0.001,transmission=0,numalleles=5)
-  rland <- new.locus(rland,type=1,ploidy=1,mutationrate=0.005,numalleles=3,frequencies=c(.2,.2,.6))
-  rland <- new.locus(rland,type=2,ploidy=2,mutationrate=0.007,transmission=0,numalleles=6,allelesize=75)
+  rland <- landscape.new.locus(rland,type=0,ploidy=2,mutationrate=0.001,transmission=0,numalleles=5)
+  rland <- landscape.new.locus(rland,type=1,ploidy=1,mutationrate=0.005,numalleles=3,frequencies=c(.2,.2,.6))
+  rland <- landscape.new.locus(rland,type=2,ploidy=2,mutationrate=0.007,transmission=0,numalleles=6,allelesize=75)
   
-  rland <- new.individuals(rland,c(50,0,50,0))
+  rland <- landscape.new.individuals(rland,c(50,0,50,0))
   rland
 }
 
@@ -68,7 +68,7 @@ new.example.landscape <- function()
 # these routines set up the list of intparams with some sort of reasonable defaults
 # the first within a landscape, the second independantly
 
-new.intparam.land <- function(rland,h=1,s=1,cg=0,ce=0,totgen=1000,maxland=200000)
+landscape.new.intparam <- function(rland,h=1,s=1,cg=0,ce=0,totgen=1000,maxland=200000)
 {
   rland$intparam <- list(h,s,0,0,cg,ce,totgen,0,maxland)
   names(rland$intparam) <- c("habitats","stages","locusnum","numepochs","currentgen","currentepoch","totalgens","numdemos","maxlandsize")
@@ -87,7 +87,7 @@ new.intparam <- function(h=1,s=2,l=1,ne=1,cg=0,ce=0,totgen=1,nd=1,maxland=200000
 # these routines set up the list of floatparams with some sort of reasonable defaults
 # the first within a landscape, the second independantly
 
-new.floatparam.land <- function(rland, s=0)
+landscape.new.floatparam <- function(rland, s=0)
 {
   rland$floatparam <- list(s)
   names(rland$floatparam) <- c("selfing")
@@ -106,8 +106,8 @@ new.floatparam <- function(s=0)
 # these routines set up the list of switchparams with some sort of reasonable defaults
 # the first within a landscape, the second independantly
 
-                                        # KKM 5.20.05 new versions..................................................
-new.switchparam.land <- function(rland, re=0,rd=0,mp=1,dd=0)
+# KKM 5.20.05 new versions..................................................
+landscape.new.switchparam <- function(rland, re=0,rd=0,mp=1,dd=0)
 {
   rland$switchparam <- list(re,rd,mp,dd)
   names(rland$switchparam) <- c( "randepoch","randdemo","multp","densdepdemo")
@@ -132,14 +132,14 @@ is.nsquare <- function(M,n)
 }
 
 #
-# new.local.demo
+# landscape.new.local.demo
 #
 # Initializes local demographies.  This function is going to require the number of stages 
 # in each demography (from "intparam").  This number could also be calculated from user input.
 # Will also require three actual matrices (S,R,M for survival, reproduction,
 # and male function, respecively) input by user.  Each matrix also has to be the same size.
 
-new.local.demo <- function(rland,S,R,M,k=0)
+landscape.new.local.demo <- function(rland,S,R,M,k=0)
 {
  if (k==0){  #matrix at ZPD or there is no density dependence
   if (is.null(rland$demography$localdem))
@@ -198,7 +198,7 @@ new.local.demo <- function(rland,S,R,M,k=0)
 }
 
 # 
-# new.epoch
+# landscape.new.epoch
 #
 # initializes an epoch.  This includes creating landscape matrices that describe survival,
 # reproduction and male function. These matrices are square and have numbers of cols and rows
@@ -212,7 +212,7 @@ new.local.demo <- function(rland,S,R,M,k=0)
 # demographies for each population.  (this occurs if switchparam$randdemo==1)
 #
 
-new.epoch <- function(rland,S=NULL,R=NULL,M=NULL,epochprob=1,startgen=0,extinct=NULL,carry=NULL,localprob=NULL)
+landscape.new.epoch <- function(rland,S=NULL,R=NULL,M=NULL,epochprob=1,startgen=0,extinct=NULL,carry=NULL,localprob=NULL)
 {
   if (is.null(rland$demography$epochs))
     {
@@ -304,12 +304,12 @@ new.epoch <- function(rland,S=NULL,R=NULL,M=NULL,epochprob=1,startgen=0,extinct=
 
 
 #
-# new.epoch.island
+# landscape.new.epoch.island
 #
 # populates elements in the landscape matrices (S,R,M) in such a way that migration behaves
 # like wright's island model.
 
-new.epoch.island <- function(rland,s,sfrom,sto,m,mfrom,mto,f,ffrom,fto,
+landscape.new.epoch.island <- function(rland,s,sfrom,sto,m,mfrom,mto,f,ffrom,fto,
                              epochprob=1,startgen=0,extinct=NULL,carry=NULL,localprob=NULL)
 {
   stages <- rland$intparam$stages
@@ -339,7 +339,7 @@ new.epoch.island <- function(rland,s,sfrom,sto,m,mfrom,mto,f,ffrom,fto,
           M[i, j] <- f
       }
 
-  rland <- new.epoch(rland,S,R,M,epochprob,startgen,extinct,carry,localprob)
+  rland <- landscape.new.epoch(rland,S,R,M,epochprob,startgen,extinct,carry,localprob)
 #  rland$demography$epochs[[1]]$S <- S
 #  rland$demography$epochs[[1]]$R <- R
 #  rland$demography$epochs[[1]]$M <- M
@@ -347,8 +347,42 @@ new.epoch.island <- function(rland,s,sfrom,sto,m,mfrom,mto,f,ffrom,fto,
   rland
 }
 
+
+
 #
-# new.locus
+# landscape.new.epoch.step
+#
+# populates elements in the landscape matrices (S,R,M) in such a way that migration behaves
+# like wright's island model.
+
+landscape.new.epoch.step <- function(rland,s,sfrom,sto,m,mfrom,mto,f,ffrom,fto,
+                             epochprob=1,startgen=0,extinct=NULL,carry=NULL,localprob=NULL)
+{
+
+  rland <- landscape.new.epoch.island(rland,s,sfrom,sto,m,mfrom,mto,f,ffrom,fto,
+                            epochprob=1,startgen=0,extinct=NULL,carry=NULL,localprob=NULL)
+  if (rland$intparam$habitats>2)
+    {
+      for (i in 1:rland$inparam$habitats)
+        for (j in 1:rland$inparam$habitats)
+          {
+            if (!j %in% c(-1,0,1)*i)
+              {
+                rland$epochs[[length(rland$epochs)]]$S[rland$intparam$stages*(i-1)+(1:rland$intparam$stages),rland$intparam$stages*(j-1)+(1:rland$intparam$stages)] <-
+                  matrix(0,nrow=rland$intparam$stages,ncol=rland$intparam$stages)
+                rland$epochs[[length(rland$epochs)]]$R[rland$intparam$stages*(i-1)+(1:rland$intparam$stages),rland$intparam$stages*(j-1)+(1:rland$intparam$stages)] <-
+                  matrix(0,nrow=rland$intparam$stages,ncol=rland$intparam$stages)
+                rland$epochs[[length(rland$epochs)]]$M[rland$intparam$stages*(i-1)+(1:rland$intparam$stages),rland$intparam$stages*(j-1)+(1:rland$intparam$stages)] <-
+                  matrix(0,nrow=rland$intparam$stages,ncol=rland$intparam$stages)
+              }
+            
+          }
+    }
+  rland
+}
+
+#
+# landscape.new.locus
 #
 # This function should create a locus that is populated with alleles.
 # it is passed the: type, ploidy, mutation rate, transmission, number of alleles, allele size
@@ -365,7 +399,7 @@ new.epoch.island <- function(rland,s,sfrom,sto,m,mfrom,mto,f,ffrom,fto,
 # new locus that takes into account allele states (needed to import coalescence sims)
 #
 
-new.locus <- function (rland, type = 0, ploidy = 1, mutationrate = 0, transmission = 1, 
+landscape.new.locus <- function (rland, type = 0, ploidy = 1, mutationrate = 0, transmission = 1, 
     numalleles = 2, allelesize = 50, frequencies = NULL, states = NULL) 
 {
     if (!(is.list(rland$loci))) {
@@ -482,14 +516,14 @@ geneseq <- function(size)
     
 
 #
-# new.individuals
+# landscape.new.individuals
 #
 # should take the landscape as it stands and use the c++ method Landscape::popsizeset to populate
 # the landscape with individuals, this function does expect a distribution of individuals for
 # each habitat*stage  combination in the landscape
 #
 
-new.individuals <- function(rland, PopulationSizes)
+landscape.new.individuals <- function(rland, PopulationSizes)
   {
     rland <- .Call("populate_Rland",rland,PopulationSizes,PACKAGE="rmetasim")
     rland
@@ -501,5 +535,5 @@ new.individuals <- function(rland, PopulationSizes)
 #
 landscape.democol <- function()
   {
-    .Call("num_demo_cols",PACKAGE="rmetasim")
+    as.integer(.Call("num_demo_cols",PACKAGE="rmetasim"))
   }

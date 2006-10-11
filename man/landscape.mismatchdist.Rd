@@ -18,8 +18,8 @@
 A matrix with num loci columns and num populations rows.  Each element
 reflects the estimated theta for that population x locus combination  }
 \examples{
-  exampleland <- new.example.landscape()
-  exampleland <- sim.landscape(exampleland, 4)
+  exampleland <- landscape.new.example()
+  exampleland <- landscape.simulate(exampleland, 4)
   misdist <- landscape.mismatchdist(3,exampleland) #will produce       
   misdist                                          #ridiculous output
 }

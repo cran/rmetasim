@@ -7,7 +7,7 @@
 ### C++ code in rmetasim 
 ###
 
-coerce.landscape <- function(rland)
+landscape.coerce <- function(rland)
   {
     rland$intparam <- lapply(rland$intparam,as.integer)
     rland$switchparam <- lapply(rland$switchparam,as.integer)
@@ -37,7 +37,7 @@ coerce.landscape <- function(rland)
 #is assigned to R's random number seed.  The type of RNG is inherited from the
 #calling environment
 #
-sim.landscape <- function(Rland, numit, seed=-1, compress=FALSE, adj.lambda=0)
+landscape.simulate <- function(Rland, numit, seed=-1, compress=FALSE, adj.lambda=0)
   {
     if (is.landscape(Rland))
       {
@@ -45,7 +45,7 @@ sim.landscape <- function(Rland, numit, seed=-1, compress=FALSE, adj.lambda=0)
           {
             set.seed(seed)
           }
-        Rland <- coerce.landscape(Rland)
+        Rland <- landscape.coerce(Rland)
         .Call("iterate_landscape",as.integer(numit),Rland,as.integer(compress),as.integer(adj.lambda),PACKAGE = "rmetasim")
       }
     else
@@ -55,7 +55,7 @@ sim.landscape <- function(Rland, numit, seed=-1, compress=FALSE, adj.lambda=0)
   }
 
 
-survive.landscape <- function(Rland, seed=-1)
+landscape.survive <- function(Rland, seed=-1)
   {
     if (is.landscape(Rland))
       {
@@ -63,7 +63,7 @@ survive.landscape <- function(Rland, seed=-1)
           {
             set.seed(seed)
           }
-        Rland <- coerce.landscape(Rland)
+        Rland <- landscape.coerce(Rland)
         .Call("survive_landscape",Rland,PACKAGE = "rmetasim")
       }
     else
@@ -72,7 +72,7 @@ survive.landscape <- function(Rland, seed=-1)
       }
   }
 
-reproduce.landscape <- function(Rland, seed=-1)
+landscape.reproduce <- function(Rland, seed=-1)
   {
     if (is.landscape(Rland))
       {
@@ -80,7 +80,7 @@ reproduce.landscape <- function(Rland, seed=-1)
           {
             set.seed(seed)
           }
-        Rland <- coerce.landscape(Rland)
+        Rland <- landscape.coerce(Rland)
         .Call("reproduce_landscape",Rland,PACKAGE = "rmetasim")
       }
     else
@@ -90,7 +90,7 @@ reproduce.landscape <- function(Rland, seed=-1)
   }
 
 
-carry.landscape <- function(Rland, seed=-1)
+landscape.carry <- function(Rland, seed=-1)
   {
     if (is.landscape(Rland))
       {
@@ -98,7 +98,7 @@ carry.landscape <- function(Rland, seed=-1)
           {
             set.seed(seed)
           }
-        Rland <- coerce.landscape(Rland)
+        Rland <- landscape.coerce(Rland)
         .Call("carry_landscape",Rland,PACKAGE = "rmetasim")
       }
     else
@@ -107,7 +107,7 @@ carry.landscape <- function(Rland, seed=-1)
       }
   }
 
-extinct.landscape <- function(Rland, seed=-1)
+landscape.extinct <- function(Rland, seed=-1)
   {
     if (is.landscape(Rland))
       {
@@ -115,7 +115,7 @@ extinct.landscape <- function(Rland, seed=-1)
           {
             set.seed(seed)
           }
-        Rland <- coerce.landscape(Rland)
+        Rland <- landscape.coerce(Rland)
         .Call("extinct_landscape",Rland,PACKAGE = "rmetasim")
       }
     else
@@ -124,7 +124,7 @@ extinct.landscape <- function(Rland, seed=-1)
       }
   }
 
-advance.landscape <- function(Rland, seed=-1)
+landscape.advance <- function(Rland, seed=-1)
   {
     if (is.landscape(Rland))
       {
@@ -132,7 +132,7 @@ advance.landscape <- function(Rland, seed=-1)
           {
             set.seed(seed)
           }
-        Rland <- coerce.landscape(Rland)
+        Rland <- landscape.coerce(Rland)
         .Call("advance_landscape",Rland,PACKAGE = "rmetasim")
       }
     else
@@ -141,11 +141,11 @@ advance.landscape <- function(Rland, seed=-1)
       }
   }
 
-compress.landscape <- function(Rland)
+landscape.compress <- function(Rland)
     {
     if (is.landscape(Rland))
       {
-        Rland <- coerce.landscape(Rland)
+        Rland <- landscape.coerce(Rland)
         .Call("compress_landscape",Rland,PACKAGE = "rmetasim")
       }
     else

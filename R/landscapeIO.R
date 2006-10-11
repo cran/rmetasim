@@ -1,4 +1,4 @@
-read.landscape <- function(fn = "filename")
+landscape.read <- function(fn = "filename")
   {
     if (file.exists(fn))
       {
@@ -12,13 +12,13 @@ read.landscape <- function(fn = "filename")
   }
 
 
-write.landscape <- function(rland, fn = "filename")
+landscape.write <- function(rland, fn = "filename")
   {
     if (is.landscape(rland))
       .Call("write_landscape",fn,rland,PACKAGE = "rmetasim")
   }
 
-clean.landscape <- function(rland)
+landscape.clean <- function(rland)
   {
     if (is.landscape(rland))
       .Call("clean_landscape",rland,PACKAGE = "rmetasim")

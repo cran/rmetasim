@@ -1,13 +1,13 @@
 #These are functions that manipulate the landscape to produce summary statistics
 #implemented in the 'ape' package on CRAN.  ape must be installed and loaded for these to work.
 #interface to theta.h
-theta.h.landscape <- function(rland)
+landscape.theta.h <- function(rland)
   {
     retval <- matrix(0,ncol=length(rland$loci),nrow=rland$intparam$habitats)
     for (i in 1:rland$intparam$habitats)
       {
         rland.tmp <- rland
-        rland.tmp$individuals <- rland.tmp$individuals[populations(rland.tmp)==i,]
+        rland.tmp$individuals <- rland.tmp$individuals[landscape.populations(rland.tmp)==i,]
         for (j in 1:length(rland$loci))
           {
             alleledist <- as.factor(landscape.locus(lnum=j,rland.tmp)[,c(-1:-(landscape.democol()))])
@@ -21,13 +21,13 @@ theta.h.landscape <- function(rland)
   }
 
 #interface to theta.k
-theta.k.landscape <- function(rland)
+landscape.theta.k <- function(rland)
   {
     retval <- matrix(0,ncol=length(rland$loci),nrow=rland$intparam$habitats)
     for (i in 1:rland$intparam$habitats)
       {
         rland.tmp <- rland
-        rland.tmp$individuals <- rland.tmp$individuals[populations(rland.tmp)==i,]
+        rland.tmp$individuals <- rland.tmp$individuals[landscape.populations(rland.tmp)==i,]
         for (j in 1:length(rland$loci))
           {
             alleledist <- as.factor(landscape.locus(lnum=j,rland.tmp)[,c(-1:-(landscape.democol()))])
@@ -41,19 +41,19 @@ theta.k.landscape <- function(rland)
   }
 
 #waterson's segregating sites
-theta.s.landscape<- function(rland)
+landscape.theta.s<- function(rland)
   {
     retval <- matrix(0,ncol=length(rland$loci),nrow=rland$intparam$habitats)
     for (i in 1:rland$intparam$habitats)
       {
         rland.tmp <- rland
-        rland.tmp$individuals <- rland.tmp$individuals[populations(rland.tmp)==i,]
+        rland.tmp$individuals <- rland.tmp$individuals[landscape.populations(rland.tmp)==i,]
         for (j in 1:length(rland$loci))
           {
             retval[i,j] <- NA
             if ((rland$loci[[j]]$type==253))
               {
-                statevec <- states(lnum=j,rland.tmp)$state
+                statevec <- landscape.locus.states(lnum=j,rland.tmp)$state
                 seqlen <- nchar(statevec[1])
                                         #            print(j)
                 print(paste("len statevec",length(statevec)))
@@ -68,13 +68,13 @@ theta.s.landscape<- function(rland)
     retval
   }
 
-tajima.d.landscape <- function(rland)
+landscape.tajima.d <- function(rland)
   {
     retval <- matrix(0,ncol=length(rland$loci),nrow=rland$intparam$habitats)
     for (i in 1:rland$intparam$habitats)
       {
         rland.tmp <- rland
-        rland.tmp$individuals <- rland.tmp$individuals[populations(rland.tmp)==i,]
+        rland.tmp$individuals <- rland.tmp$individuals[landscape.populations(rland.tmp)==i,]
         for (j in 1:length(rland$loci))
           {
             retval[i,j] <- NA
@@ -85,7 +85,7 @@ tajima.d.landscape <- function(rland)
                   theta.ewens <- c(theta.k(alleledist),0)
                 else
                   theta.ewens <- c(NA,NA)
-                statevec <- states(lnum=j,rland.tmp)$state
+                statevec <- landscape.locus.states(lnum=j,rland.tmp)$state
                 seqlen <- nchar(statevec[1])
                                         #            print(j)
                                         #                print(paste("len statevec",length(statevec)))

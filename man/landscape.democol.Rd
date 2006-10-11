@@ -1,9 +1,8 @@
 \name{landscape.democol}
 \alias{landscape.democol}
-\title{return a vector of population IDs from a landscape}
+\title{return largest demographic column from a  landscape}
 
-\description{return a vector of population IDs from a landscape
-}
+\description{return largest demographic column from a  landscape}
 \usage{
   landscape.democol()
 }
@@ -18,7 +17,5 @@
   landscape.locus
   }
 }
-\examples{
-	landscape.democol()
-}
+
 \keyword{misc}
