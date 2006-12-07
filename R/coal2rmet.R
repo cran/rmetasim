@@ -10,7 +10,7 @@
 `%upto%` <- function (from, to) 
 if (from <= to) from:to else numeric(0)
 
-coal2rmet <- function( file, norm=TRUE){
+coal2rmet.old <- function( file, norm=TRUE){
   dat <- parse.arlequin( file)
   pops <- unique( dat$pop)
   is.nuc <- !is.factor( dat[,2])
@@ -37,7 +37,7 @@ coal2rmet <- function( file, norm=TRUE){
     
 }
 
-parse.arlequin <- function( file){
+parse.arlequin.old <- function( file){
   dat <- readLines( file)
   data <- NULL
   i.pop <- 0
@@ -80,7 +80,7 @@ parse.arlequin <- function( file){
 # This function will clobber existing individuals and loci in rland object
 #
 #
-landscape.coalinput <- function(rland, npp=200, arlseq = 'seq.arp', seqsitemut= 1e-7, arlms = 'ms.arp', msmut= 5e-4)
+landscape.coalinput.old <- function(rland, npp=200, arlseq = 'seq.arp', seqsitemut= 1e-7, arlms = 'ms.arp', msmut= 5e-4)
   {
     if (is.null(arlseq)&is.null(arlms))
       {

@@ -1,4 +1,5 @@
 ver 1.1.0
+12/3/06 Fixed some stack imbalance problems.  Updated the code to read in simcoal simulations
 
 10/10/06 Eliminated out of date documentation.  Need to develop a
 Vignette for the package.  This is High on the TODO list

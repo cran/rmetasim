@@ -1,5 +1,5 @@
 Package: rmetasim
-Version: 1.1.001
+Version: 1.1.004
 Author: Allan Strand <stranda@cofc.edu>, 
 	James Niehaus
 Maintainer: Allan Strand <stranda@cofc.edu>
@@ -19,4 +19,4 @@ Description: An interface between R and the metasim simulation engine.
 	     function names that hopefully increases consistency and
 	     reduces the chances of collisions with other packages
 	     naming conventions.
-Packaged: Wed Oct 11 07:10:10 2006; astrand
+Packaged: Wed Dec  6 19:06:45 2006; astrand

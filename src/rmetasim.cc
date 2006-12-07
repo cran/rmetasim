@@ -155,22 +155,23 @@ extern "C" {
     for (d=0;d<ldK;d++)
       {
 	SEXP LvecK = VECTOR_ELT(LdemosK,d);
-  if (L.getdensdep()){
-	  PROTECT(LvecK);
-	  ///Local Matrices
-	  sz = INTEGER(coerceVector(getAttrib(getListElement(LvecK,LCLSMATNM), R_DimSymbol), INTSXP))[0];
-	  for (j=0;j<sz;j++)
-	    {
-	      for (i=0;i<sz;i++)
-	        {
-		  L.setLSKmatElement(d,i,j,REAL(coerceVector(getListElement(LvecK,LCLSMATNM), REALSXP))[i+j*sz]);
-		  L.setLRKmatElement(d,i,j,REAL(coerceVector(getListElement(LvecK,LCLRMATNM), REALSXP))[i+j*sz]);
-		  L.setLMKmatElement(d,i,j,REAL(coerceVector(getListElement(LvecK,LCLMMATNM), REALSXP))[i+j*sz]);
-	        }
-	    }
-	  UNPROTECT(1);
-     }
-    }
+	PROTECT(LvecK);
+    	if (L.getdensdep())
+	  {
+	    ///Local Matrices
+	    sz = INTEGER(coerceVector(getAttrib(getListElement(LvecK,LCLSMATNM), R_DimSymbol), INTSXP))[0];
+	    for (j=0;j<sz;j++)
+	      {
+		for (i=0;i<sz;i++)
+		  {
+		    L.setLSKmatElement(d,i,j,REAL(coerceVector(getListElement(LvecK,LCLSMATNM), REALSXP))[i+j*sz]);
+		    L.setLRKmatElement(d,i,j,REAL(coerceVector(getListElement(LvecK,LCLRMATNM), REALSXP))[i+j*sz]);
+		    L.setLMKmatElement(d,i,j,REAL(coerceVector(getListElement(LvecK,LCLMMATNM), REALSXP))[i+j*sz]);
+		  }
+	      }
+	  }
+	UNPROTECT(1);
+      }
     UNPROTECT(1);
 ///.........................................................................
 #ifdef RDEBUG
@@ -904,6 +905,7 @@ SEXP convert_metasim_to_R(Landscape_statistics &L)
     ///    PrintValue(Retlistn);
 
     ///    Atbls_clear();
+    UNPROTECT(2);
     return Retlist;
 }
 

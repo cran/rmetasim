@@ -367,7 +367,7 @@ summarize <-function()
     thetas <- tmp[order(tmp$locus,tmp$gen,tmp$iteration),]
     postscript(file="theta.ps",horizontal=F,paper="letter")
     attach(thetas)
-    coplot(theta~gen|as.factor(locus)*as.factor(iteration),show.given=F,xlab=c("Generation","Columns: Loci"),ylab=(c("\Theta","Rows: Independent iteration")),panel=lines)
+    coplot(theta~gen|as.factor(locus)*as.factor(iteration),show.given=F,xlab=c("Generation","Columns: Loci"),ylab=(c("Theta","Rows: Independent iteration")),panel=lines)
     dev.off()
 
     #calculate some summary stats and then graphically report them
