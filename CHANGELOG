@@ -1,3 +1,11 @@
+ver 1.1.006
+12/16/06
+
+Finally fixed "the bug" that Karen Martien pointed out last year.
+This was very hard to find because it did not manifest on my
+development platform (mac), nor in the way that I use the programs and
+therefore the way that my testscript works.
+
 ver 1.1.0
 12/3/06 Fixed some stack imbalance problems.  Updated the code to read in simcoal simulations
 

@@ -2,7 +2,7 @@
 
 $Modified: astrand $
 
-Copyright (C) 1999 Allan E. Strand
+Copyright (C) 1999-2006 Allan E. Strand
 
 This file is part of Metasim
 */
@@ -492,17 +492,17 @@ void Landscape::SequentialDensityDependentDemoMatrix()
 	    {
 	      newto = (s*i)+to ;
 	      newfr = (s*i)+fr ;
-         ValZero = LM[rm].GetSlocalVal(fr,to);
-         ValK = LMK[rm].GetSlocalVal(fr,to);
-         NewVal = (ValK-ValZero)*(double (PopSize(i))/double(kvec[e][i]))+ValZero;
+	      ValZero = LM[rm].GetSlocalVal(fr,to);
+	      ValK = LMK[rm].GetSlocalVal(fr,to);
+	      NewVal = (ValK-ValZero)*(double (PopSize(i))/double(kvec[e][i]))+ValZero;
 	      S[e].SetElement(newfr,newto,NewVal);
-         ValZero = LM[rm].GetRlocalVal(fr,to);
-         ValK = LMK[rm].GetRlocalVal(fr,to);
-         NewVal = (ValK-ValZero)*(double (PopSize(i))/double(kvec[e][i]))+ValZero;
+	      ValZero = LM[rm].GetRlocalVal(fr,to);
+	      ValK = LMK[rm].GetRlocalVal(fr,to);
+	      NewVal = (ValK-ValZero)*(double (PopSize(i))/double(kvec[e][i]))+ValZero;
 	      R[e].SetElement(newfr,newto,NewVal);
-         ValZero = LM[rm].GetMlocalVal(fr,to);
-         ValK = LMK[rm].GetMlocalVal(fr,to);
-         NewVal = (ValK-ValZero)*(double (PopSize(i))/double(kvec[e][i]))+ValZero;
+	      ValZero = LM[rm].GetMlocalVal(fr,to);
+	      ValK = LMK[rm].GetMlocalVal(fr,to);
+	      NewVal = (ValK-ValZero)*(double (PopSize(i))/double(kvec[e][i]))+ValZero;
 	      M[e].SetElement(newfr,newto,NewVal);
 	    }
 	}
@@ -556,7 +556,7 @@ void Landscape::RandomDensityDependentDemoMatrix()
     {
       p[i]=demoProbVec[e][i];
     }
-
+  
   for (i=0;i<nhab;i++)
     {
       rm = RandLibObj.multinomial(p,ndemo);
@@ -566,17 +566,17 @@ void Landscape::RandomDensityDependentDemoMatrix()
 	    {
 	      newto = (s*i)+to ;
 	      newfr = (s*i)+fr ;
-         ValZero = LM[rm].GetSlocalVal(fr,to);
-         ValK = LMK[rm].GetSlocalVal(fr,to);
-         NewVal = (ValK-ValZero)*(double (PopSize(i))/double(kvec[e][i]))+ValZero;
+	      ValZero = LM[rm].GetSlocalVal(fr,to);
+	      ValK = LMK[rm].GetSlocalVal(fr,to);
+	      NewVal = (ValK-ValZero)*(double (PopSize(i))/double(kvec[e][i]))+ValZero;
 	      S[e].SetElement(newfr,newto,NewVal);
-         ValZero = LM[rm].GetRlocalVal(fr,to);
-         ValK = LMK[rm].GetRlocalVal(fr,to);
-         NewVal = (ValK-ValZero)*(double (PopSize(i))/double(kvec[e][i]))+ValZero;
+	      ValZero = LM[rm].GetRlocalVal(fr,to);
+	      ValK = LMK[rm].GetRlocalVal(fr,to);
+	      NewVal = (ValK-ValZero)*(double (PopSize(i))/double(kvec[e][i]))+ValZero;
 	      R[e].SetElement(newfr,newto,NewVal);
-         ValZero = LM[rm].GetMlocalVal(fr,to);
-         ValK = LMK[rm].GetMlocalVal(fr,to);
-         NewVal = (ValK-ValZero)*(double (PopSize(i))/double(kvec[e][i]))+ValZero;
+	      ValZero = LM[rm].GetMlocalVal(fr,to);
+	      ValK = LMK[rm].GetMlocalVal(fr,to);
+	      NewVal = (ValK-ValZero)*(double (PopSize(i))/double(kvec[e][i]))+ValZero;
 	      M[e].SetElement(newfr,newto,NewVal);
 	    }
 	}
@@ -613,10 +613,10 @@ void Landscape::popsizeset(std::vector<int> &ps)
 	  Ind.SetRandGenotype(Atbls);
 	  Ind.Change(-1);
 	  Ind.SetLastRep(-1);
-	  Ind.SetID(nextID);
-	  nextID=nextID+1;
-	  Ind.SetMID(0);
-	  Ind.SetPID(0);
+	  //	  Ind.SetID(nextID);
+	  //	  nextID=nextID+1;
+	  //Ind.SetMID(0);
+	  //Ind.SetPID(0);
 	  Ind.SetNumOff(0);
 	  Ind.Birth(-1,Atbls);
 	  I[i].AddIndividual(Ind);
@@ -999,7 +999,13 @@ ability to produce pollen could be inserted.
 				  
 				  ///this could/should be made user selectable
 				  tmpI.SetSex(0);///would require some more code modifications, but might be worth it
+
 				  tmpI.SetGen(t);
+
+				  tmpI.SetMID(0);
+				  tmpI.SetPID(0);
+				  tmpI.SetID(0);
+				  /*
 				  tmpI.SetMID(searchI.GetID());
 				  tmpI.SetPID(mate.GetID());
 				  tmpI.SetID(nextID);
@@ -1011,6 +1017,7 @@ ability to produce pollen could be inserted.
 				    {
 				      nextID=nextID+1;
 				    }
+*/
 				  tmpI.Change(-1);
 				  tmpI.Birth(t,Atbls);
 				  err = 0;
@@ -1031,8 +1038,6 @@ ability to produce pollen could be inserted.
     }//k 
 
 }//end of function Reproduce
-
-
 
 
 void Landscape::Extirpate()

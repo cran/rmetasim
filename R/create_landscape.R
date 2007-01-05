@@ -166,10 +166,9 @@ landscape.new.local.demo <- function(rland,S,R,M,k=0)
     {
       stop("Matricies do not conform to stages set in intparam!")
     }
-  } #end if k==0
-
-  else{ #k==1; matrix at carrying capacity
-  if (is.null(rland$demography$localdemK))
+} #end if k==0
+ else{ #k==1; matrix at carrying capacity
+   if (is.null(rland$demography$localdemK))
     {
       rland$demography$localdemK <- list(NULL)
       demonumK <- 1
@@ -414,20 +413,20 @@ landscape.new.locus <- function (rland, type = 0, ploidy = 1, mutationrate = 0, 
     }
     rland$intparam$locusnum <- locusnum
     if (type >= 0 && type <= 2) {
-        rland$loci[[locusnum]]$type <- typelookup(type)
+        rland$loci[[locusnum]]$type <- as.integer(typelookup(type))
     }
     else {
         stop("Invalid type of locus")
     }
     if (ploidy == 1 || ploidy == 2) {
-        rland$loci[[locusnum]]$ploidy <- ploidy
+        rland$loci[[locusnum]]$ploidy <- as.integer(ploidy)
     }
     else {
         stop("Invalid ploidy count")
     }
     rland$loci[[locusnum]]$rate <- mutationrate
     if (transmission == 0 || transmission == 1) {
-        rland$loci[[locusnum]]$trans <- transmission
+        rland$loci[[locusnum]]$trans <- as.integer(transmission)
     }
     else {
         stop("Invalid transmission number")
@@ -469,15 +468,15 @@ makealleles <- function(type,numalleles,allelesize,frequencies,states)
       retval <- vector("list", numalleles)
       for (x in 1:numalleles)
         {
-          retval[[x]]$aindex <- x 
-          retval[[x]]$birth <- 0
+          retval[[x]]$aindex <- as.integer(x)
+          retval[[x]]$birth <- as.integer(0)
           retval[[x]]$prop <- frequencies[x]
           if (is.null(states))
             {
-              retval[[x]]$state <- x
+              retval[[x]]$state <- as.integer(x)
             } else
           {
-            retval[[x]]$state <- states[x]
+            retval[[x]]$state <- as.integer(states[x])
           }
         }
     }
@@ -486,8 +485,8 @@ makealleles <- function(type,numalleles,allelesize,frequencies,states)
       retval <- vector("list", numalleles)
       for (x in 1:numalleles)
         {
-          retval[[x]]$aindex <- x 
-          retval[[x]]$birth <- 0
+          retval[[x]]$aindex <- as.integer(x)
+          retval[[x]]$birth <- as.integer(0)
           retval[[x]]$prop <- frequencies[x]
           if (is.null(states))
             {
@@ -525,6 +524,7 @@ geneseq <- function(size)
 
 landscape.new.individuals <- function(rland, PopulationSizes)
   {
+    rland <- landscape.coerce(rland,noind=T)
     rland <- .Call("populate_Rland",rland,PopulationSizes,PACKAGE="rmetasim")
     rland
   }

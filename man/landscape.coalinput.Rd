@@ -8,7 +8,7 @@
 \usage{
   ## must be called AFTER integer, switch, and float params have been created
   rland <- landscape.coalinput(rland, npp=500, arlseq = "seq.arp", arlms = "ms.arp", seqsitemut=1e-7,
-                               msmut = 5e-4)
+                               msmut = 5e-4, mut.rates = NULL)
 }
 \arguments{
   \item{rland}{partially created landscape object, required}
@@ -17,6 +17,11 @@
 \item{arlms}{name of the Arlequin format file containing a single locus of diploid microsatellite data for any number of populations}
   \item{seqsitemut}{mutation rate for sequence data}
   \item{msmut}{mutation rate for diploid genotypic data}
+  \item{mut.rates}{alternative means to specify mutation rates.  Legal
+    values are either NULL or a vector of rates equal to the number of
+    loci to simulate.  If NULL, SSR loci are assigned msmut as a
+    mutation rate and sequence-based loci, seqsitemut.  If a vector,
+    ovrrides msmut and seqsitemut}
 }
 
 \details{This function provides part of an interface between R and
@@ -34,14 +39,12 @@ if arlseq=NULL, only diploid genotypes will be imported
          rland\$loci objects based upon their frequencies and states.
          These rland\$loci sub-objects are then used to populate the
          rland\$individuals sub-object.
-
                                                           
          The number of populations in the Arlequin files should be the
          same among genetic locus types (sequence versus
          microsatellite) and the rland\$intparam\$habitats parameter.
          The per-population frequency data will be used in creating
          individuals
-                                                          
   }
 
 \value{an rmetasim object with new loci and individuals}

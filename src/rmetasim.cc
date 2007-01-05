@@ -152,22 +152,22 @@ extern "C" {
     SEXP LdemosK = getListElement(inlist,LOCALDEMKNM);
     PROTECT(LdemosK);
     ldK= length(getListElement(inlist,LOCALDEMKNM)); ///number of local demos
+    //    cerr <<"ldK: "<<ldK<<endl;
     for (d=0;d<ldK;d++)
       {
+	//cerr << "d: "<<d<<endl;
+
 	SEXP LvecK = VECTOR_ELT(LdemosK,d);
 	PROTECT(LvecK);
-    	if (L.getdensdep())
+	///Local Matrices
+	sz = INTEGER(coerceVector(getAttrib(getListElement(LvecK,LCLSMATNM), R_DimSymbol), INTSXP))[0];
+	for (j=0;j<sz;j++)
 	  {
-	    ///Local Matrices
-	    sz = INTEGER(coerceVector(getAttrib(getListElement(LvecK,LCLSMATNM), R_DimSymbol), INTSXP))[0];
-	    for (j=0;j<sz;j++)
+	    for (i=0;i<sz;i++)
 	      {
-		for (i=0;i<sz;i++)
-		  {
-		    L.setLSKmatElement(d,i,j,REAL(coerceVector(getListElement(LvecK,LCLSMATNM), REALSXP))[i+j*sz]);
-		    L.setLRKmatElement(d,i,j,REAL(coerceVector(getListElement(LvecK,LCLRMATNM), REALSXP))[i+j*sz]);
-		    L.setLMKmatElement(d,i,j,REAL(coerceVector(getListElement(LvecK,LCLMMATNM), REALSXP))[i+j*sz]);
-		  }
+		L.setLSKmatElement(d,i,j,REAL(coerceVector(getListElement(LvecK,LCLSMATNM), REALSXP))[i+j*sz]);
+		L.setLRKmatElement(d,i,j,REAL(coerceVector(getListElement(LvecK,LCLRMATNM), REALSXP))[i+j*sz]);
+		L.setLMKmatElement(d,i,j,REAL(coerceVector(getListElement(LvecK,LCLMMATNM), REALSXP))[i+j*sz]);
 	      }
 	  }
 	UNPROTECT(1);
@@ -384,7 +384,7 @@ void convert_R_to_metasim(SEXP Rland, Landscape_statistics &L)
     
     //    cerr <<"done converting ind"<<endl;
     //update allele frequencies in the landscape so they accurately reflect those in the Rland object
-    L.GCAlleles();
+    ///  L.GCAlleles(); //this line seems to cause "THE BUG (KKM's term)"
 
 
 }
@@ -533,8 +533,7 @@ read in landscapes
       }
 ///KKM 6.2.05.................................................................
     SEXP LDemolK = PROTECT(allocVector(VECSXP, L.getndemo()));
-
-   if (L.getdensdep() == 1){
+    
     for (d=0;d<L.getndemo();d++)
       {
 	SEXP LDemosK = PROTECT(allocVector(VECSXP, 3));
@@ -543,7 +542,7 @@ read in landscapes
 	SET_STRING_ELT(LDemosnK, 1, mkChar(LCLRMATNM));
 	SET_STRING_ELT(LDemosnK, 2, mkChar(LCLMMATNM));
 	setAttrib(LDemosK, R_NamesSymbol, LDemosnK);
-
+	
 	SEXP LSKMat = PROTECT(allocMatrix(REALSXP, sz, sz));
 	SEXP LRKMat = PROTECT(allocMatrix(REALSXP, sz, sz));
 	SEXP LMKMat = PROTECT(allocMatrix(REALSXP, sz, sz));
@@ -554,7 +553,7 @@ read in landscapes
 		REAL(coerceVector(LSKMat, REALSXP))[i+j*sz] = L.getLSKmatElement(d,i,j);
 		REAL(coerceVector(LRKMat, REALSXP))[i+j*sz] = L.getLRKmatElement(d,i,j);
 		REAL(coerceVector(LMKMat, REALSXP))[i+j*sz] = L.getLMKmatElement(d,i,j);
-	      }
+		}
 	  }
 #ifdef RDEBUG
 	cerr <<"Setting local demos at K"<<endl;
@@ -565,14 +564,14 @@ read in landscapes
 	SET_VECTOR_ELT(LDemolK,d,LDemosK);
 	UNPROTECT(5);
       }
-  }
-///............................................................................
+
+    ///............................................................................
     ///Epoch vectors: these are lists nep long that contain demography lists
     ///this way demography can change in every epoch
     SEXP Epochs = PROTECT(allocVector(VECSXP, L.getepochs()));
     SEXP Epochsn = PROTECT(allocVector(STRSXP, L.getepochs()));
     
-
+    
     for (e=0;e<L.getepochs();e++)  
       {
 	SEXP Demov = PROTECT(allocVector(VECSXP, 8));
