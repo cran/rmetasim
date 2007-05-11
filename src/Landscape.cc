@@ -613,10 +613,10 @@ void Landscape::popsizeset(std::vector<int> &ps)
 	  Ind.SetRandGenotype(Atbls);
 	  Ind.Change(-1);
 	  Ind.SetLastRep(-1);
-	  //	  Ind.SetID(nextID);
-	  //	  nextID=nextID+1;
-	  //Ind.SetMID(0);
-	  //Ind.SetPID(0);
+	  Ind.SetID(nextID);
+	  nextID=nextID+1;
+	  Ind.SetMID(0);
+	  Ind.SetPID(0);
 	  Ind.SetNumOff(0);
 	  Ind.Birth(-1,Atbls);
 	  I[i].AddIndividual(Ind);
@@ -1005,7 +1005,7 @@ ability to produce pollen could be inserted.
 				  tmpI.SetMID(0);
 				  tmpI.SetPID(0);
 				  tmpI.SetID(0);
-				  /*
+
 				  tmpI.SetMID(searchI.GetID());
 				  tmpI.SetPID(mate.GetID());
 				  tmpI.SetID(nextID);
@@ -1017,7 +1017,7 @@ ability to produce pollen could be inserted.
 				    {
 				      nextID=nextID+1;
 				    }
-*/
+
 				  tmpI.Change(-1);
 				  tmpI.Birth(t,Atbls);
 				  err = 0;
