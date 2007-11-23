@@ -1,3 +1,9 @@
+ver 1.1.02
+11/22/07
+removed landscape.new.epoch.island and landscape.new.epoch.step
+They didn't work as advertised and there has been limited desire to 
+use them
+
 ver 1.1.009
 5/10/07
 
