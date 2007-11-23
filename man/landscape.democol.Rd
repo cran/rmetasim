@@ -16,6 +16,6 @@
 \seealso{
   landscape.locus
   }
-}
+
 
 \keyword{misc}

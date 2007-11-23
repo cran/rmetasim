@@ -48,59 +48,59 @@ landscape.mismatchdist<-function(lnum=1,Rland)
     ttbl
   }
 
-mismatch.pop <- function(Rland,pop=c(1:Rland$intparam$habitats))
-  {
-    maxdist <- 0
-    totrows <- 0
-    totcol <- 4
-    poplst <- NULL
-    listcnt <- 1
-    retdf <- NULL
-    for (i in pop)
-      {
-        popland <- Rland
-        popland$individuals <- Rland$individuals[landscape.populations(Rland)==i,]
-        for (j in 1:length(popland$loci))
-          {
-            tbldf <- as.data.frame(mismatchdist(lnum=j,popland))
-            tbldf$locus <- rep(j,nrow(tbldf))
-            tbldf$population <- rep(i,nrow(tbldf))
-            retdf <- rbind(retdf,tbldf)
-          }
-      }
-    names(retdf)[1] <- c("ntdiff")
+#mismatch.pop <- function(Rland,pop=c(1:Rland$intparam$habitats))
+#  {
+#    maxdist <- 0
+#    totrows <- 0
+#    totcol <- 4
+#    poplst <- NULL
+#    listcnt <- 1
+#    retdf <- NULL
+#    for (i in pop)
+#      {
+#        popland <- Rland
+#        popland$individuals <- Rland$individuals[landscape.populations(Rland)==i,]
+#        for (j in 1:length(popland$loci))
+#          {
+#            tbldf <- as.data.frame(mismatchdist(lnum=j,popland))
+#            tbldf$locus <- rep(j,nrow(tbldf))
+#            tbldf$population <- rep(i,nrow(tbldf))
+#            retdf <- rbind(retdf,tbldf)
+#          }
+#      }
+#   names(retdf)[1] <- c("ntdiff")
+#
+#    retdf
+#  }
 
-    retdf
-  }
+#nucdiversity <- function(lnum=1, Rland)
+#  {
+#    if ((is.landscape(Rland))&&(Rland$loci[[lnum]]$type=253)) #is this a sequence from a valid landscape?
+#        {
+#          tbl <- mismatchdist(lnum,Rland)
+#          quants <- as.numeric(names(tbl))
+#          props <- tbl/sum(tbl)
+#          sum(quants*props)/nchar(Rland$loci[[lnum]]$alleles[[1]]$state)
+#        }
+#    else
+#      {
+#        print("must pass a sequence type from a valid landscape")
+#        NULL
+#      }
+#  }
 
-nucdiversity <- function(lnum=1, Rland)
-  {
-    if ((is.landscape(Rland))&&(Rland$loci[[lnum]]$type=253)) #is this a sequence from a valid landscape?
-        {
-          tbl <- mismatchdist(lnum,Rland)
-          quants <- as.numeric(names(tbl))
-          props <- tbl/sum(tbl)
-          sum(quants*props)/nchar(Rland$loci[[lnum]]$alleles[[1]]$state)
-        }
-    else
-      {
-        print("must pass a sequence type from a valid landscape")
-        NULL
-      }
-  }
-
-segsites <- function(lnum=1,Rland)
-  {
-    if ((is.landscape(Rland))&&(Rland$loci[[lnum]]$type=253)) #is this a sequence from a valid landscape?
-        {
-          m <- matrix(unlist(lapply(l$loci[[1]]$alleles,function(x) {strsplit(x$state,split='')[[1]]})),
-                      ncol=nchar(Rland$loci[[lnum]]$alleles[[1]]$state), byrow=TRUE)
-
-          length(which(apply(m,2,function(x) length(unique(x))>1)))
-        }
-    else
-      {
-        print("must pass a sequence type from a valid landscape")
-        NULL
-      }
-  }
+#segsites <- function(lnum=1,Rland)
+#  {
+#    if ((is.landscape(Rland))&&(Rland$loci[[lnum]]$type=253)) #is this a sequence from a valid landscape?
+#        {
+#          m <- matrix(unlist(lapply(l$loci[[1]]$alleles,function(x) {strsplit(x$state,split='')[[1]]})),
+#                      ncol=nchar(Rland$loci[[lnum]]$alleles[[1]]$state), byrow=TRUE)#
+#
+#          length(which(apply(m,2,function(x) length(unique(x))>1)))
+#        }
+#    else
+#      {
+#        print("must pass a sequence type from a valid landscape")
+#        NULL
+#      }
+#  }
