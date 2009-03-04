@@ -1,3 +1,9 @@
+ver 1.1.10
+
+Fixed gnu-specific C++ array allocation.  Should now compile on Sun.
+Also added a function 'landscape.mig.matrix' that automatically creates a migration
+matrix among populations
+
 ver 1.1.09
 10/7/09
 Fixed changed dependency on ape and added 'pegas' functions as well as 

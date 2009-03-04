@@ -98,7 +98,7 @@ void TransMat::SetMat(TransMat a)
 void TransMat::SetRandomToStateVec (double eigenratio)
 {
   size_t sz = Size();
-  double p[sz + 1];
+  double *p = new double[sz + 1];
 
   size_t i;
 
@@ -109,13 +109,14 @@ void TransMat::SetRandomToStateVec (double eigenratio)
       assert(p[i]>=0);
     }
   RandLibObj.SetDiscreteLookup(p,sz+1);
+  delete [] p;
 }
 
 ///Implementation of the random state algorithm
 void TransMat::SetRandomFromStateVec ()
 {
   size_t sz = Size();
-  double p[sz + 1];
+  double *p = new double[sz + 1];
 
   size_t i;
 
@@ -126,6 +127,7 @@ void TransMat::SetRandomFromStateVec ()
       assert(p[i]>=0);
     }
   RandLibObj.SetDiscreteLookup(p,sz+1);
+  delete [] p;
 }
 
 size_t TransMat::RandomState()
@@ -230,10 +232,10 @@ double TransMat::Lambda()
 	}
       
     }
-  delete work;
-  delete wR;
-  delete wI;
-  delete xvals;
+  delete [] work;
+  delete [] wR;
+  delete [] wI;
+  delete [] xvals;
 
   return maxval;
 }

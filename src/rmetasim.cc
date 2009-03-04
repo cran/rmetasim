@@ -15,7 +15,7 @@ extern "C" {
   /* get the list element named str, or return NULL */
   /*This code comes from the R-exts documentation */
  
-  SEXP getListElement(SEXP list, char *str)
+  SEXP getListElement(SEXP list, const char *str)
   {
     SEXP elmt = R_NilValue, names = getAttrib(list, R_NamesSymbol);
     int i;
@@ -588,7 +588,7 @@ read in landscapes
 
 	setAttrib(Demov, R_NamesSymbol, Demovn);
 
-	sprintf(nbuf,"%d%",e);
+	sprintf(nbuf,"%d",e);
   
 #ifdef RDEBUG
 	cerr <<"Setting epoch name: e="<<e<<endl;
@@ -603,35 +603,37 @@ read in landscapes
 	
 	///Vital Vectors:  extinctions
 	SEXP Evec = PROTECT(allocVector(REALSXP, L.gethabs()));
-	double ev[L.gethabs()];
+	double *ev = new double[L.gethabs()];
 	L.getextinct(e,ev);
 	for (i=0;i<L.gethabs();i++)
 	  {
 	    REAL(Evec)[i] = ev[i];
 	  }
 	SET_VECTOR_ELT(Demov,2,Evec);
-	
+	delete [] ev;
 	///Vital Vectors:  carry
 	SEXP Kvec = PROTECT(allocVector(REALSXP, L.gethabs()));
-	int cv[L.gethabs()];
+	int *cv = new int[L.gethabs()];
 	L.getk(e,cv);
 	for (i=0;i<L.gethabs();i++)
 	  {
 	    REAL(Kvec)[i] = cv[i];
 	  }
+	delete [] cv;
 	SET_VECTOR_ELT(Demov,3,Kvec);
 	
 	///Vital Vectors: probability of observing a particular local
 	///demography in a habitat.  This vector is the length of the
 	///number of local demographies
 	
-	double dv[L.getndemo()];
+	double *dv = new double[L.getndemo()];
 	SEXP LDvec = PROTECT(allocVector(REALSXP, L.getndemo()));
 	L.getldemovector(e,dv);
 	for (i=0;i<L.getndemo();i++)
 	  {
 	    REAL(LDvec)[i] = dv[i];
 	  }
+	delete [] dv;
 	SET_VECTOR_ELT(Demov,4,LDvec);
 	
 #ifdef RDEBUG
@@ -1377,13 +1379,25 @@ SEXP writeR(SEXP fn, SEXP Rland, SEXP ni)
     int *dims = INTEGER(coerceVector(getAttrib(ind, R_DimSymbol), INTSXP));
     nr = dims[0];
     nc = dims[1];
-    int indmat[nr][nc];
+    //    int *indmat = new int[nr*nc];
+    //    int *indmat = new int[nr][nc];
+    //make space for indmat
+    int **indmat;
+    indmat=new int* [nr];
+    for(int i=0;i<nr;i++)
+      *(indmat+i)=new int[nc];
 
     int *adims = INTEGER(coerceVector(getAttrib(acnp, R_DimSymbol), INTSXP));
     ar = adims[0];
     ac = adims[1];
-    int afmat[ar][ac];
-    
+    //int *afmat = new int[ar][ac];
+    //    int *afmat = new int[ar*ac];
+    //make space for afmat
+    int **afmat;
+    afmat=new int* [ar];
+    for(int i=0;i<ar;i++)
+      *(afmat+i)=new int[ac];
+
     double denom, numer, frq, reffreq, partfreq;
 
     SEXP relmat= PROTECT(allocMatrix(REALSXP,nr,nr));
@@ -1486,7 +1500,20 @@ SEXP writeR(SEXP fn, SEXP Rland, SEXP ni)
 	    REAL(coerceVector(relmat, REALSXP))[x+y*nr] = double(numer)/double(denom);
 	  }
       }
+    //deallocate memory allocated above
+
     UNPROTECT(1);
+
+    for (int i = 0; i < nr; i++){
+      delete[] indmat[i];
+      delete[] indmat;
+    }
+
+    for (int i = 0; i < ar; i++){
+      delete[] afmat[i];
+      delete[] afmat;
+    }
+
     return relmat;
   }
 
