@@ -308,43 +308,43 @@ landscape.new.epoch <- function(rland,S=NULL,R=NULL,M=NULL,epochprob=1,startgen=
 # populates elements in the landscape matrices (S,R,M) in such a way that migration behaves
 # like wright's island model.
 
-landscape.new.epoch.island <- function(rland,s,sfrom,sto,m,mfrom,mto,f,ffrom,fto,
-                             epochprob=1,startgen=0,extinct=NULL,carry=NULL,localprob=NULL)
-{
-  stages <- rland$intparam$stages
-  matrixsize <- rland$intparam$habitats * stages
-
-  if  (!((length(sfrom) == stages) && (length(sto) == stages) &&
-         (length(mfrom) == stages) && (length(mto) == stages) &&
-         (length(ffrom) == stages) && (length(fto) == stages)))
-    {
-      stop("from and to vectors not the correct length")
-    }
-
-  S <- matrix(rep(0, (matrixsize * matrixsize)), nrow = matrixsize, ncol = matrixsize)
-  R <- matrix(rep(0, (matrixsize * matrixsize)), nrow = matrixsize, ncol = matrixsize)
-  M <- matrix(rep(0, (matrixsize * matrixsize)), nrow = matrixsize, ncol = matrixsize)
-
-  for (i in 1:matrixsize)
-    for (j in 1:matrixsize)
-      {
-        toindex <- ((i-1) %% stages) + 1
-        fromindex <- ((j-1) %% stages) + 1
-        if (sfrom[fromindex] && sto[toindex])
-          S[i, j] <- s
-        if (mfrom[fromindex] && mto[toindex])
-          R[i, j] <- m
-        if (ffrom[fromindex] && fto[toindex])
-          M[i, j] <- f
-      }
-
-  rland <- landscape.new.epoch(rland,S,R,M,epochprob,startgen,extinct,carry,localprob)
+#landscape.new.epoch.island <- function(rland,s,sfrom,sto,m,mfrom,mto,f,ffrom,fto,
+#                             epochprob=1,startgen=0,extinct=NULL,carry=NULL,localprob=NULL)
+#{
+#  stages <- rland$intparam$stages
+#  matrixsize <- rland$intparam$habitats * stages
+#
+#  if  (!((length(sfrom) == stages) && (length(sto) == stages) &&
+#         (length(mfrom) == stages) && (length(mto) == stages) &&
+#         (length(ffrom) == stages) && (length(fto) == stages)))
+#    {
+#      stop("from and to vectors not the correct length")
+#    }
+#
+#  S <- matrix(rep(0, (matrixsize * matrixsize)), nrow = matrixsize, ncol = matrixsize)
+#  R <- matrix(rep(0, (matrixsize * matrixsize)), nrow = matrixsize, ncol = matrixsize)
+#  M <- matrix(rep(0, (matrixsize * matrixsize)), nrow = matrixsize, ncol = matrixsize)
+#
+#  for (i in 1:matrixsize)
+#    for (j in 1:matrixsize)
+#      {
+#        toindex <- ((i-1) %% stages) + 1
+#        fromindex <- ((j-1) %% stages) + 1
+#        if (sfrom[fromindex] && sto[toindex])
+#          S[i, j] <- s
+#        if (mfrom[fromindex] && mto[toindex])
+#          R[i, j] <- m
+#        if (ffrom[fromindex] && fto[toindex])
+#          M[i, j] <- f
+#      }
+#
+#  rland <- landscape.new.epoch(rland,S,R,M,epochprob,startgen,extinct,carry,localprob)
 #  rland$demography$epochs[[1]]$S <- S
 #  rland$demography$epochs[[1]]$R <- R
 #  rland$demography$epochs[[1]]$M <- M
-
-  rland
-}
+#
+#  rland
+#}
 
 
 
@@ -354,31 +354,30 @@ landscape.new.epoch.island <- function(rland,s,sfrom,sto,m,mfrom,mto,f,ffrom,fto
 # populates elements in the landscape matrices (S,R,M) in such a way that migration behaves
 # like wright's island model.
 
-landscape.new.epoch.step <- function(rland,s,sfrom,sto,m,mfrom,mto,f,ffrom,fto,
-                             epochprob=1,startgen=0,extinct=NULL,carry=NULL,localprob=NULL)
-{
-
-  rland <- landscape.new.epoch.island(rland,s,sfrom,sto,m,mfrom,mto,f,ffrom,fto,
-                            epochprob=1,startgen=0,extinct=NULL,carry=NULL,localprob=NULL)
-  if (rland$intparam$habitats>2)
-    {
-      for (i in 1:rland$inparam$habitats)
-        for (j in 1:rland$inparam$habitats)
-          {
-            if (!j %in% c(-1,0,1)*i)
-              {
-                rland$epochs[[length(rland$epochs)]]$S[rland$intparam$stages*(i-1)+(1:rland$intparam$stages),rland$intparam$stages*(j-1)+(1:rland$intparam$stages)] <-
-                  matrix(0,nrow=rland$intparam$stages,ncol=rland$intparam$stages)
-                rland$epochs[[length(rland$epochs)]]$R[rland$intparam$stages*(i-1)+(1:rland$intparam$stages),rland$intparam$stages*(j-1)+(1:rland$intparam$stages)] <-
-                  matrix(0,nrow=rland$intparam$stages,ncol=rland$intparam$stages)
-                rland$epochs[[length(rland$epochs)]]$M[rland$intparam$stages*(i-1)+(1:rland$intparam$stages),rland$intparam$stages*(j-1)+(1:rland$intparam$stages)] <-
-                  matrix(0,nrow=rland$intparam$stages,ncol=rland$intparam$stages)
-              }
-            
-          }
-    }
-  rland
-}
+#landscape.new.epoch.step <- function(rland,s,sfrom,sto,m,mfrom,mto,f,ffrom,fto,
+#                             epochprob=1,startgen=0,extinct=NULL,carry=NULL,localprob=NULL)
+#{
+#
+#  rland <- landscape.new.epoch.island(rland,s,sfrom,sto,m,mfrom,mto,f,ffrom,fto,
+#                            epochprob=1,startgen=0,extinct=NULL,carry=NULL,localprob=NULL)
+#  if (rland$intparam$habitats>2)
+#    {
+#      for (i in 1:rland$intparam$habitats)
+#        for (j in 1:rland$intparam$habitats)
+#          {
+#            if (!j %in% c(-1,0,1)*i)
+#              {
+#                rland$epochs[[length(rland$epochs)]]$S[rland$intparam$stages*(i-1)+(1:rland$intparam$stages),rland$intparam$stages*(j-1)+(1:rland$intparam$stages)] <-
+#                  matrix(0,nrow=rland$intparam$stages,ncol=rland$intparam$stages)
+#                rland$epochs[[length(rland$epochs)]]$R[rland$intparam$stages*(i-1)+(1:rland$intparam$stages),rland$intparam$stages*(j-1)+(1:rland$intparam$stages)] <-
+#                  matrix(0,nrow=rland$intparam$stages,ncol=rland$intparam$stages)
+#                rland$epochs[[length(rland$epochs)]]$M[rland$intparam$stages*(i-1)+(1:rland$intparam$stages),rland$intparam$stages*(j-1)+(1:rland$intparam$stages)] <-
+#                  matrix(0,nrow=rland$intparam$stages,ncol=rland$intparam$stages)
+#              }
+#          }
+#    }
+#  rland
+#}
 
 #
 # landscape.new.locus

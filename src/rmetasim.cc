@@ -184,7 +184,7 @@ void R_to_metasim_loci(SEXP inlist, Landscape_statistics& L)
   {
     ///Loci:  Go through R locus object and convert to Atbls
     
-    char *ststr;
+    const char *ststr;
     ststr = NULL;
     int andx,i=0,j=0,sl=0;
     int nloc = length(inlist);///number of loci
@@ -247,7 +247,8 @@ void R_to_metasim_loci(SEXP inlist, Landscape_statistics& L)
 		SEXP na = VECTOR_ELT(getListElement(Locus,ALISTNAME),i);
 		PROTECT(na);
 		
-	        ststr = CHAR(asChar(getListElement(na,STATENAME)));
+		//	        strstr = CHAR(getListElement(na,STATENAME));
+		ststr = CHAR(asChar(getListElement(na,STATENAME)));
 		sl = strlen(ststr);
 		assert(sl<=MAXSEQLEN);
 		assert(sl>0);

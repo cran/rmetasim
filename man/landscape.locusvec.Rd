@@ -18,7 +18,7 @@ vector
 \seealso{
   landscape.populations
   }
-}
+
 \examples{
   exampleland <- landscape.new.example()
   exampleland <- landscape.simulate(exampleland, 4)
