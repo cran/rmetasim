@@ -14,7 +14,7 @@ landscape.amova.locus(l = 1, rland)
   \item{rland}{ landscape object }
 }
 \details{
-Should be the same as Weir and Cockerham's $\theta$
+Should be the same as Weir and Cockerham's \eqn{\theta}
 }
 \value{
 list of amova results for a locus

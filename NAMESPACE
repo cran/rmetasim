@@ -27,4 +27,3 @@ export(landscape.new.switchparam)
 export(landscape.new.local.demo)
 export(landscape.amova,landscape.amova.pairwise,landscape.amova.locus)
 export(landscape.sample)
-

@@ -3,7 +3,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ calcuates phi-st for every locus in the landscape }
 \description{
- calcuates $\phi_{ST}$ for every locus in the landscape 
+ calcuates \eqn{\phi_{ST}} for every locus in the landscape 
 }
 \usage{
 landscape.amova(rland, np = 24, ns = 24)

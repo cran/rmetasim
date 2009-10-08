@@ -18,11 +18,39 @@ landscape.amova.locus <- function(l=1,rland)
     names(df) <- colnames(table(paste(loc[,landscape.democol()+1]),landscape.populations(rland)))
     rownames(df) <-   rownames(as.matrix(table(paste(loc[,landscape.democol()+1]),landscape.populations(rland))))
   }
-  amova(samples=df)
+  ade4::amova(samples=df)
 }
 
 
-landscape.amova.pairwise <- function(rland)
+landscape.amova.pairwise <- function (rland) 
+{
+  habs <- unique(landscape.populations(rland))
+  if (length(habs) > 0)
+    {
+      retmat <- matrix(NA, nrow = length(habs), ncol = length(habs))
+      for (i in 1:length(habs))
+        for (j in 1:i - 1)
+          {
+            compland <- rland
+            compland$individuals <- compland$individuals[landscape.populations(compland) %in% c(habs[i], habs[j]), ]
+            tmpvec <- rep(NA, length(rland$loci))
+            n <- 1
+            for (l in 1:length(rland$loci))
+              {
+                tmpvec[l] <- landscape.amova.locus(l, compland)$statphi
+                if (!is.na(tmpvec[l])) 
+                  n <- n + 1
+              }
+            retmat[i, j] <- sum(unlist(tmpvec), na.rm = T)/n
+          }
+      colnames(retmat) <- habs
+      rownames(retmat) <- habs
+      retmat
+    } else {warning("no occupied habitats"); NULL}
+
+}
+
+landscape.amova.pairwise.old <- function(rland)
   {
     retmat <- matrix(NA,nrow=rland$intparam$habitat,ncol=rland$intparam$habitat)
     for (i in 1:rland$intparam$habitat)

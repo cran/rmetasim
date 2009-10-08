@@ -1,5 +1,6 @@
 #These are functions that manipulate the landscape to produce summary statistics
-#implemented in the 'ape' package on CRAN.  ape must be installed and loaded for these to work.
+#implemented in the 'ape' or 'pegas' packages on CRAN.
+#pegas and ape must be installed and loaded for these to work.
 #interface to theta.h
 landscape.theta.h <- function(rland)
   {
@@ -12,7 +13,7 @@ landscape.theta.h <- function(rland)
           {
             alleledist <- as.factor(landscape.locus(lnum=j,rland.tmp)[,c(-1:-(landscape.democol()))])
             if (length(unique(alleledist))>1)
-              retval[i,j] <- theta.h(alleledist)
+              retval[i,j] <- pegas::theta.h(alleledist)
             else
               retval[i,j] <- NA
           }
@@ -32,7 +33,7 @@ landscape.theta.k <- function(rland)
           {
             alleledist <- as.factor(landscape.locus(lnum=j,rland.tmp)[,c(-1:-(landscape.democol()))])
             if (length(unique(alleledist))>1)
-              retval[i,j] <- theta.k(alleledist)
+              retval[i,j] <- pegas::theta.k(alleledist)
             else
               retval[i,j] <- NA
           }
@@ -61,7 +62,7 @@ landscape.theta.s<- function(rland)
                 segsites <- sum(apply(matrix(unlist(strsplit(statevec,split='')),ncol=seqlen,byrow=TRUE),2,function (x){length(unique(x))})>1)
             print(segsites)
                 if (segsites>0)
-                  retval[i,j] <- theta.s(segsites,seqlen)[1]
+                  retval[i,j] <- pegas::theta.s(segsites,seqlen)[1]
               }
           }
       }

@@ -49,7 +49,7 @@ landscape.FWright <- function (Rland)
   }
 
 
-landscape.allelefreq <- function(Rland,tbl.out=FALSE)
+landscape.allelefreq.old <- function(Rland,tbl.out=FALSE)
   {
     rv <- NULL
     for (i in 1:length(Rland$loci))

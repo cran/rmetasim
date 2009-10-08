@@ -187,7 +187,7 @@ landscape.coalinput <- function (rland, npp = 200, arlseq = NULL, arlms = NULL, 
         individuals[, 4] <- 1:dim(individuals)[1]
         rland$individuals <- matrix(as.integer(individuals), 
             nrow = dim(individuals)[1])
-        rland$intparam$nextindividual <- dim(individuals)[1] + 
+        rland$intparam$nextid <- dim(individuals)[1] + 
             1
         rland
     }

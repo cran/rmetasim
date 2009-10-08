@@ -3,7 +3,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ calculates pairwise phi-ST for a landscape}
 \description{
-  pairwise $\phi_{ST}$ calculator.  Kind of slow. use \code{landscape.sample}
+  pairwise \eqn{\phi_{ST}} calculator.  Kind of slow. use \code{landscape.sample}
 }
 \usage{
 landscape.amova.pairwise(rland)
