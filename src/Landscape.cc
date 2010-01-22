@@ -431,7 +431,7 @@ void Landscape::ChooseEpoch()
 void Landscape::RandomlyChooseEpoch()
  {
    int i;
-   double p[nep];
+   double *p = new double[nep];
    if (randepoch>0)
     {
       for (i=0;i<nep;i++)
@@ -440,6 +440,7 @@ void Landscape::RandomlyChooseEpoch()
 	}
       e = RandLibObj.multinomial(p,nep);
     }
+   delete [] p;
 }
 
 void Landscape::SequentiallyConstructDemoMatrix()
@@ -513,7 +514,7 @@ void Landscape::SequentialDensityDependentDemoMatrix()
 void Landscape::RandomlyConstructDemoMatrix()
 {
 
-  double p[ndemo];
+  double *p = new double[ndemo];
   int fr,to;
   int i,rm;
   int newto,newfr;
@@ -539,13 +540,14 @@ void Landscape::RandomlyConstructDemoMatrix()
 	    }
 	}
     }
+  delete [] p;
 }
 
 ///KKM 6.7.05..................................................................
 void Landscape::RandomDensityDependentDemoMatrix()
 {
 
-  double p[ndemo];
+  double *p = new double[ndemo];
   int fr,to;
   int i,rm;
   int newto,newfr;
@@ -581,6 +583,7 @@ void Landscape::RandomDensityDependentDemoMatrix()
 	    }
 	}
     }
+  delete [] p;
 }
 ///............................................................................
 
@@ -754,7 +757,8 @@ int Landscape::CalculateMaleGameteClassVector(PackedIndividual pi)
   int i,sz;
   sz = nhab * s;
 
-  double n[sz], p[sz];
+  double *n = new double[sz];
+  double *p = new double[sz];
   double clsz = 0.0, tmp, tmpct, tot=0;  
 
   M[e].SetToState(pi.GetClass());
@@ -806,6 +810,8 @@ int Landscape::CalculateMaleGameteClassVector(PackedIndividual pi)
       return 0;
       //      cerr << "no individuals in any of the donating classes in CalculateMaleGameteClassVector"<<endl;
     }
+  delete [] n;
+  delete [] p;
 }
 
 PackedIndividual Landscape::FindMate(PackedIndividual pi)
@@ -1163,7 +1169,8 @@ void Landscape::LambdaAdjust(int bypop)
 	      adjrate = pred_l/sim_l;
 	      for (l=(i*s);l<((i*s)+s);l++)
 		{
-		  CarryState(int(round(double(I[l].size())*adjrate)),l);
+		  //		  CarryState(int(round(double(I[l].size())*adjrate)),l);
+		  CarryState(int(double(I[l].size())*adjrate+0.5),l);
 		}
 	    }
 	}
@@ -1176,7 +1183,8 @@ void Landscape::LambdaAdjust(int bypop)
 	  
 	  for (i=0;i<(s*nhab);i++)
 	    {
-	      CarryState(int(round(double(I[i].size())*adjrate)),i);
+	      //	      CarryState(int(round(double(I[i].size())*adjrate)),i);
+	      CarryState(int(double(I[i].size())*adjrate+0.5),i);
 	    }
 	}
     } //if bypop is ne 0;

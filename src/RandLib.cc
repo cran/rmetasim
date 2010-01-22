@@ -93,8 +93,8 @@ void RandLib::SetDiscreteLookup(double *p, int ncat) //returns a randomly chosen
 int RandLib::PickMultinomial()
 {
   int i;
-  int resvec[lp.size()];
-  double pvec[lp.size()];
+  int *resvec = new int[lp.size()];
+  double *pvec = new double[lp.size()];
   for (i=0;i<int(lp.size());i++)
     {
       pvec[i]=lp[i];
@@ -105,6 +105,8 @@ int RandLib::PickMultinomial()
     {
       i++;
     }
+  delete [] resvec;
+  delete [] pvec;
   return i;
 }
 

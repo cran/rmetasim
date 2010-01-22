@@ -76,8 +76,8 @@ int InfAlleleTbl::getRandAlleleIndex()
 {
   int sz,i,tofind;
   sz = A.size();
-  double p[sz];
-  int lookup[sz];
+  double *p = new double[sz];
+  int *lookup = new int[sz];
 
   map<int, Allele, less<int> >::iterator tmpiter;
 
@@ -99,6 +99,9 @@ int InfAlleleTbl::getRandAlleleIndex()
       tmpiter = A.find(tofind);
     }
   while(tmpiter==A.end());
+
+  delete [] p;
+  delete [] lookup;
 
   return (*tmpiter).first;  
 }		 

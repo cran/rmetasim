@@ -42,8 +42,8 @@ int SeqAlleleTbl::getRandAlleleIndex()
 {
   int sz,i,tofind;
   sz = A.size();
-  double p[sz];
-  int lookup[sz];
+  double *p = new double[sz];
+  int *lookup = new int[sz];
 
   map<int, SeqAllele, less<int> >::iterator tmpiter;
 
@@ -64,7 +64,8 @@ int SeqAlleleTbl::getRandAlleleIndex()
       tmpiter = A.find(tofind);
     }
   while(tmpiter==A.end());
-
+  delete [] p;
+  delete [] lookup;
   return (*tmpiter).first;  
 }		 
 
