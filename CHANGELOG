@@ -1,5 +1,9 @@
-ver 1.1.10
+ver 1.1.11
+1/23/10
+Resolved a small problem with the Rd file for landscape.mismatchdist.
 
+ver 1.1.10
+1/22/10
 Fixed gnu-specific C++ array allocation.  Should now compile on Sun.
 Also added a function 'landscape.mig.matrix' that automatically creates a migration
 matrix among populations

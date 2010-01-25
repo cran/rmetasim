@@ -12,7 +12,7 @@
   \item{lnum}{locus number to calculate mismatch upon}
   \item{rland}{the Rmetasim landscape object}
 }
-\details{}
+\details{Calculates a mismatch distribution for DNA-sequence-based loci.}
   
 \value{
 A matrix with num loci columns and num populations rows.  Each element
