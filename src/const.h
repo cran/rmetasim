@@ -33,7 +33,7 @@ Largest random number possible given the stdlib random number generator
 #define MAXLOCI               40
 #define MAXALLELES            2000
 #define MAXPLOIDY             2
-#define MAXSEQLEN             500
+#define MAXSEQLEN             1000
 #define GENLEN                MAXLOCI*MAXPLOIDY
 #define TOKENLEN              10
 #define RESERVE_CLASS_SIZE    6000

@@ -1,3 +1,6 @@
+ver 1.1.12
+increased the length of DNA seqs from 500 to 1000
+
 ver 1.1.11
 1/23/10
 Resolved a small problem with the Rd file for landscape.mismatchdist.
