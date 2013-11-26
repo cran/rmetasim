@@ -6,7 +6,7 @@
   Save a Rmetasim landscape object to a file in a suite of output formats
 }
 \usage{
-  rland <- landscape.write.foreign(rland,fn="foreign",numi=24,fmt="GDA")
+  landscape.write.foreign(rland,numi=24,fn="foreign",fmt="GDA")
 }
 \arguments{
   \item{rland}{the Rmetasim landscape object}

@@ -76,7 +76,9 @@ void RandLib::SetDiscreteLookup(double *p, int ncat) //returns a randomly chosen
 	 {
 	   if (tot > 1.5) ///the total of the vector is really big.  something is wrong.
 	     {
+#ifdef DEBUG
 	       cerr <<"In Randlib.cc, the total of a vector passed to multinomial is much greater than 1:  "<<tot<<endl;
+#endif
 	       assert(tot<1);
 	     }
 	   else //scale all the probs to sum to one
@@ -105,8 +107,8 @@ int RandLib::PickMultinomial()
     {
       i++;
     }
-  delete [] resvec;
   delete [] pvec;
+  delete [] resvec;
   return i;
 }
 
@@ -125,7 +127,7 @@ int RandLib::unirange(int maxval)
 {
   int rv;
   //  rv=int(round(runif(0.0,maxval)));
-  rv=int(rround(runif(0.0,maxval),0));
+  rv=int(fround(runif(0.0,maxval),0));
   return rv;
 }
 
@@ -139,7 +141,7 @@ int RandLib::poisson(double mu)
 {
   int rv;
   //  rv=int(round(rpois(mu)));
-  rv=int(rround(rpois(mu),0));
+  rv=int(fround(rpois(mu),0));
   return rv;
 }
 
@@ -158,7 +160,7 @@ double RandLib::negexp(double dist, double mu)
 }
 
 
-void RandLib::SetSeed(long int sd)
+void RandLib::SetSeed(long int /*sd*/)
 {
   //  gsl_rng_set(sd);
 }

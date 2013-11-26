@@ -11,19 +11,19 @@ landscape.coerce <- function(rland,noind=F)
   {
     rland$intparam <- lapply(rland$intparam,as.integer)
     rland$switchparam <- lapply(rland$switchparam,as.integer)
-    rland$floatparam <- lapply(rland$floatparam,as.real)
+    rland$floatparam <- lapply(rland$floatparam,as.numeric)
     
     rland$loci <- lapply(rland$loci,function(x)
                          {
                            x$type <- as.integer(x$type)
                            x$ploidy <- as.integer(x$ploidy)
                            x$trans <- as.integer(x$trans)
-                           x$rate <- as.real(x$rate)
+                           x$rate <- as.numeric(x$rate)
                            x$alleles <- lapply(x$alleles,function(y,typ)
                                                {
                                                  y$aindex <- as.integer(y$aindex)
                                                  y$birth <- as.integer(y$birth)
-                                                 y$prop <- as.real(y$prop)
+                                                 y$prop <- as.numeric(y$prop)
                                                  if (typ!=253)
                                                    {
                                                      y$state <- as.integer(y$state)

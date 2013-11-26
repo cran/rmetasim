@@ -18,12 +18,12 @@ landscape.mig.matrix <- function(h=3,               #habitats
       stop("First reproductive stage must be smaller than total number of stages")
     if(mig.model=="island")
       {
-        require(gtools)
+#        require(gtools)
         R.int <- matrix(0,nrow=h,ncol=h)
         R.comb <- combinations(h,s,1:h)[h:1,]
         for(a in 1:h)
           {
-          R.int[R.comb[a,],a] <- 1          
+            R.int[R.comb[a,],a] <- 1          
           }
       }
 
@@ -35,6 +35,8 @@ landscape.mig.matrix <- function(h=3,               #habitats
           R.int[c(a-1,a+1),a] <- 1
           }
         R.int <- R.int[-c(1,h+2),-c(1,h+2)]
+#        h.dim=NULL
+        distance.fun=NA
        }
 
        if(mig.model=="stepping.stone.circular")
@@ -136,7 +138,7 @@ landscape.mig.matrix <- function(h=3,               #habitats
     ##before that it only created the small, habitat-based matrix
   
       rep.s <- first.rep.s:s
-      R <- matrix(0,nrow=h*s,ncol=h*s)       
+      R <- matrix(0,nrow=h*s,ncol=h*s)
       for(a in 1:h)
        {
         R[seq(1,h*s,s),split(c(rep(rep.s,h)+rep(seq(0,(s*h)-1,s),each=length(rep.s))),rep(1:h,each=length(rep.s)))[[a]]] <- R.int[,a]

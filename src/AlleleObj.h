@@ -85,7 +85,7 @@ public:
       return birth;
     }
 
-  inline void SetDeath (int d)
+    inline void SetDeath (int /*d*/)
     {
       //      death = d;
     }

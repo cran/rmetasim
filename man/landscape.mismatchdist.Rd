@@ -6,11 +6,11 @@
   the number of seqregating sites.}
 
 \usage{
- misdist <- landscape.mismatchdist(lnum=1,rland)
+ landscape.mismatchdist(lnum=1,Rland)
 }
 \arguments{
   \item{lnum}{locus number to calculate mismatch upon}
-  \item{rland}{the Rmetasim landscape object}
+  \item{Rland}{the Rmetasim landscape object}
 }
 \details{Calculates a mismatch distribution for DNA-sequence-based loci.}
   

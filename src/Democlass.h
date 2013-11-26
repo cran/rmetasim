@@ -47,7 +47,7 @@ public:
 
   ///add an individual to the data structure.  Returns the index to the individual.   
 
-int AddIndividual (PackedIndividual & PI);
+int AddIndividual (PackedIndividual & ind);
 
   ///return an individual pointed to by 'ind' If ind not found, still
   ///returns an individual, but a nonsense individual with a class = -1 ;
@@ -186,7 +186,9 @@ inline int NextIndividual()
     }
   else
     {
+#ifdef DEBUG
       cerr << "trying advance the nextind iterator even though it is already at the end of the list Democlass.cc:NextIndividual()";
+#endif
       return 1;
     }
 }
@@ -205,7 +207,9 @@ inline int RemoveCurrentInd(int t, AlleleLookTbl &Atbls)
       UNUSED.push_back((*tmpiter).first); //push index onto list of availible indices
       if (I.size()<1)
 	{
+#ifdef DEBUG
 	  cerr << "trying to erase an individual when none exist" << endl;
+#endif
 	  assert(I.size()>0);
 	}
       else
@@ -237,7 +241,9 @@ inline void ChangeInd(int ind, int t)
     }
   else
     {
+#ifdef DEBUG
       cerr  <<"couldnt find individual to change "<<endl;
+#endif
       assert (I.find(ind)!=I.end());
     }
 }
@@ -255,7 +261,9 @@ inline void SetCurrentLastRep(int lr)
     }
   else
     {
+#ifdef DEBUG
       cerr << "past end of individual list"<<endl;
+#endif
       assert(nextind!=I.end());
     }
 }  
@@ -280,7 +288,9 @@ inline void SetCurrentNumOff(int no)
     }
   else
     {
+#ifdef DEBUG
       cerr << "past end of individual list"<<endl;
+#endif
       assert(nextind!=I.end());
     }
 }  

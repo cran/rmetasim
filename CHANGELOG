@@ -1,3 +1,17 @@
+ver 2.0
+removed the dependencies on pegas, because it was causing segfaults on 64bit linux machines.  I don't understand the mechanism 
+for these errors, but isolated to this package.  May create an rmetasim-analysis package in the future to sidestep this issue
+
+Also increased speed for reproduction by better storing intermediate values.  In the case of complete selfing, speed is much increased
+
+ver 1.1.15
+fixed some gcc specific constructs and repaired some documentation
+ver 1.1.14
+fixed a lot of memory management issues
+ver 1.1.13
+backed out the generalization of memory management implemented in 1.1.10 which caused an ugly memory leak.  In the process of 
+improving memory management.
+
 ver 1.1.12
 increased the length of DNA seqs from 500 to 1000
 

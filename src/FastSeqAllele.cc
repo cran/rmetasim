@@ -64,8 +64,10 @@ int SeqAlleleTbl::getRandAlleleIndex()
       tmpiter = A.find(tofind);
     }
   while(tmpiter==A.end());
-  delete [] p;
-  delete [] lookup;
+
+  delete[] lookup;
+  delete[] p;
+
   return (*tmpiter).first;  
 }		 
 
@@ -205,7 +207,9 @@ int SeqAlleleTbl::addAlleleAndIndex(SeqAllele  na, int ai)
 	{
 	  if (ai==(*tmpiter).first)
 	    {
+#ifdef DEBUG
 	      cerr << "Allele index: "<<ai<< " already present in table " <<endl;
+#endif
 	      assert(0==1);
 	    }
 	}
@@ -253,7 +257,7 @@ void SeqAlleleTbl::GCAlleles()
 }
 
 
-void SeqAlleleTbl::KillAlleleCopy(int i, int t)
+void SeqAlleleTbl::KillAlleleCopy(int i, int /*t*/)
 {
   map<int, SeqAllele, less<int> >::iterator tmpiter;
   tmpiter = A.find(i);
@@ -268,9 +272,12 @@ void SeqAlleleTbl::KillAlleleCopy(int i, int t)
     }
   else
     {
+#ifdef DEBUG
       cerr << "allele index : "<<i<<" not found in Allele.h::KillAlleleCopy"<<endl;
       cerr << "This is the allele table: " <<endl;
       Write(cerr);
+#endif
+
       assert(tmpiter!=A.end());
     }
 }
@@ -290,6 +297,7 @@ int SeqAlleleTbl::mutator(int anum, int t)
   map<int, SeqAllele, less<int> >::iterator tmpiter;
   int newanum;
   assert(anum>=0);
+
   if (RandLibObj.uniform()<rate)    //a mutation has occurred
     {
       SeqAllele na;
@@ -312,7 +320,9 @@ int SeqAlleleTbl::mutator(int anum, int t)
 	}
       else
 	{
+#ifdef DEBUG
 	  cerr <<"Allele number "<<anum<<" not found in allele table: " <<endl<<*this<<endl;
+#endif
 	  assert(tmpiter!=A.end());
 	  return -1;
 	}
@@ -366,21 +376,17 @@ void SeqAlleleTbl::Write(ostream &stream)
 
 vector<int>  SeqAlleleTbl::getAindices()
 {
-  int sz;
+
 
   vector<int> aindices;
   map<int, SeqAllele, less<int> >::iterator tmpiter;
-
-  sz=A.size();
-
+  //sz=A.size();
   for (tmpiter=A.begin();tmpiter!=A.end();tmpiter++)
     {
 	  aindices.push_back((*tmpiter).first);
     }
   return aindices;
 }		 
-
-
 
 
 void SeqAlleleTbl::Scan(istream &stream)
