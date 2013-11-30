@@ -21,8 +21,6 @@ using namespace std;
 
 void LocalMat::SetSize(size_t sz)
 {
-  assert(sz>=0);
-
 #ifdef RDEBUG
   cerr << "SetSize Slocal" <<endl;
 #endif
@@ -66,7 +64,7 @@ istream &operator>>(istream & stream, LocalMat &lm)
 ///Landscape class
 
 ///Constructor
-Landscape::Landscape (int h, int stg, int loc, int ep, int nd, int gn)
+Landscape::Landscape (int /*h*/, int /*stg*/, int /*loc*/, int /*ep*/, int /*nd*/, int /*gn*/)
 {
   ndemo=1;
 #ifdef RDEBUG
@@ -211,7 +209,7 @@ void Landscape::setstages(int stg) { s=stg; }
 void Landscape::setepochprob(int ce, double prob) {epochprobs[ce]=prob;}
 void Landscape::setepochstart(int ce, int strt) {epochs[ce]=strt;}
 
-void Landscape::init(int h, int stg, int loc, int ep, int nd, int gn)
+void Landscape::init(int h, int stg, int /*loc*/, int ep, int nd, int gn)
 {
 #ifdef RDEBUG
   cerr << "waiting for return to cont";
@@ -431,16 +429,18 @@ void Landscape::ChooseEpoch()
 void Landscape::RandomlyChooseEpoch()
  {
    int i;
-   double *p = new double[nep];
    if (randepoch>0)
     {
+      double *p = new double[nep];
+
       for (i=0;i<nep;i++)
 	{
 	  p[i]=epochprobs[i];
 	}
       e = RandLibObj.multinomial(p,nep);
+
+      delete[] p;
     }
-   delete [] p;
 }
 
 void Landscape::SequentiallyConstructDemoMatrix()
@@ -513,7 +513,6 @@ void Landscape::SequentialDensityDependentDemoMatrix()
 ///........................................................................
 void Landscape::RandomlyConstructDemoMatrix()
 {
-
   double *p = new double[ndemo];
   int fr,to;
   int i,rm;
@@ -540,13 +539,13 @@ void Landscape::RandomlyConstructDemoMatrix()
 	    }
 	}
     }
-  delete [] p;
+
+  delete[] p;
 }
 
 ///KKM 6.7.05..................................................................
 void Landscape::RandomDensityDependentDemoMatrix()
 {
-
   double *p = new double[ndemo];
   int fr,to;
   int i,rm;
@@ -583,7 +582,8 @@ void Landscape::RandomDensityDependentDemoMatrix()
 	    }
 	}
     }
-  delete [] p;
+
+  delete[] p;
 }
 ///............................................................................
 
@@ -698,7 +698,9 @@ void Landscape::Survive()
 	  indx = I[i].GetCurrentIndex();
 	  if ((indx<0)||(ind.GetClass()<0))
 	    {
+#ifdef DEBUG
 	      cerr << " run off the the end of the individual map for class " << i<<endl;
+#endif
 	      assert(ind.GetClass()>=0);
 	    }
 	  if (ind.GetChanged()<t)
@@ -751,7 +753,8 @@ void Landscape::Survive()
    type double 
 
 */
-int Landscape::CalculateMaleGameteClassVector(PackedIndividual pi)
+//int Landscape::CalculateMaleGameteClassVector(PackedIndividual pi)
+int Landscape::CalculateMaleGameteClassVector(int k)
 {
 
   int i,sz;
@@ -761,7 +764,7 @@ int Landscape::CalculateMaleGameteClassVector(PackedIndividual pi)
   double *p = new double[sz];
   double clsz = 0.0, tmp, tmpct, tot=0;  
 
-  M[e].SetToState(pi.GetClass());
+  M[e].SetToState(k);
 
   ///  cerr <<"M[e].GetToState "<< M[e].GetToState()<<endl;
   ///multiply the individual class sizes times the m's
@@ -790,7 +793,9 @@ int Landscape::CalculateMaleGameteClassVector(PackedIndividual pi)
 	{
 	  if (tot > 1.1) //something is very wacky and the program should terminate
 	    {
+#ifdef DEBUG
 	      cerr << "the probabilities of choosing a class total to more than 1: total = "<<tot<<endl;
+#endif
 	      assert (tot<=1);
 	    }
 	  else
@@ -802,19 +807,25 @@ int Landscape::CalculateMaleGameteClassVector(PackedIndividual pi)
 	    }
 	}
       RandLibObj.SetDiscreteLookup(p,sz);
+
+      delete[] p;
+      delete[] n;
+
       return 1;
     }
   else 
     {
+      delete[] p;
+      delete[] n;
+
       RandLibObj.FreeDiscreteLookup();
+
       return 0;
       //      cerr << "no individuals in any of the donating classes in CalculateMaleGameteClassVector"<<endl;
     }
-  delete [] n;
-  delete [] p;
 }
 
-PackedIndividual Landscape::FindMate(PackedIndividual pi)
+PackedIndividual Landscape::FindMate(PackedIndividual /*pi*/)
 {
   PackedIndividual tmpI;
 
@@ -842,12 +853,15 @@ void Landscape::testfindmate(PackedIndividual pi)
 {
   PackedIndividual mate;
   size_t i;
+#ifdef DEBUG
   cerr << "target ind: " <<pi<<endl;
+#endif
   for (i=1;i<100;i++)
     {
       mate = FindMate(pi);
-
+#ifdef DEBUG
       cerr <<"potential mate # "<<i<<" :  "<< mate<<endl;
+#endif
     }
 }
 
@@ -875,83 +889,38 @@ void Landscape::Reproduce()
   size_t j, k, l, sz, lsz ;
   sz = nhab * s;
   CompressInd();
-  //  cerr<<"Entering L.Reproduce"<<endl;
+  
+  //cerr<<"Entering L.Reproduce"<<endl;
 
   for (k=0;k<sz;k++)
     {
       //      cerr << "Trying to reproduce from class: "<<k<<endl;
       if (R[e].AnyFrom(k)) ///find out if offspring can be produced by this class
 	{
+	  //cerr<<"L.Reproduce k:"<< k <<endl;
+  
 	  R[e].SetFromState(k);
 	  I[k].CompressClass(0.5);///save space (may help speed )
 	  I[k].ResetIndividuals();///set an internal pointer to I[k] first ind in list
 	  
 	  lsz=I[k].size();
-	  for (l=0;l<lsz;l++)
-	    {
-	      searchI = I[k].GetCurrentIndividual();
-	      if (searchI.GetClass()<0)
+	  if (CalculateMaleGameteClassVector(k))
+	    {  
+	      for (l=0;l<lsz;l++)
 		{
-		  cerr << "no individual returned from deomgraphic class"<<endl;
-		  assert(searchI.GetClass()==0);
-		}
-	      indx = I[k].GetCurrentIndex();
-	      ///decides where pollen comes from 
-	      if (CalculateMaleGameteClassVector(searchI))
-		{
+		  searchI = I[k].GetCurrentIndividual();
+		  if (searchI.GetClass()<0)
+		    {
+#ifdef DEBUG
+		      cerr << "no individual returned from deomgraphic class"<<endl;
+#endif
+		      assert(searchI.GetClass()==0);
+		    }
+		  indx = I[k].GetCurrentIndex();
 
-
-/**
-
-Iterate through the possible new classes of offspring.  By this I mean
-the classes to which offspring could disperse.  For each possible
-class, choose a number of offspring to put in that class.
-
-After the number of offspring are chosen, they are generated by
-finding a male from a multinomial distribution given by the
-appropriate column of the M[e] matrix.
-
-***** This approach is definitely wrong if you want to link in
-***** selection.  To do that I think you would have to:
-
-1) take the external multinomial vector of potential dispersal sites
-given in the R[e] matrix columns.  In the current implementation,
-these represent means of poisson distributions.  They could also be
-modified to be probabilities of dispersal to a particular distance
-(realized dispersal).  Either way, these vectors must be modified or
-generated anew for each offspring produced.
-
-2) The modification has to depend upon the genotype of the offspring, 
-of course   the simplest way would be to look at the offsprings genotype 
-and generate a multinomial probability dist of dispersing to a site.  That 
-multinomial distribution would, no doubt be determined by a continuous 
-pdf based upon dispersal mechanics.  A nice improvement would be the ability 
-to modify an underlying vector of environmental distances specified in the R[e] 
-matrix input by the user using a distribution produced by the genotype.  
-
-3) As for the expression of genotype, I would start with an additive model.  
-There are two classes of numerically based loci already.  InfAlleles increase 
-their integer state monotonically from 0..N.  Not really very useful.  
-StepAlleles implemented in the StepAlleleTable are better.  These alleles' 
-states drift back and forth from the current state.  This class
-implements a strict stepwise mutation model. You could also define
-your own mutation model.  Anyway, I would take the sum of the
-numerical value of the allele states across all loci involved.  This
-single number would determine phenotype.  You could add noise to
-simulate developmental/environmantal differences among genotypes
-
-The types of functions that you would need to use on individuals
-(PackedIndividuals) are described in DemoClass.h.  Remeber, you can
-ResetIndividuals() and reset the pointer to the first ind.  Then you
-can iterate through the list by getting the NextIndivdual.
-
-Once you have an individual in hand, use the methods in PackedIndividual.h 
-to change it, look at it or its alleles, etc.  Try not to change 
-PAckedIndividual.h
-
-
-*/
-		  for (j=0;j<sz;j++)
+		  //iterate through mothers
+		  
+                  for (j=0;j<sz;j++)
 		    {
 		      R[e].SetToState(j);
 		      ///pick a number of offspring from a Poisson dist with mean=R[tostate,fromstate]
@@ -962,16 +931,16 @@ PAckedIndividual.h
 			{
 			  noff=0;
 			}
-
+		      
 		      if (noff>0)
 			{
 			  I[k].SetCurrentLastRep(t);
 			  I[k].SetCurrentNumOff(noff);
 			  
 			  /*
-choosing mate.  At this point the effects of genotype upon the mates
-ability to produce pollen could be inserted.
- */
+			    choosing mate.  At this point the effects of genotype upon the mates
+			    ability to produce pollen could be inserted.
+			  */
 			  if (!multiple_paternity)///all offspring from one father
 			    {
 			      if (RandLibObj.uniform()<self)
@@ -1001,17 +970,18 @@ ability to produce pollen could be inserted.
 			      if (mate.GetClass()>-1)//if no mate, no offspring
 				{
 				  tmpI = searchI.repro_sex(searchI,mate,t,Atbls);
+				  
 				  tmpI.SetClass(j);
 				  
 				  ///this could/should be made user selectable
 				  tmpI.SetSex(0);///would require some more code modifications, but might be worth it
-
+				  
 				  tmpI.SetGen(t);
-
+				  
 				  tmpI.SetMID(0);
 				  tmpI.SetPID(0);
 				  tmpI.SetID(0);
-
+				  
 				  tmpI.SetMID(searchI.GetID());
 				  tmpI.SetPID(mate.GetID());
 				  tmpI.SetID(nextID);
@@ -1023,25 +993,33 @@ ability to produce pollen could be inserted.
 				    {
 				      nextID=nextID+1;
 				    }
-
+				  
 				  tmpI.Change(-1);
+				  //cerr<<"running birth"<<endl;
+				  
 				  tmpI.Birth(t,Atbls);
+				  
+				  //cerr<<"birth run"<<endl;
 				  err = 0;
 				  if (I[j].AddIndividual(tmpI)<0)
 				    {
+#ifdef DEBUG
 				      cerr << "adding an individual failed" << endl;
+#endif
 				    }
+				  //cerr<<"added an individual.  ID"<<nextID<<endl;
 				}
 			    } //q
-			
+			  
 			}//end if noff>0
 		    }//j
-		  RandLibObj.FreeDiscreteLookup();
-		}//are there males?
-	      I[k].NextIndividual();
-	    }//l
-	} //if R[e].AnyFrom
-    }//k 
+ RandLibObj.FreeDiscreteLookup();
+ I[k].NextIndividual();
+		}//l
+	}
+    } //if R[e].AnyFrom
+      
+}//k 
 
 }//end of function Reproduce
 
@@ -1169,8 +1147,7 @@ void Landscape::LambdaAdjust(int bypop)
 	      adjrate = pred_l/sim_l;
 	      for (l=(i*s);l<((i*s)+s);l++)
 		{
-		  //		  CarryState(int(round(double(I[l].size())*adjrate)),l);
-		  CarryState(int(double(I[l].size())*adjrate+0.5),l);
+		  CarryState(int(round(double(I[l].size())*adjrate)),l);
 		}
 	    }
 	}
@@ -1183,8 +1160,7 @@ void Landscape::LambdaAdjust(int bypop)
 	  
 	  for (i=0;i<(s*nhab);i++)
 	    {
-	      //	      CarryState(int(round(double(I[i].size())*adjrate)),i);
-	      CarryState(int(double(I[i].size())*adjrate+0.5),i);
+	      CarryState(int(round(double(I[i].size())*adjrate)),i);
 	    }
 	}
     } //if bypop is ne 0;
@@ -1309,7 +1285,9 @@ ostream &operator<<(ostream &stream, Landscape &l)
 	}
       else
 	{
+#ifdef DEBUG
 	  cerr << "Don't understand the ID of this locus " <<endl;
+#endif
 	  assert(0==1);
 	}
       l.Atbls[i]->Write(stream);
@@ -1469,7 +1447,9 @@ istream &operator>>(istream & stream, Landscape &l)
 		    epochprobs=0;
 		    if (totprob!=1)
 		      {
+#ifdef DEBUG
 			cerr << "epoch probabilities do not sum to one" <<endl;;
+#endif
 			assert(totprob==1);
 		      }
 		  }
@@ -1534,7 +1514,9 @@ istream &operator>>(istream & stream, Landscape &l)
 		      }
 		    else
 		      {
+#ifdef DEBUG
 			cerr << "already defined popsize vectors, can't define inds";
+#endif
 			assert(1==0);
 		      }
 		  }
@@ -1554,13 +1536,17 @@ istream &operator>>(istream & stream, Landscape &l)
 		      }
 		    else
 		      {
+#ifdef DEBUG
 			cerr << "already defined individual vectors";
+#endif
 			assert(0);
 		      }
 		  }
 		else
 		  {
+#ifdef DEBUG
 		    cerr << "unrecognized token `" << c << "' in Landscape inserter"<<endl ;
+#endif
 		  }
 	      }
 	      else
@@ -1585,7 +1571,9 @@ istream &operator>>(istream & stream, Landscape &l)
     }
   if (epochprobs)
     {
+#ifdef DEBUG
       cerr << "asked for random epochs, but did not include probabilities" <<endl; ;
+#endif
       assert(1==2);
     }
   l.GCAlleles();
@@ -1605,7 +1593,7 @@ void Landscape::Advance()
 ///begin implementation of Landscape_statistics
 
 
-Landscape_statistics::Landscape_statistics (int h, int stg, int loc, int ep, int gn)
+Landscape_statistics::Landscape_statistics (int /*h*/, int /*stg*/, int /*loc*/, int /*ep*/, int /*gn*/)
 {
   ///  init(h,stg, loc, ep, gn);
 }
@@ -1861,7 +1849,9 @@ void Landscape_statistics::ArlequinHaploidOut(int numind, ostream &streamout)
 		{
 		  htypes[strng]=1;
 		}
+#ifdef DEBUG
 	      cerr << strng <<endl;
+#endif
 	      delete strstrmp;
 	    }
 

@@ -15,7 +15,7 @@ This is the implementation of the allele object type.
 
 #include <AlleleObj.h>
 
-Allele::Allele (double p, int s, int b, int d)
+Allele::Allele (double p, int s, int b, int /*d*/)
 {
   SetState(s);
   SetBirth(b);
@@ -231,8 +231,10 @@ void SeqAllele::Scan(istream & stream)
       stream >> tmp;
       if (alist.find(tmp)==string::npos)
 	{
+#ifdef DEBUG
 	  cerr << "Problem with DNA sequence.  A base other than AGTCagtc read (could signify premature sequence end"<<endl;
 	  cerr << "Problem found at base: "<<i <<endl;
+#endif
 	  assert(0==1);
 	}
 

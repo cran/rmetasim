@@ -102,7 +102,9 @@ is.landscape <- function(Rland=NULL,verb=TRUE,exact=FALSE)
                         }
                     if (max(apply(tmpS,2,sum))>1)
                       {
-                        if (verb) {print(paste("Columns in the landscape S matrix associated with localdem",j,"total more than 1"))}
+                        if (verb) {
+                          tcls <- which(apply(tmpS,2,sum)>1)
+                          print(paste("Columns",paste(tcls,collapse=", ")," in the landscape S matrix associated with localdem",j,"total more than 1"))}
                         ok <- FALSE
                       }
                     

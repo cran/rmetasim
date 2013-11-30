@@ -25,13 +25,13 @@ public:
   virtual ~GenotypePool();
   ///return a pointer to an AlleleTbl object.  The object returned is cast to the 
   ///Type given by its getClassType()
-  inline AlleleTbl * getAlleleTbl(size_t i=0)
+    inline AlleleTbl * getAlleleTbl(size_t /*i*/=0)
   {
     return NULL;
   }
 
   ///
-  inline size_t push_back(AlleleTbl * AT)
+    inline size_t push_back(AlleleTbl * /*AT*/)
   {
     return 0;
   }

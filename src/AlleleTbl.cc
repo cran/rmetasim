@@ -97,7 +97,9 @@ istream &operator>>(istream & stream, AlleleLookTbl &a)
 	}
       else
 	{
+#ifdef DEBUG
 	  cerr << "Cannot identify the locus type in input stream"<<endl;
+#endif
 	  assert (0==1);
 	}
       AT->clear();

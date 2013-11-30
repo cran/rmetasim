@@ -359,13 +359,13 @@ public:
   void setR(TransMat a, int ep=-1);
   void setM(TransMat a, int ep=-1);
 
-  inline void setSmatElement(int ep, int t, int f, double val)  {S[e].SetElement(f,t,val);}
-  inline void setRmatElement(int ep, size_t t, size_t f, double val)  {R[e].SetElement(f,t,val);}
-  inline void setMmatElement(int ep, size_t t, size_t f, double val)  {M[e].SetElement(f,t,val);}
+    inline void setSmatElement(int /*ep*/, int t, int f, double val)  {S[e].SetElement(f,t,val);}
+    inline void setRmatElement(int /*ep*/, size_t t, size_t f, double val)  {R[e].SetElement(f,t,val);}
+    inline void setMmatElement(int /*ep*/, size_t t, size_t f, double val)  {M[e].SetElement(f,t,val);}
 
-  inline double getSmatElement(int ep, size_t t, size_t f)  {return S[e].GetElement(f,t);}
-  inline double getRmatElement(int ep, size_t t, size_t f)  {return R[e].GetElement(f,t);}
-  inline double getMmatElement(int ep, size_t t, size_t f)  {return M[e].GetElement(f,t);}
+    inline double getSmatElement(int /*ep*/, size_t t, size_t f)  {return S[e].GetElement(f,t);}
+    inline double getRmatElement(int /*ep*/, size_t t, size_t f)  {return R[e].GetElement(f,t);}
+    inline double getMmatElement(int /*ep*/, size_t t, size_t f)  {return M[e].GetElement(f,t);}
 
 
   inline void setLSmatElement(int d, size_t t, size_t f, double val) {LM[d].SetSlocalVal(f,t,val);}
@@ -574,7 +574,9 @@ void popsizeset(std::vector<int> & ps);
       }
     else 
       {
+#ifdef DEBUG
 	cerr <<"dont know what type of locus this is"<<endl;
+#endif
 	assert(1==0);
       }
   }
@@ -624,7 +626,8 @@ void Survive();
     ***command: RandLibObj.FreeDiscreteLookup();
 
 */
-int CalculateMaleGameteClassVector(PackedIndividual pi);
+//int CalculateMaleGameteClassVector(PackedIndividual pi);
+int CalculateMaleGameteClassVector(int k);
 
   /**
 This function goes through each of the classes and performs internal
@@ -732,9 +735,6 @@ void GCAlleles();
 }; // end Landscape
 
 
-#endif /*LANDSCAPE*/
-
-
 
 class Landscape_statistics: public Landscape {
 
@@ -823,7 +823,7 @@ void ROut(int numind = 200, ostream &streamout = cout);
 
 };
 
-
+#endif
 
 
 /*

@@ -5,10 +5,10 @@
 \description{
   Deprecated, 'clean.landscape()' does the same.}
   \usage{
-  rland <- landscape.compress(rland)
+  landscape.compress(Rland)
 }
 \arguments{
-  \item{rland}{the Rmetasim landscape object}
+  \item{Rland}{the Rmetasim landscape object}
 }
 
 \examples{

@@ -7,8 +7,9 @@
 
 \usage{
   ## must be called AFTER integer, switch, and float params have been created
-  rland <- landscape.coalinput(rland, npp=500, arlseq = "seq.arp", arlms = "ms.arp", seqsitemut=1e-7,
-                               msmut = 5e-4, mut.rates = NULL)
+  landscape.coalinput(rland, npp=200, arlseq = NULL, arlms = NULL,
+                      seqsitemut=1e-06, msmut = 5e-04, mut.rates = NULL,
+                      ev = (rep(1,rland$intparam$s)/rland$intparam$s))
 }
 \arguments{
   \item{rland}{partially created landscape object, required}
@@ -22,6 +23,9 @@
     loci to simulate.  If NULL, SSR loci are assigned msmut as a
     mutation rate and sequence-based loci, seqsitemut.  If a vector,
     ovrrides msmut and seqsitemut}
+  \item{ev}{stage structure of new individuals populated into
+    landscape. Should be of length equal to the number of stages in each
+    habitat and should sum to 1}
 }
 
 \details{This function provides part of an interface between R and

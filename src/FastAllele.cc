@@ -27,9 +27,11 @@ AlleleTbl::~AlleleTbl()
 
 
 ///t is the current clock-tick
-int AlleleTbl::mutator(int anum, int t)
+int AlleleTbl::mutator(int /*anum*/, int /*t*/)
 {
+#ifdef DEBUG
   cerr << "AlleleTbl mutator called.  This function should be overridden"<<endl;
+#endif
   assert(1==0);
   return -1;
 }
@@ -100,8 +102,8 @@ int InfAlleleTbl::getRandAlleleIndex()
     }
   while(tmpiter==A.end());
 
-  delete [] p;
-  delete [] lookup;
+  delete[] lookup;
+  delete[] p;
 
   return (*tmpiter).first;  
 }		 
@@ -247,7 +249,9 @@ int InfAlleleTbl::addAlleleAndIndex(Allele  na, int ai)
 	{
 	  if (ai==(*tmpiter).first)
 	    {
+#ifdef DEBUG
 	      cerr << "Allele index: "<<ai<< " already present in table " <<endl;
+#endif
 	      assert(0==1);
 	    }
 	}
@@ -297,7 +301,7 @@ void InfAlleleTbl::GCAlleles()
 }
 
 
-void InfAlleleTbl::KillAlleleCopy(int i, int t)
+void InfAlleleTbl::KillAlleleCopy(int i, int /*t*/)
 {
   map<int, Allele, less<int> >::iterator tmpiter;
   tmpiter = A.find(i);
@@ -315,9 +319,11 @@ void InfAlleleTbl::KillAlleleCopy(int i, int t)
     }
   else
     {
+#ifdef DEBUG
       cerr << "allele index : "<<i<<" not found in Allele.h::KillAlleleCopy"<<endl;
       cerr << "This is the allele table: " <<endl;
       Write(cerr);
+#endif
       assert(tmpiter!=A.end());
     }
 
@@ -352,12 +358,13 @@ int InfAlleleTbl::mutator(int anum, int t)
 {
   map<int, Allele, less<int> >::iterator tmpiter;
 
-
   assert(anum>=0);
   if (RandLibObj.uniform()<rate)    //a mutation has occurred
     {
+  
       Allele na;
       int newanum;
+
 
       SetMaxState();
       na.SetState(maxstate+1);  //sets state to a previously unused value.
@@ -369,15 +376,20 @@ int InfAlleleTbl::mutator(int anum, int t)
     }
   else
     {
+  
       tmpiter=A.find(anum);
       if (tmpiter!=A.end())
 	{
-	  (*tmpiter).second.SetFreq((*tmpiter).second.GetFreq()+1);  //update the allele freq without having to lookup allele by value
+	  ///update the allele freq 
+	  ///without having to lookup allele by value
+	  (*tmpiter).second.SetFreq((*tmpiter).second.GetFreq()+1);  
 	  return anum;
 	}
       else
 	{
+#ifdef DEBUG
 	  cerr <<"Allele number "<<anum<<" not found in allele table: " <<endl<<*this<<endl;
+#endif
 	  assert(tmpiter!=A.end());
 	  return -1;
 	}
@@ -551,7 +563,9 @@ int StepAlleleTbl::mutator(int anum, int t)
     }
   else
     {
+#ifdef DEBUG
       cerr <<"Allele number "<<anum<<" not found in allele table: " <<endl<<*this<<endl;
+#endif
       assert(tmpiter!=A.end());
       return -1;
     }

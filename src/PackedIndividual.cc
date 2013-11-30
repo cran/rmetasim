@@ -133,7 +133,9 @@ PackedIndividual PackedIndividual::MakeGamete(AlleleLookTbl &Atbls)
 	}
       else
 	{
+#ifdef DEBUG
 	  cerr << "Fell through all of the inheritance types in MakeGamete " << endl;
+#endif
 	  assert(1==0);
 	}
       if (!(pi.G[((i * MAXPLOIDY))]>-1))
@@ -193,7 +195,7 @@ void PackedIndividual::SetRandGenotype(AlleleLookTbl &Atbls)
     }
 }
 
-PackedIndividual  PackedIndividual::repro_sex(PackedIndividual & SO1, PackedIndividual & SO2, int t, AlleleLookTbl &Atbls)
+PackedIndividual  PackedIndividual::repro_sex(PackedIndividual & SO1, PackedIndividual & SO2, int /*t*/, AlleleLookTbl &Atbls)
 {
   int i;
   int k, l;
@@ -228,7 +230,7 @@ PackedIndividual  PackedIndividual::repro_sex(PackedIndividual & SO1, PackedIndi
 
 
 
-PackedIndividual  PackedIndividual::repro_asex(PackedIndividual & SO, int t)
+PackedIndividual  PackedIndividual::repro_asex(PackedIndividual & SO, int /*t*/)
 {
   //  int i,j;
 
@@ -257,14 +259,16 @@ void PackedIndividual::Growth(AlleleLookTbl &Atbls)
 void PackedIndividual::Birth(int t, AlleleLookTbl &Atbls)
 {
   int i;
-
+  //  cerr<< "in tmpI.Birth"<<endl;
   for (i=0;i<nloc;i++)
     {
       if (PL[i]==1)
 	{
 	  if (t>=0)
 	    {
+	      //	      cerr<<"running mutator hap"<<endl;
 	      G[ ((i * MAXPLOIDY) + 0) ] = Atbls[i]->mutator(G[ ((i * MAXPLOIDY) + 0) ],t);
+	      //cerr<<"mutator hap run"<<endl;
 	    }
 	  else
 	    {
@@ -275,8 +279,11 @@ void PackedIndividual::Birth(int t, AlleleLookTbl &Atbls)
 	{
 	  if (t>=0)
 	    {
+	      //cerr<<"running mutator dip"<<endl;
 	      G[ ((i * MAXPLOIDY) + 0) ] = Atbls[i]->mutator(G[ ((i * MAXPLOIDY) + 0) ],t);
+	      //cerr<<"running mutator dip 1/2"<<endl;
 	      G[ ((i * MAXPLOIDY) + 1) ] = Atbls[i]->mutator(G[ ((i * MAXPLOIDY) + 1) ],t);
+	      //cerr<<"mutator dip run"<<endl;
 	    }
 	  else
 	    {
@@ -285,6 +292,7 @@ void PackedIndividual::Birth(int t, AlleleLookTbl &Atbls)
 	    }
 	}
     }
+  //cerr<< "leaving tmpI.Birth"<<endl;
 }
 
 void PackedIndividual::Death(int t, AlleleLookTbl &Atbls)

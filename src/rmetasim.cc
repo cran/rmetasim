@@ -398,7 +398,9 @@ SEXP write_landscape(SEXP fn, SEXP Rland)
     OSTRM.open(CHARACTER_VALUE(fn));
     if (!OSTRM)
       {
+#ifdef DEBUG
 	cerr <<"fn "<<CHARACTER_VALUE(fn)<<endl;
+#endif
 	error ("could not open output file name:");
 	return ScalarInteger(1);
       }
@@ -609,8 +611,9 @@ read in landscapes
 	  {
 	    REAL(Evec)[i] = ev[i];
 	  }
+	delete[] ev;
 	SET_VECTOR_ELT(Demov,2,Evec);
-	delete [] ev;
+	
 	///Vital Vectors:  carry
 	SEXP Kvec = PROTECT(allocVector(REALSXP, L.gethabs()));
 	int *cv = new int[L.gethabs()];
@@ -619,21 +622,21 @@ read in landscapes
 	  {
 	    REAL(Kvec)[i] = cv[i];
 	  }
-	delete [] cv;
+	delete[] cv;
 	SET_VECTOR_ELT(Demov,3,Kvec);
 	
 	///Vital Vectors: probability of observing a particular local
 	///demography in a habitat.  This vector is the length of the
 	///number of local demographies
 	
-	double *dv = new double[L.getndemo()];
 	SEXP LDvec = PROTECT(allocVector(REALSXP, L.getndemo()));
+	double *dv = new double[L.getndemo()];
 	L.getldemovector(e,dv);
 	for (i=0;i<L.getndemo();i++)
 	  {
 	    REAL(LDvec)[i] = dv[i];
 	  }
-	delete [] dv;
+	delete[] dv;
 	SET_VECTOR_ELT(Demov,4,LDvec);
 	
 #ifdef RDEBUG
@@ -922,7 +925,9 @@ SEXP convert_metasim_to_R(Landscape_statistics &L)
     ISTRM.open(CHARACTER_VALUE(fn));
     if (!ISTRM)
       {
+#ifdef DEBUG
 	cerr <<"fn "<<CHARACTER_VALUE(fn)<<endl;
+#endif
 	error ("could not open input file name:");
       }
 #ifdef RDEBUG
@@ -964,7 +969,7 @@ SEXP convert_metasim_to_R(Landscape_statistics &L)
     {
       if ((L.getgens()>L.getCgen())&&(L.PopSize()!=0))
 	{
-	  //	  cerr << L.PopSize()<<endl;
+	  //	  	  cerr << L.PopSize()<<endl;
 
   	  if (L.PopSize()>0) {L.Extirpate();
 	    //	    cerr << "L.Extirpate();"<<endl;
@@ -1001,12 +1006,11 @@ SEXP convert_metasim_to_R(Landscape_statistics &L)
       }
     }
   if (L.PopSize()>0) {L.LandCarry();
-    //    cerr << "last L.LandCarry();"<<endl;
+    //cerr << "last L.LandCarry();"<<endl;
   }
   if (L.PopSize()>0) {L.HabCarry();
-    //    cerr << "last L.HabCarry();"<<endl;
+    //  cerr << "last L.HabCarry();"<<endl;
   }
-
   return convert_metasim_to_R(L);
 }
 
@@ -1185,7 +1189,9 @@ SEXP writeGDA(SEXP fn, SEXP Rland, SEXP ni)
     OSTRM.open(CHARACTER_VALUE(fn));
     if (!OSTRM)
       {
+#ifdef DEBUG
 	cerr <<"fn "<<CHARACTER_VALUE(fn)<<endl;
+#endif
 	error ("could not open output file name:");
 	return ScalarInteger(1);
       }
@@ -1202,7 +1208,9 @@ SEXP writeArlequinHap(SEXP fn, SEXP Rland, SEXP ni)
   OSTRM.open(CHARACTER_VALUE(fn));
   if (!OSTRM)
     {
+#ifdef DEBUG
       cerr <<"fn "<<CHARACTER_VALUE(fn)<<endl;
+#endif
       error ("could not open output file name:");
       return ScalarInteger(1);
     }
@@ -1219,7 +1227,9 @@ SEXP writeArlequinDip(SEXP fn, SEXP Rland, SEXP ni)
     OSTRM.open(CHARACTER_VALUE(fn));
     if (!OSTRM)
       {
+#ifdef DEBUG
 	cerr <<"fn "<<CHARACTER_VALUE(fn)<<endl;
+#endif
 	error ("could not open output file name:");
 	return ScalarInteger(1);
       }
@@ -1236,7 +1246,9 @@ SEXP writeBIOSYS(SEXP fn, SEXP Rland, SEXP ni)
     OSTRM.open(CHARACTER_VALUE(fn));
     if (!OSTRM)
       {
+#ifdef DEBUG
 	cerr <<"fn "<<CHARACTER_VALUE(fn)<<endl;
+#endif
 	error ("could not open output file name:");
 	return ScalarInteger(1);
       }
@@ -1253,7 +1265,9 @@ SEXP writeGenPop(SEXP fn, SEXP Rland, SEXP ni)
     OSTRM.open(CHARACTER_VALUE(fn));
     if (!OSTRM)
       {
+#ifdef DEBUG
 	cerr <<"fn "<<CHARACTER_VALUE(fn)<<endl;
+#endif
 	error ("could not open output file name:");
 	return ScalarInteger(1);
       }
@@ -1270,7 +1284,9 @@ SEXP writeReRat(SEXP fn, SEXP Rland, SEXP ni)
     OSTRM.open(CHARACTER_VALUE(fn));
     if (!OSTRM)
       {
+#ifdef DEBUG
 	cerr <<"fn "<<CHARACTER_VALUE(fn)<<endl;
+#endif
 	error ("could not open output file name:");
 	return ScalarInteger(1);
       }
@@ -1287,7 +1303,9 @@ SEXP writeMigrateDip(SEXP fn, SEXP Rland, SEXP ni)
     OSTRM.open(CHARACTER_VALUE(fn));
     if (!OSTRM)
       {
+#ifdef DEBUG
 	cerr <<"fn "<<CHARACTER_VALUE(fn)<<endl;
+#endif
 	error ("could not open output file name:");
 	return ScalarInteger(1);
       }
@@ -1304,7 +1322,9 @@ SEXP writeR(SEXP fn, SEXP Rland, SEXP ni)
     OSTRM.open(CHARACTER_VALUE(fn));
     if (!OSTRM)
       {
+#ifdef DEBUG
 	cerr <<"fn "<<CHARACTER_VALUE(fn)<<endl;
+#endif
 	error ("could not open output file name:");
 	return ScalarInteger(1);
       }
@@ -1373,31 +1393,31 @@ SEXP writeR(SEXP fn, SEXP Rland, SEXP ni)
 
   SEXP relateinternal(SEXP ind, SEXP acnp)
   {
-    int i,j,k,l, x, y, loc;
+    int i,j,l, x, y, loc;
     int nr, nc;
     int ar, ac;
     int *dims = INTEGER(coerceVector(getAttrib(ind, R_DimSymbol), INTSXP));
     nr = dims[0];
     nc = dims[1];
-    //    int *indmat = new int[nr*nc];
-    //    int *indmat = new int[nr][nc];
-    //make space for indmat
-    int **indmat;
-    indmat=new int* [nr];
-    for(int i=0;i<nr;i++)
-      *(indmat+i)=new int[nc];
+
+    int **indmat = new int *[nr];
+
+    for(int ii = 0; ii < nr; ii++)
+    {
+	indmat[ii] = new int[nc];
+    }
 
     int *adims = INTEGER(coerceVector(getAttrib(acnp, R_DimSymbol), INTSXP));
     ar = adims[0];
     ac = adims[1];
-    //int *afmat = new int[ar][ac];
-    //    int *afmat = new int[ar*ac];
-    //make space for afmat
-    int **afmat;
-    afmat=new int* [ar];
-    for(int i=0;i<ar;i++)
-      *(afmat+i)=new int[ac];
 
+    int **afmat = new int *[ar];
+
+    for(int ii = 0; ii < ar; ii++)
+    {
+	afmat[ii] = new int[ac];
+    }
+    
     double denom, numer, frq, reffreq, partfreq;
 
     SEXP relmat= PROTECT(allocMatrix(REALSXP,nr,nr));
@@ -1500,20 +1520,23 @@ SEXP writeR(SEXP fn, SEXP Rland, SEXP ni)
 	    REAL(coerceVector(relmat, REALSXP))[x+y*nr] = double(numer)/double(denom);
 	  }
       }
-    //deallocate memory allocated above
+
+
+    for(int ii = 0; ii < ar; ii++)
+    {
+	delete[] afmat[ii];
+    }
+
+    delete[] afmat;
+
+    for(int ii = 0; ii < nr; ii++)
+    {
+	delete[] indmat[ii];
+    }
+
+    delete[] indmat;
 
     UNPROTECT(1);
-
-    for (int i = 0; i < nr; i++){
-      delete[] indmat[i];
-      delete[] indmat;
-    }
-
-    for (int i = 0; i < ar; i++){
-      delete[] afmat[i];
-      delete[] afmat;
-    }
-
     return relmat;
   }
 

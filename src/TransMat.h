@@ -44,10 +44,10 @@ public:
   /// Sets a matrix cell value (returns a zero if successful)
   inline int SetElement(size_t lf, size_t lt, double val) 
     { 
-      size_t sz;
+      //size_t sz;
       f=lf;
       t=lt;
-      sz = tm[t].size();
+      //sz = tm[t].size();
       return (tm[t][f] = val) > 0; 
     }
   
@@ -167,7 +167,7 @@ public:
   int size() {return v.size();}
   void resize(int h=1) {v.resize(h);}
 
-  const double Val(int h=0)
+  double Val(int h=0) const
     {
       return v[h];
     }
