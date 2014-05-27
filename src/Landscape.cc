@@ -787,7 +787,7 @@ int Landscape::CalculateMaleGameteClassVector(int k)
       for (i=0;i<sz;i++)
 	{
 	  p[i] = (n[i] / clsz );
-	  tot =+ p[i];
+	  tot += p[i];
 	}
       if (tot>1)
 	{

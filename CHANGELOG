@@ -1,3 +1,7 @@
+ver2.0.3
+Modifications to c++ code to satisfy clang 3.4 issues.
+ver 2.0.2
+directly call fround rather than rround
 ver 2.0
 removed the dependencies on pegas, because it was causing segfaults on 64bit linux machines.  I don't understand the mechanism 
 for these errors, but isolated to this package.  May create an rmetasim-analysis package in the future to sidestep this issue

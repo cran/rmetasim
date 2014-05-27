@@ -157,8 +157,8 @@ double DemoClass::GenLength (int t)
 	  indx = GetCurrentIndex();
 	  lr = GetCurrentLastRep();
 	  no =  GetCurrentNumOff();
-	  genoff =+ ((t - lr) * no);
-	  totoff =+ no;
+	  genoff += ((t - lr) * no);
+	  totoff += no;
 	}
       while (!NextIndividual());
       if (totoff==0) 

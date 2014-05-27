@@ -1,5 +1,7 @@
 useDynLib(rmetasim)
-
+import(ape)
+import(ade4)
+import(gtools)
 export(is.landscape,landscape.Fst,landscape.advance)
 export(landscape.allelecount,landscape.allelefreq,landscape.carry)
 export(landscape.clean,landscape.coalinput,landscape.compress)

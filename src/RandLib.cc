@@ -141,7 +141,7 @@ int RandLib::poisson(double mu)
 {
   int rv;
   //  rv=int(round(rpois(mu)));
-  rv=int(fround(rpois(mu),0));
+  rv=int(rpois(mu));
   return rv;
 }
 

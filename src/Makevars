@@ -1,5 +1,9 @@
 #PKG_CFLAGS =   -I. -O3 -Wall -pedantic
 #PKG_CXXFLAGS = -I. -O3 -Wall  -pedantic
+
+PKG_CC = clang
+PKG_CXX = clang++
+
 PKG_CXXFLAGS = -I.
 PKG_CFLAGS =   -I.
 

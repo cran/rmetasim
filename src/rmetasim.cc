@@ -10,7 +10,7 @@ Allan Strand 9/17/01
 #include <fstream>
 #include <rmetasim.h>
 
-extern "C" {
+///extern "C" {
 
   /* get the list element named str, or return NULL */
   /*This code comes from the R-exts documentation */
@@ -1542,4 +1542,4 @@ SEXP writeR(SEXP fn, SEXP Rland, SEXP ni)
 
 
 
-} ///end of extern "C"
+  /// } ///end of extern "C"

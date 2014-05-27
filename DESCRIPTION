@@ -1,9 +1,9 @@
 Package: rmetasim
-Version: 2.0.1
+Version: 2.0.3
 Author: Allan Strand <stranda@cofc.edu>, 
 	James Niehaus
 Maintainer: Allan Strand <stranda@cofc.edu>
-Date: 2013-11-26
+Date: 2013-11-30
 Depends: ape, ade4, gtools
 Title: An individual-based population genetic simulation environment
 License: GPL
@@ -20,7 +20,7 @@ Description: An interface between R and the metasim simulation engine.
 	     reduces the chances of collisions with other packages
 	     naming conventions.  For a spatially-explicit, but slower, package
 	     with a similar interface, see kernelPop
-Packaged: 2013-11-30 09:25:27 UTC; ripley
+Packaged: 2014-05-26 18:42:34 UTC; astrand
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2013-11-30 10:31:10
+Date/Publication: 2014-05-27 12:45:51

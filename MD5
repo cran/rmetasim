@@ -1,6 +1,6 @@
-3443dbaf64511bef8ea5585163b3a7f5 *CHANGELOG
-49e06943f63c53304f4636aaf5fce95d *DESCRIPTION
-2779c9c2a276156d3a75754e5e4d3434 *NAMESPACE
+6ad2dc681c508c0da463083c15d2024d *CHANGELOG
+7dff189b91d167527141d4e5d046ab9b *DESCRIPTION
+0d6984aab170dd58aea48e5638f81d9d *NAMESPACE
 b8ae0feb48a0a2e44f550fe2fa9518cf *R/amova.R
 cdac00347ef44c99e56b8f1402866f04 *R/ape_interface.R
 bc2885cdd8dc70b0c4e5d3f0c1323e93 *R/assign.R
@@ -68,7 +68,7 @@ facb7d2a30b7abf8fefa612c5f127746 *src/AlleleObj.h
 80fb2827f19ff96e8715861743ebe4da *src/AlleleTbl.h
 0e87c71f726b768c36f5ce425f4683ee *src/BaseObj.cc
 c7a1e04c3ced9d3b15224dfd681f4a15 *src/BaseObj.h
-a86c7a194f579ef1fcd6ec05c9837e25 *src/Democlass.cc
+ca87d11f28251f1f180b36fdb236406b *src/Democlass.cc
 5bcc57eb7123a3460ee7d724cc0e7b1c *src/Democlass.h
 ff5fa6a1124b8155a18ae3e89ce69244 *src/Eigen.cc
 5abc379730cd4f2b0ab478b6c72ce35c *src/Eigen.h
@@ -78,12 +78,12 @@ b7affab37c94e8b541c47a7d7849cacb *src/FastSeqAllele.cc
 f0b6c03f050d31c72c1943652adc5fbc *src/FastSeqAllele.h
 ffe733b5d8acb1b4a6cca7d2c1f5af79 *src/Genotype.cc
 ac91f192d18301bd2378b3e62c9680c0 *src/Genotype.h
-bbd64edbc6d6eb827c48435573af6a54 *src/Landscape.cc
+ae9449279e845d9bf0cc7c99a86ca5f0 *src/Landscape.cc
 e8ce88e94e975611ea21324a2ccbf188 *src/Landscape.h
-a19cd3d50618e46b4296beea6a36a4c2 *src/Makevars
+79a715501a2fdb0e6e03b9c12cbc4a11 *src/Makevars
 64dd472d98af7edbba99496635d4d4a8 *src/PackedIndividual.cc
 e4604c4c670ec2f862b35446779d2e2a *src/PackedIndividual.h
-ee1eb6660e7ecd7db3fbc2788f111aaa *src/RandLib.cc
+fc93bd3c515f35938b796aac3cd0e8c2 *src/RandLib.cc
 255c16b6af59a245d2e993f29fb5a0e3 *src/RandLib.h
 30a36f94770d72b43414b4084f567b66 *src/SiteObj.cc
 840fdcee1cebbe3c132a7c47f1b09ce6 *src/SiteObj.h
@@ -91,6 +91,6 @@ ee1eb6660e7ecd7db3fbc2788f111aaa *src/RandLib.cc
 19bcbf9747b2efe7fef2e6c646277d24 *src/TransMat.h
 fae838e796b6b8ae723cc425d9329d6b *src/const.h
 19dccaed09a7c936edb0faae13c4d892 *src/metasim.h
-e0f2f308842f92db2b21997ce5013128 *src/rmetasim.cc
+59d42a2475f8636bc3aab27ef1e64a3d *src/rmetasim.cc
 10ab1a559970d0b91aea20c43279f11f *src/rmetasim.h
 0ff30cf377f54143290b1cae33aadc8c *src/utilities.h
