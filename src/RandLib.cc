@@ -126,8 +126,11 @@ int RandLib::multinomial(double *p, int ncat)
 int RandLib::unirange(int maxval)
 {
   int rv;
+  double uni;
+  uni = runif(0.0,maxval);
+  //  cerr << "uni "<<uni<<endl;
   //  rv=int(round(runif(0.0,maxval)));
-  rv=int(fround(runif(0.0,maxval),0));
+  rv=int(fround(uni,0));
   return rv;
 }
 

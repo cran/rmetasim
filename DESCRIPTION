@@ -1,5 +1,5 @@
 Package: rmetasim
-Version: 2.0.3
+Version: 2.0.4
 Author: Allan Strand <stranda@cofc.edu>, 
 	James Niehaus
 Maintainer: Allan Strand <stranda@cofc.edu>
@@ -20,7 +20,7 @@ Description: An interface between R and the metasim simulation engine.
 	     reduces the chances of collisions with other packages
 	     naming conventions.  For a spatially-explicit, but slower, package
 	     with a similar interface, see kernelPop
-Packaged: 2014-05-26 18:42:34 UTC; astrand
+Packaged: 2014-05-31 21:06:04 UTC; astrand
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2014-05-27 12:45:51
+Date/Publication: 2014-06-01 08:14:53

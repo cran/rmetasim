@@ -834,7 +834,13 @@ PackedIndividual Landscape::FindMate(PackedIndividual /*pi*/)
   mc = RandLibObj.PickMultinomial();
   //  tmpI.SetClass(-1);
 
+  //  cerr << "mc "<<mc<<endl;
+  //  int sz = I[mc].size();
+  //  cerr << "length I[mc] "<< sz <<endl;
+
   tmpI = I[mc].GetRandomInd();
+
+  //  tmpI = I[mc].GetIndividual(0);
   /*
       
   assert(tmpI.GetClass()>=0);
@@ -949,7 +955,7 @@ void Landscape::Reproduce()
 				}
 			      else
 				{
-				  mate = FindMate(searchI);
+				    mate = FindMate(searchI);
 				}
 			    }
 			  for (q=0;q<noff;q++)

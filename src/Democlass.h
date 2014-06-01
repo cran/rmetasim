@@ -77,7 +77,7 @@ inline PackedIndividual GetRandomInd()
       PackedIndividual tmpI;
       tmpI.SetClass(-1);
       int indx= GetRandomIndex();
-      if (indx>0)
+      if (indx>=0)  // fix bug the JDR found (5/31/2014)
 	{
 	  return GetIndividual(indx);
 	}

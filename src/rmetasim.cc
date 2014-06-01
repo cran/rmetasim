@@ -775,7 +775,7 @@ read in landscapes
 		    Seq[j] = als.GetSite(j);
 		  }
 		SET_VECTOR_ELT(Allele,3,mkString(Seq));
-		delete Seq;
+		delete [] Seq;
 		SET_VECTOR_ELT(Allele,1,ScalarInteger(als.GetBirth()));
 		SET_VECTOR_ELT(Allele,2,ScalarReal(als.GetProp()));
 	      }
