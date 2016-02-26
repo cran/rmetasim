@@ -1,6 +1,6 @@
 c336b11f8159f2ed93b2be959831c23c *CHANGELOG
-052569eb3902dfea3d46f48b59a22632 *DESCRIPTION
-0d6984aab170dd58aea48e5638f81d9d *NAMESPACE
+28fffcab784f847cc8acaf3549675180 *DESCRIPTION
+85a43e310a7f926f1d63df0cf3234d6c *NAMESPACE
 b8ae0feb48a0a2e44f550fe2fa9518cf *R/amova.R
 cdac00347ef44c99e56b8f1402866f04 *R/ape_interface.R
 bc2885cdd8dc70b0c4e5d3f0c1323e93 *R/assign.R
@@ -71,7 +71,7 @@ c7a1e04c3ced9d3b15224dfd681f4a15 *src/BaseObj.h
 aaece6923d0e0e945646ca726b2429dc *src/Democlass.cc
 d8b5df51993984d47fa6ad22e8e4836e *src/Democlass.h
 ff5fa6a1124b8155a18ae3e89ce69244 *src/Eigen.cc
-5abc379730cd4f2b0ab478b6c72ce35c *src/Eigen.h
+724ae4d2e74162266b2d1c51c7b20ad0 *src/Eigen.h
 f90d53fd53666c8b7caef94b87c78f4e *src/FastAllele.cc
 29eac863493b4ce5bb818a2a0c5c81cd *src/FastAllele.h
 b7affab37c94e8b541c47a7d7849cacb *src/FastSeqAllele.cc
@@ -92,5 +92,5 @@ e4604c4c670ec2f862b35446779d2e2a *src/PackedIndividual.h
 fae838e796b6b8ae723cc425d9329d6b *src/const.h
 19dccaed09a7c936edb0faae13c4d892 *src/metasim.h
 64883d8793f1c9ce7ffd49cb8b398536 *src/rmetasim.cc
-10ab1a559970d0b91aea20c43279f11f *src/rmetasim.h
+5387486eded49b3bd3566fd8fc3a9177 *src/rmetasim.h
 0ff30cf377f54143290b1cae33aadc8c *src/utilities.h
