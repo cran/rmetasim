@@ -106,7 +106,7 @@ Allan Strand 9/17/01
 
 	L.setldemovector(e,dv);
 
-#ifdef RDEBUG
+#ifdef DEBUG
 	cerr <<"Finished converting vectors to metasim for epoch: "<<e<<endl;
 #endif
 
@@ -123,7 +123,7 @@ Allan Strand 9/17/01
 	  }
  	UNPROTECT(1); ///Demov
       }
-#ifdef RDEBUG
+#ifdef DEBUG
     cerr << "Finished converting for all epochs"<<endl;
 #endif    
     UNPROTECT(1);///Evec
@@ -174,7 +174,7 @@ Allan Strand 9/17/01
       }
     UNPROTECT(1);
 ///.........................................................................
-#ifdef RDEBUG
+#ifdef DEBUG
     cerr << "Finished converting for all local demographies"<<endl;
 #endif    
 
@@ -263,7 +263,7 @@ void R_to_metasim_loci(SEXP inlist, Landscape_statistics& L)
 		  }
 		AT->setSeqLen(j);
 		andx = INTEGER(coerceVector(getListElement(na,AINDXNAME),INTSXP))[0];
-#ifdef RDEBUG
+#ifdef DEBUG
 		//		cerr << "Allele index: "<<andx<<" Allele: ";
 		//		als.Write(cerr);
 #endif
@@ -281,14 +281,14 @@ void R_to_metasim_loci(SEXP inlist, Landscape_statistics& L)
 	AT->setMutationRate(REAL(coerceVector(getListElement(Locus,RATENAME),REALSXP))[0]);
 
 	L.Atbl_push_back(AT);
-#ifdef RDEBUG
+#ifdef DEBUG
 	cerr << "this is locus "<<l<<endl;
 	AT->Write(cerr);
 #endif
 	///	delete AT;
 	UNPROTECT(1);///Locus
       }
-#ifdef RDEBUG
+#ifdef DEBUG
     cerr << "The number of loci inserted was: "<< L.getloci()<<endl;
     L.WriteLoci(cerr);
 #endif
@@ -357,11 +357,13 @@ void R_to_metasim_loci(SEXP inlist, Landscape_statistics& L)
 		i++;
 	      }
 	  }
-	//#ifdef RDEBUG
-	//	cerr<<"adding an individual "<<endl;
-	//#endif
+#ifdef DEBUG
+	cerr<<"adding an individual "<<endl;
+#endif
 	L.addIndividual(ind,-1);
-	//	cerr<<"done adding an individual "<<endl;
+#ifdef DEBUG
+	cerr<<"done adding an individual "<<endl;
+#endif
       }
   }
 
@@ -525,7 +527,7 @@ read in landscapes
 		REAL(coerceVector(LMMat, REALSXP))[i+j*sz] = L.getLMmatElement(d,i,j);
 	      }
 	  }
-#ifdef RDEBUG
+#ifdef DEBUG
 	cerr <<"Setting local demos"<<endl;
 #endif
 	SET_VECTOR_ELT(LDemos,0,LSMat);
@@ -558,7 +560,7 @@ read in landscapes
 		REAL(coerceVector(LMKMat, REALSXP))[i+j*sz] = L.getLMKmatElement(d,i,j);
 		}
 	  }
-#ifdef RDEBUG
+#ifdef DEBUG
 	cerr <<"Setting local demos at K"<<endl;
 #endif
 	SET_VECTOR_ELT(LDemosK,0,LSKMat);
@@ -592,7 +594,7 @@ read in landscapes
 
 	sprintf(nbuf,"%d",e);
   
-#ifdef RDEBUG
+#ifdef DEBUG
 	cerr <<"Setting epoch name: e="<<e<<endl;
 	Rprintf("epoch set %d \n",e);
 #endif
@@ -639,7 +641,7 @@ read in landscapes
 	delete[] dv;
 	SET_VECTOR_ELT(Demov,4,LDvec);
 	
-#ifdef RDEBUG
+#ifdef DEBUG
 	cerr <<"Finished setting up vectors for epoch: "<<e<<endl;
 #endif
 	
@@ -702,14 +704,14 @@ read in landscapes
     SeqAllele als;
     Allele ali;
     int an=0,a,andx,i=0,j=0,sl=0;
-#ifdef RDEBUG
+#ifdef DEBUG
     cerr << "converting landscape loci into R "<<endl;
 #endif
     SEXP Loci = PROTECT(allocVector(VECSXP,L.getloci()));
     SEXP Allelen = PROTECT(allocVector(STRSXP, ALLELELEN));
     SEXP Locusn = PROTECT(allocVector(STRSXP,LOCUSLEN));
 
-#ifdef RDEBUG
+#ifdef DEBUG
     cerr << "setting up names for list "<<endl;
 #endif
     SET_STRING_ELT(Allelen, 0, mkChar(AINDXNAME )); 
@@ -725,7 +727,7 @@ read in landscapes
   
 
     i=0;
-#ifdef RDEBUG
+#ifdef DEBUG
     cerr << "actually going through loci "<<endl;
 #endif
 
@@ -734,7 +736,7 @@ read in landscapes
 	SEXP Locus = PROTECT(allocVector(VECSXP, LOCUSLEN));
 	setAttrib(Locus,R_NamesSymbol, Locusn);
     
-#ifdef RDEBUG
+#ifdef DEBUG
 	cerr << "setting up characteristics for locus "<<i<<endl;
 #endif
 	SET_VECTOR_ELT(Locus,0,ScalarInteger(L.LocusGetClassType(i)));
@@ -742,14 +744,14 @@ read in landscapes
 	SET_VECTOR_ELT(Locus,2,ScalarInteger(L.LocusGetTrans(i)));
 	SET_VECTOR_ELT(Locus,3,ScalarReal(L.LocusGetMutRate(i)));
 
-#ifdef RDEBUG
+#ifdef DEBUG
 	cerr << "done setting up characteristics for locus "<<i<<endl;
 	cerr << "getting allele indices for locus "<<i<<endl;
 #endif
 
 	aindx = L.LocusGetAindices(i);
 	an = aindx.size();
-#ifdef RDEBUG
+#ifdef DEBUG
 	cerr << "done getting allele indices for locus "<<i<<endl;
 	cerr << "there are "<<an<<" allele indices for locus "<<i<<endl;
 #endif
@@ -767,7 +769,7 @@ read in landscapes
 		sl = als.GetSeqSize();
 		Seq = new char[sl+1];
 		Seq[sl] = '\0';
-#ifdef RDEBUG
+#ifdef DEBUG
 		cerr <<"sequence length = "<<sl<<endl;
 #endif
 		for (j=0;j<sl;j++)
@@ -805,7 +807,7 @@ read in landscapes
 	SET_VECTOR_ELT(Loci,i,Locus);
 	UNPROTECT(1);
       }///end iteration over loci
-#ifdef RDEBUG
+#ifdef DEBUG
     cerr << "finished iterating over loci "<<endl;
 #endif
 
@@ -833,7 +835,7 @@ read in landscapes
 	  }
       }
     tr=L.PopSize();
-#ifdef RDEBUG
+#ifdef DEBUG
     cerr <<"number of individuals in landscape "<< tr <<endl;
 #endif
     SEXP Indmat= PROTECT(allocMatrix(INTSXP,tr,nc));
@@ -918,7 +920,7 @@ SEXP convert_metasim_to_R(Landscape_statistics &L)
   {
     Landscape_statistics L;
     ifstream ISTRM;
-#ifdef RDEBUG
+#ifdef DEBUG
     ofstream OSTRM;
     OSTRM.open("rdebug.dat");
 #endif
@@ -930,14 +932,14 @@ SEXP convert_metasim_to_R(Landscape_statistics &L)
 #endif
 	error ("could not open input file name:");
       }
-#ifdef RDEBUG
+#ifdef DEBUG
     cerr <<"Reading landscape"<<endl;
 #endif
 
     ISTRM >> L;
     ISTRM.close();
     
-#ifdef RDEBUG
+#ifdef DEBUG
     cerr <<"Finished reading landscape"<<endl;
     cerr <<"writing a copy to rdebug.dat before any conversion to R format"<<endl;
     OSTRM << L;
@@ -969,7 +971,7 @@ SEXP convert_metasim_to_R(Landscape_statistics &L)
     {
       if ((L.getgens()>L.getCgen())&&(L.PopSize()!=0))
 	{
-	  //	  	  cerr << L.PopSize()<<endl;
+	  //	    cerr << L.PopSize()<<endl;
 
   	  if (L.PopSize()>0) {L.Extirpate();
 	    //	    cerr << "L.Extirpate();"<<endl;
@@ -1178,161 +1180,6 @@ SEXP l2w(SEXP Rland, SEXP numind)
 }
 
 
-/*
-Functions that produce text files for input into other programs. 
-*/
-
-SEXP writeGDA(SEXP fn, SEXP Rland, SEXP ni)
-{
-  Landscape_statistics L;
-  ofstream OSTRM;
-    OSTRM.open(CHARACTER_VALUE(fn));
-    if (!OSTRM)
-      {
-#ifdef DEBUG
-	cerr <<"fn "<<CHARACTER_VALUE(fn)<<endl;
-#endif
-	error ("could not open output file name:");
-	return ScalarInteger(1);
-      }
-    convert_R_to_metasim(Rland,L);  
-    L.GdaOut(INTEGER(coerceVector(ni,INTSXP))[0], OSTRM);
-    OSTRM.close();
-    return ScalarInteger(0);
-} 
-
-SEXP writeArlequinHap(SEXP fn, SEXP Rland, SEXP ni)
-{
-  Landscape_statistics L;
-  ofstream OSTRM;
-  OSTRM.open(CHARACTER_VALUE(fn));
-  if (!OSTRM)
-    {
-#ifdef DEBUG
-      cerr <<"fn "<<CHARACTER_VALUE(fn)<<endl;
-#endif
-      error ("could not open output file name:");
-      return ScalarInteger(1);
-    }
-  convert_R_to_metasim(Rland,L);  
-  L.ArlequinHaploidOut(INTEGER(coerceVector(ni,INTSXP))[0], OSTRM);
-  OSTRM.close();
-  return ScalarInteger(0);
-} 
-
-SEXP writeArlequinDip(SEXP fn, SEXP Rland, SEXP ni)
-{
-  Landscape_statistics L;
-    ofstream OSTRM;
-    OSTRM.open(CHARACTER_VALUE(fn));
-    if (!OSTRM)
-      {
-#ifdef DEBUG
-	cerr <<"fn "<<CHARACTER_VALUE(fn)<<endl;
-#endif
-	error ("could not open output file name:");
-	return ScalarInteger(1);
-      }
-    convert_R_to_metasim(Rland,L);  
-    L.ArlequinDiploidOut(INTEGER(coerceVector(ni,INTSXP))[0], OSTRM);
-    OSTRM.close();
-    return ScalarInteger(0);
-} 
-
-SEXP writeBIOSYS(SEXP fn, SEXP Rland, SEXP ni)
-{
-  Landscape_statistics L;
-    ofstream OSTRM;
-    OSTRM.open(CHARACTER_VALUE(fn));
-    if (!OSTRM)
-      {
-#ifdef DEBUG
-	cerr <<"fn "<<CHARACTER_VALUE(fn)<<endl;
-#endif
-	error ("could not open output file name:");
-	return ScalarInteger(1);
-      }
-    convert_R_to_metasim(Rland,L);  
-    L.BiosysDiploidOut(INTEGER(coerceVector(ni,INTSXP))[0], OSTRM);
-    OSTRM.close();
-    return ScalarInteger(0);
-} 
-
-SEXP writeGenPop(SEXP fn, SEXP Rland, SEXP ni)
-{
-  Landscape_statistics L;
-    ofstream OSTRM;
-    OSTRM.open(CHARACTER_VALUE(fn));
-    if (!OSTRM)
-      {
-#ifdef DEBUG
-	cerr <<"fn "<<CHARACTER_VALUE(fn)<<endl;
-#endif
-	error ("could not open output file name:");
-	return ScalarInteger(1);
-      }
-    convert_R_to_metasim(Rland,L);  
-    L.GenepopOut(INTEGER(coerceVector(ni,INTSXP))[0], OSTRM);
-    OSTRM.close();
-    return ScalarInteger(0);
-} 
-
-SEXP writeReRat(SEXP fn, SEXP Rland, SEXP ni)
-{
-  Landscape_statistics L;
-    ofstream OSTRM;
-    OSTRM.open(CHARACTER_VALUE(fn));
-    if (!OSTRM)
-      {
-#ifdef DEBUG
-	cerr <<"fn "<<CHARACTER_VALUE(fn)<<endl;
-#endif
-	error ("could not open output file name:");
-	return ScalarInteger(1);
-      }
-    convert_R_to_metasim(Rland,L);  
-    L.MicroRatOut(INTEGER(coerceVector(ni,INTSXP))[0], OSTRM);
-    OSTRM.close();
-    return ScalarInteger(0);
-} 
-
-SEXP writeMigrateDip(SEXP fn, SEXP Rland, SEXP ni)
-{
-  Landscape_statistics L;
-    ofstream OSTRM;
-    OSTRM.open(CHARACTER_VALUE(fn));
-    if (!OSTRM)
-      {
-#ifdef DEBUG
-	cerr <<"fn "<<CHARACTER_VALUE(fn)<<endl;
-#endif
-	error ("could not open output file name:");
-	return ScalarInteger(1);
-      }
-    convert_R_to_metasim(Rland,L);  
-    L.MigrateDiploidOut(INTEGER(coerceVector(ni,INTSXP))[0], OSTRM);
-    OSTRM.close();
-    return ScalarInteger(0);
-} 
-
-SEXP writeR(SEXP fn, SEXP Rland, SEXP ni)
-{
-  Landscape_statistics L;
-    ofstream OSTRM;
-    OSTRM.open(CHARACTER_VALUE(fn));
-    if (!OSTRM)
-      {
-#ifdef DEBUG
-	cerr <<"fn "<<CHARACTER_VALUE(fn)<<endl;
-#endif
-	error ("could not open output file name:");
-	return ScalarInteger(1);
-      }
-    convert_R_to_metasim(Rland,L);  
-    L.ROut(INTEGER(coerceVector(ni,INTSXP))[0], OSTRM);
-    OSTRM.close();
-    return ScalarInteger(0);
-} 
 
   SEXP num_demo_cols()
   {

@@ -5,7 +5,7 @@
 \description{
   Calculate demographic parameters from a landscape:  CURRENTLY BROKEN!}
 \usage{
- landscape.demography(Rland)
+   landscape.demography(Rland)
 }
 \arguments{
   \item{Rland}{the Rmetasim landscape object}

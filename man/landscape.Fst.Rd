@@ -8,7 +8,7 @@
   overall.
 }
 \usage{
- landscape.Fst(rland,verb=FALSE)
+   landscape.Fst(rland,verb=FALSE)
 }
 \arguments{
   \item{rland}{the Rmetasim landscape object}

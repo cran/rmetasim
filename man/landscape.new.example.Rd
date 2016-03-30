@@ -5,7 +5,7 @@
 \description{
   Create a Rmetasim landscape with all default parameters.}
 \usage{
- landscape.new.example()
+  landscape.new.example()
 }
 \arguments{
   None

@@ -5,7 +5,7 @@
 \description{
   Simulate a Rmetasim landscape for a number of generations.}
 \usage{
-  landscape.simulate(Rland,numit,seed=-1,compress=FALSE,adj.lambda=0)
+   landscape.simulate(Rland,numit,seed=-1,compress=FALSE,adj.lambda=0)
 }
 \arguments{
   \item{Rland}{the Rmetasim landscape object}

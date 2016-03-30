@@ -10,15 +10,15 @@
   These functions can be used to construct custom simulations of
   landscapes.  Each conducts only a single generations worth of change}
 \usage{
-   landscape.advance(Rland,seed=-1)
-   landscape.carry(Rland,seed=-1)
-   landscape.extinct(Rland,seed=-1)
-   landscape.reproduce(Rland,seed=-1)
-   landscape.survive(Rland,seed=-1)
+   landscape.advance(Rland, seed = -1)
+   landscape.carry(Rland, seed = -1)
+   landscape.extinct(Rland, seed = -1)
+   landscape.reproduce(Rland, seed = -1)
+   landscape.survive(Rland, seed = -1)
 }
 \arguments{
   \item{Rland}{the Rmetasim landscape object}
-    \item{seed}{seed for RNG.  default of -1 means use seed already specified}
+  \item{seed}{seed for random number generator}
 }
 \details{
   \code{landscape.advance()} merely advances the generation counter and selects

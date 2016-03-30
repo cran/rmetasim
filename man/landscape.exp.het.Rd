@@ -5,7 +5,7 @@
 \description{
   Calculate expected heterozygosity from a landscape}
 \usage{
- landscape.exp.het(Rland)
+   landscape.exp.het(Rland)
 }
 \arguments{
   \item{Rland}{the Rmetasim landscape object}

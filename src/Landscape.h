@@ -760,62 +760,6 @@ void Statistics(ostream &streamout = cout);
   */
 double GenLength();
 
-
-
-  //Methods to output  data to stream
-
-  /**
-
-     Sends an arlequin 2.0 project file(s) to the stream provided.  Takes numind  individuals from each habitat.
-
-   */
-void ArlequinDiploidOut(int numind = 200, ostream &streamout = cout);
-void ArlequinHaploidOut(int numind = 200, ostream &streamout = cout);
-
-
-  /**
-
-     Sends a genepop 3.1 input files to the stream provided.  Takes
-     numind individuals from each habitat. Includes both haploid and
-     diploid data
-
-   */
-void GenepopOut(int numind = 200, ostream &streamout = cout);
-
-  /**
-
-     Sends a MicroRat input file to the stream provided.  Takes
-     numind individuals from each habitat. Includes both haploid and
-     diploid data
-
-   */
-
-void MicroRatOut(int numind = 200, ostream &streamout = cout);
-
-  /**
-
-     Sends a biosys input file to the stream provided.  Takes numind  individuals from each habitat.
-
-   */
-void BiosysDiploidOut(int numind = 200, ostream &streamout = cout);
-
-  /**
-     creates input files for Peter Beerli's "migrate" program
-  */
-void MigrateDiploidOut(int numind = 200, ostream &streamout = cout);
-
-  /**
-     creates input files for GDA by Paul Lewis
-  */
-void GdaOut(int numind = 200, ostream &streamout = cout);
-
-  /**
-
-     Sends a R input file to the stream provided.  Takes numind  individuals from each habitat.
-
-   */
-void ROut(int numind = 200, ostream &streamout = cout);
-
   /**
      returns the landscape as a vector of int to be used in some r popgen analyses.  Called by rmetasim
   */

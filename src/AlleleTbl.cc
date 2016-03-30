@@ -28,7 +28,7 @@ void AlleleLookTbl::push_back(AlleleTbl * atp)
 void AlleleLookTbl::clear()
 {
   int asz,i;
-#ifdef RDEBUG
+#ifdef DEBUG
   cerr << "deleting Atbl[i]" <<endl;
   cerr << "ntbls"<<Atbl.size()<<endl;
 #endif
@@ -37,7 +37,7 @@ void AlleleLookTbl::clear()
     {
       for (i=0;i<asz;i++)
 	{
-#ifdef RDEBUG
+#ifdef DEBUG
 	  cerr << "Cleaning  Atbl[i] i= "<<i <<endl;
 #endif
 	  delete Atbl[i];

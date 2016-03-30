@@ -5,7 +5,7 @@
 \description{
   Create a skeletal Rmetasim landscape ready to be configured}
 \usage{
- landscape.new.empty()
+   landscape.new.empty()
 }
 \arguments{
   None

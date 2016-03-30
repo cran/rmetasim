@@ -5,7 +5,7 @@
 \description{
   Calculate allele frequencies}
 \usage{
- landscape.allelefreq(Rland,tbl.out=FALSE)
+   landscape.allelefreq(Rland,tbl.out=FALSE)
 }
 \arguments{
   \item{Rland}{the Rmetasim landscape object}

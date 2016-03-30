@@ -20,7 +20,7 @@ AlleleTbl::AlleleTbl()
 
 AlleleTbl::~AlleleTbl()
 {
-#ifdef RDEBUG
+#ifdef DEBUG
   cerr << "executing AlleleTbl destructor"<<endl;
 #endif
 }
@@ -31,8 +31,8 @@ int AlleleTbl::mutator(int /*anum*/, int /*t*/)
 {
 #ifdef DEBUG
   cerr << "AlleleTbl mutator called.  This function should be overridden"<<endl;
-#endif
   assert(1==0);
+#endif
   return -1;
 }
 
@@ -61,7 +61,7 @@ InfAlleleTbl::~InfAlleleTbl()
   setMutationRate(0);
   UNUSED.resize(0);
 
-#ifdef RDEBUG
+#ifdef DEBUG
   cerr << "executing InfAlleleTbl destructor"<<endl;
 #endif
 
@@ -251,8 +251,8 @@ int InfAlleleTbl::addAlleleAndIndex(Allele  na, int ai)
 	    {
 #ifdef DEBUG
 	      cerr << "Allele index: "<<ai<< " already present in table " <<endl;
-#endif
 	      assert(0==1);
+#endif
 	    }
 	}
       tmpiter++;
@@ -411,7 +411,7 @@ void InfAlleleTbl::Write(ostream &stream)
   Allele al;
 
   //don't clean table while debugging
-#ifndef RDEBUG
+#ifndef DEBUG
   CalcProps();
   GCAlleles();
 #endif
@@ -434,12 +434,12 @@ void InfAlleleTbl::Write(ostream &stream)
 
 vector<int>  InfAlleleTbl::getAindices()
 {
-  int sz;
+  //  int sz;
 
   vector<int> aindices;
   map<int, Allele, less<int> >::iterator tmpiter;
 
-  sz=A.size();
+  //sz=A.size();
 
   for (tmpiter=A.begin();tmpiter!=A.end();tmpiter++)
     {
@@ -453,7 +453,7 @@ void InfAlleleTbl::Scan(istream &stream)
   Allele newa;
   int i;
   int ai;
-  int tmp;
+  //  int tmp;
   int numa;
 
   double tprop;
@@ -468,7 +468,8 @@ void InfAlleleTbl::Scan(istream &stream)
   for (i=0;i<numa;i++)
     {
       stream >> ai >> newa;
-      tmp=addAlleleAndIndex(newa,ai);
+      addAlleleAndIndex(newa,ai);
+      
       tprop = newa.GetProp() + tprop;
       if (newa.GetState()>maxstate)
 	{
@@ -516,7 +517,7 @@ StepAlleleTbl::~StepAlleleTbl()
   setMutationRate(0);
   UNUSED.resize(0);
 
-#ifdef RDEBUG
+#ifdef DEBUG
   cerr << "executing StepAlleleTbl destructor"<<endl;
 #endif
 

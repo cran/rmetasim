@@ -25,7 +25,7 @@ SeqAlleleTbl::~SeqAlleleTbl()
 {
   clear();
   setMutationRate(0);
-#ifdef RDEBUG
+#ifdef DEBUG
   cerr << "executing SeqAlleleTbl destructor"<<endl;
 #endif
   UNUSED.resize(0);
@@ -393,7 +393,7 @@ void SeqAlleleTbl::Scan(istream &stream)
 {
   int i;
   int ai;
-  int tmp;
+  //  int tmp;
   int numa;
 
   double tprop;
@@ -406,7 +406,7 @@ void SeqAlleleTbl::Scan(istream &stream)
 
   SeqAllele newa(seqlen);
 
-  tmp = newa.SeqLen();
+  newa.SeqLen();
 
   stream >> rate;
   stream >> ploidy;
@@ -415,12 +415,12 @@ void SeqAlleleTbl::Scan(istream &stream)
     {
       stream >> ai;
       newa.Scan(stream);
-      tmp=addAlleleAndIndex(newa,ai);
+      addAlleleAndIndex(newa,ai);
       tprop = newa.GetProp() + tprop;
     }
   if (tprop != 1.0) //primitive error checking
     {
-#ifdef RDEBUG
+#ifdef DEBUG
       //      cerr << "Proportions of alleles at locus do not total to 1! Instead, they total to: " << tprop << endl;
 #endif
     }

@@ -1,18 +1,14 @@
-ver 2.0.4
-fixed a bug in mate selection when population size gets down to 2.  
+ver 3.0.1
+Even more UI changes.  Changed interface for several functions to standardize: When using functions that are exported and take a landscape, the landscape is always the first parameter now.  This allows the use of piping with magrittr. The functions that were modified are:
+	landscape.amova.locus
+	landscape.locus
+	landscape.locus.states
+	landscape.mismatchdist
+	landscape.states
+Routines that call these functions and do not use explicit parameter names will need to be adjusted accordingly
 
-ver2.0.3
-Modifications to c++ code to satisfy clang 3.4 issues.
-ver 2.0.2
-directly call fround rather than rround
-ver 2.0
-removed the dependencies on pegas, because it was causing segfaults on 64bit linux machines.  I don't understand the mechanism 
-for these errors, but isolated to this package.  May create an rmetasim-analysis package in the future to sidestep this issue
-
-Also increased speed for reproduction by better storing intermediate values.  In the case of complete selfing, speed is much increased
-
-ver 1.1.15
-fixed some gcc specific constructs and repaired some documentation
+ver 3.0.0
+Significant changes.  Eliminated all of the backend-implemented output routines
 ver 1.1.14
 fixed a lot of memory management issues
 ver 1.1.13

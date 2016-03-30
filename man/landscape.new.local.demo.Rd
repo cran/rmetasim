@@ -7,8 +7,9 @@
 \usage{
   ## must be called AFTER integer, switch, and float params have been created
   ## S, R, and M matricies must be square matricies of size
-  ## rland$intparam$stages by rland$intparam$stages
- landscape.new.local.demo(rland,S,R,M,k=0)}
+  ##  rland$intparam$stages by rland$intparam$stages
+
+   landscape.new.local.demo(rland,S,R,M,k=0)}
 \arguments{
   \item{rland}{partially created landscape object, required}
   \item{S}{Survivablity matrix for demograpy, required}

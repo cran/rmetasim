@@ -10,8 +10,9 @@
   ## S, R, and M matricies must be square matricies of size X by X
   ##   where X = rland$intparam$stages*rland$intparam$habitats
 
- landscape.new.epoch(rland,S,R,M,epochprob=1,
-                     startgen=0,extinct=NULL,carry=NULL,localprob=NULL)
+landscape.new.epoch(rland,S=NULL,R=NULL,M=NULL,
+epochprob=1,startgen=0,extinct=NULL,carry=NULL,
+localprob=NULL)
 }
 \arguments{
   \item{rland}{partially created landscape object, required}

@@ -6,7 +6,7 @@
 resolve inconsistencies in a 'hand-built' landscape}
   
   \usage{
- landscape.clean(rland)
+   landscape.clean(rland)
 }
 \arguments{
   \item{rland}{the Rmetasim landscape object}

@@ -149,7 +149,8 @@ void DemoClass::CompressClass (double frac)
 double DemoClass::GenLength (int t)
 {
   double genoff, totoff;
-  int indx;
+  //  int indx;
+
 
   int lr, no;
 
@@ -160,7 +161,7 @@ double DemoClass::GenLength (int t)
       ResetIndividuals();
       do
 	{
-	  indx = GetCurrentIndex();
+	  //	  indx = GetCurrentIndex();
 	  lr = GetCurrentLastRep();
 	  no =  GetCurrentNumOff();
 	  genoff += ((t - lr) * no);
