@@ -11,7 +11,7 @@
 
 <meta name="author" content="A Strand" />
 
-<meta name="date" content="2016-04-06" />
+<meta name="date" content="2016-04-08" />
 
 <title>rmetasim overview</title>
 
@@ -32,7 +32,7 @@
 
 <h1 class="title">rmetasim overview</h1>
 <h4 class="author"><em>A Strand</em></h4>
-<h4 class="date"><em>2016-04-06</em></h4>
+<h4 class="date"><em>2016-04-08</em></h4>
 
 </div>
 
@@ -50,6 +50,7 @@
 <h1>Notes for the newest version, 3</h1>
 <p>Version 3 of rmetasim implemented some significant changes to improve code quality and hopefully, usability.</p>
 <ul>
+<li>rmetasim is also available from github (<a href="https://github.com/stranda/rmetasim">https://github.com/stranda/rmetasim</a>). If you want the latest version, install and load the ‘devtools’ package in your R session and then use “install_github(”stranda/rmetasim“). On Windows, you will have to install Rtools first.</li>
 <li><p>The current version has eliminated the backend encoded output routines. These routines were accessed using “landscape.write.foreign”. Now only output to GenePop files remains. R based routines for population genetic data analysis are constantly improving and many can use the ‘genind’ format defined by the adegenet package. There is now a new function called “landscape.make.genind” which converts a landscape to a genind object. Please contact the maintainer about adding additional output formats.</p></li>
 <li><p>Several functions (landscape.amova.locus, landscape.locus, landscape.locus.states, landscape.mismatchdist, landscape.states) that access genetic information from landscapes had a strange order for parameters. That has been resolved to be the same as the rest of rmetasim, where the first argument is the landscape. If you have code that uses these and is based on rmetasim v&lt;3.0, you will need to rearrange the parameters for these function calls, unless parameters were explicitly named in the calls. One consequence of this change is that ‘magrittr’-style pipes work with rmetasim now (see the CreatingLandscapes vignette for some examples).</p></li>
 </ul>
