@@ -68,20 +68,13 @@ landscape.new.example <- function()
 # these routines set up the list of intparams with some sort of reasonable defaults
 # the first within a landscape, the second independantly
 
-landscape.new.intparam <- function(rland,h=1,s=1,cg=0,ce=0,totgen=1000,maxland=200000)
+landscape.new.intparam <- function(rland,h=1,s=1,cg=0,ce=0,totgen=1000,maxland=200000,xdim=0,ydim=0)
 {
-  rland$intparam <- list(h,s,0,0,cg,ce,totgen,0,maxland)
-  names(rland$intparam) <- c("habitats","stages","locusnum","numepochs","currentgen","currentepoch","totalgens","numdemos","maxlandsize")
+  rland$intparam <- list(h,s,0,0,cg,ce,totgen,0,maxland,xdim,ydim)
+  names(rland$intparam) <- c("habitats","stages","locusnum","numepochs","currentgen","currentepoch","totalgens","numdemos","maxlandsize","xdim","ydim")
   rland
 }
   
-#new.intparam <- function(h=1,s=2,l=1,ne=1,cg=0,ce=0,totgen=1,nd=1,maxland=200000)
-#{
-#  rl <- list(h,s,l,ne,cg,ce,totgen,nd,maxland)
-#  names(rl) <- c("habitats","stages","locusnum","numepochs","currentgen","currentepoch","totalgens","numdemos","maxlandsize")
-#  rl
-#}
-
 
 #
 # these routines set up the list of floatparams with some sort of reasonable defaults
@@ -213,7 +206,7 @@ landscape.new.local.demo <- function(rland,S,R,M,k=0)
 
 landscape.new.epoch <- function(rland,S=NULL,R=NULL,M=NULL,epochprob=1,startgen=0,extinct=NULL,carry=NULL,localprob=NULL)
 {
-  if (is.null(rland$demography$epochs))
+  if (length(rland$demography$epochs) == 0)
     {
       rland$demography$epochs <- list(NULL)
       epochnum <- 1
@@ -330,6 +323,8 @@ landscape.new.locus <- function (rland, type = 0, ploidy = 1, mutationrate = 0, 
     }
     else {
         locusnum <- length(rland$loci) + 1
+        if (landscape.maxloci()<locusnum)
+           stop(paste0("Trying to create more loci(",locusnum,")than currently allowed by rmetasim:(",landscape.maxloci(),")\nTo fix either: reduce number of loci\nor change the constant MAXLOCI in 'src/const.h' to a value slightly greater than\n\tyou need and recompile rmetasim.  If recompiling is a problem, please contact author"))
         rland$loci[[locusnum]] <- list(type = 0, ploidy = 0, 
             rate = 0, trans = 0, alleles = 0)
     }
@@ -458,4 +453,14 @@ landscape.new.individuals <- function(rland, PopulationSizes)
 landscape.democol <- function()
   {
     as.integer(.Call("num_demo_cols",PACKAGE="rmetasim"))
+  }
+
+
+#
+# a convenience function that provides the highest number of loci possible (value of MAXLOCI in 'const.h')column number for demographic information in
+# the individuals matrix
+#
+landscape.maxloci <- function()
+  {
+    as.integer(.Call("num_loci_poss",PACKAGE="rmetasim"))
   }

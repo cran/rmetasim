@@ -12,6 +12,14 @@ Allan Strand 9/17/01
 
 ///extern "C" {
 
+//Init defined for registering
+
+void R_init_rmetasim(DllInfo *dll)
+{
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+}
+
   /* get the list element named str, or return NULL */
   /*This code comes from the R-exts documentation */
  
@@ -40,6 +48,8 @@ Allan Strand 9/17/01
     L.setndemo((asInteger(getListElement(inlist,DNUMNAME   ))));
     L.setMaxLandSize((asInteger(getListElement(inlist,MAXLANDNAME))));
     L.setnextID((asInteger(getListElement(inlist,NEXTIDNAME))));
+    L.setxdim((asInteger(getListElement(inlist,XDIMNAME))));
+    L.setydim((asInteger(getListElement(inlist,YDIMNAME))));
   }
   
   void R_to_metasim_switches(SEXP inlist, Landscape_statistics &L)
@@ -423,9 +433,8 @@ read in landscapes
   SEXP metasim_to_R_ints(Landscape_statistics &L)
   {
     ///allocate the scalar values that describe the landscape to 'Slist'
-    SEXP Slistn = PROTECT(allocVector (STRSXP,10));
-    SEXP Slist = PROTECT(allocVector (VECSXP,10));
-    
+    SEXP Slistn = PROTECT(allocVector (STRSXP,12));
+    SEXP Slist = PROTECT(allocVector (VECSXP,12));
     SET_STRING_ELT(Slistn, 0, mkChar(HABNAMES    )); 
     SET_STRING_ELT(Slistn, 1, mkChar(STAGENAME   )); 
     SET_STRING_ELT(Slistn, 2, mkChar(LNUMNAME    )); 
@@ -436,6 +445,8 @@ read in landscapes
     SET_STRING_ELT(Slistn, 7, mkChar(DNUMNAME    )); 
     SET_STRING_ELT(Slistn, 8, mkChar(MAXLANDNAME ));
     SET_STRING_ELT(Slistn, 9, mkChar(NEXTIDNAME  ));
+    SET_STRING_ELT(Slistn, 10, mkChar(XDIMNAME  ));
+    SET_STRING_ELT(Slistn, 11, mkChar(YDIMNAME  ));
 
     setAttrib(Slist, R_NamesSymbol, Slistn);
     
@@ -449,6 +460,8 @@ read in landscapes
     SET_VECTOR_ELT(Slist, 7, ScalarReal(L.getndemo()));
     SET_VECTOR_ELT(Slist, 8, ScalarReal(L.getMaxLandSize()));
     SET_VECTOR_ELT(Slist, 9, ScalarReal(L.getnextID()));
+    SET_VECTOR_ELT(Slist, 10, ScalarReal(L.getxdim()));
+    SET_VECTOR_ELT(Slist, 11, ScalarReal(L.getydim()));
     UNPROTECT(2);
     return Slist;
   }
@@ -1185,6 +1198,11 @@ SEXP l2w(SEXP Rland, SEXP numind)
   SEXP num_demo_cols()
   {
     return ScalarInteger(NONGENOTYPECOLS);
+  }
+
+  SEXP num_loci_poss()
+  {
+     return ScalarInteger(MAXLOCI);
   }
 
   SEXP test(SEXP mat1, SEXP mat2)

@@ -16,8 +16,23 @@ is.landscape <- function(Rland=NULL,verb=TRUE,exact=FALSE)
       {
         if (verb) {print("intparam not found.");}
         ok<-FALSE;
-      }
+      } else if (sum(c(Rland$intparam$xdim,Rland$intparam$ydim)>0)>0) { #theres a landscape extent
+          
+          if (sum(c(Rland$intparam$xdim,Rland$intparam$ydim)>0)<2)
+          {
+              if (verb) {
+                  print(paste("there's a zero x or y dimension where the other is a number. xdim=",
+                              Rland$intparam$xdim,"ydim=",Rland$intparam$ydim))
+              }
+              ok <- FALSE
+          }
+          if (prod(c(Rland$intparam$xdim,Rland$intparam$ydim))!=Rland$intparam$habitats)
+          {
+              if (verb) print("product of x and y dimensions does not equal habitat number")
+              ok <- FALSE
+          }
 
+      }
     if (is.null(Rland$switchparam))
       {
         if (verb) {print("switchparam not found.");}
@@ -127,6 +142,20 @@ is.landscape <- function(Rland=NULL,verb=TRUE,exact=FALSE)
             if (verb) {print("conflict between size of loci object and size specified in $intparam");}
             ok <- FALSE 
           }
+          ## now check to make sure that there is an appropriate relationship between types and allele states
+          types <- do.call(rbind,lapply(Rland$loci,function(l){
+              states=unique(sapply(l$alleles,function(a){a$state}))
+              atyp = ifelse(sum(is.character(states))>0,"char","int")
+              data.frame(ltype=l$type,atyp=atyp)
+          }))
+          mismatch <- apply(types,1,
+                function(x){
+                          res=FALSE
+                          if ((x[2]=="char")&(as.character(x[1])!="253")) res <- TRUE
+                          if ((x[2]!="char")&(!as.character(x[1]) %in% c("251","252"))) res <- TRUE
+                          res
+                })
+          if (sum(mismatch)>0) {ok <- FALSE; if (verb) print("allele state types don't match the locus-level mutation model/type")}
       }
     
 #check individuals
