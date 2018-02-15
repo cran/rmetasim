@@ -12,7 +12,7 @@
 
 <meta name="author" content="A Strand" />
 
-<meta name="date" content="2018-01-03" />
+<meta name="date" content="2018-02-15" />
 
 <title>Creating rmetasim landscapes</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Creating rmetasim landscapes</h1>
 <h4 class="author"><em>A Strand</em></h4>
-<h4 class="date"><em>2018-01-03</em></h4>
+<h4 class="date"><em>2018-02-15</em></h4>
 
 
 
@@ -103,7 +103,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 rland &lt;-<span class="st"> </span><span class="kw">landscape.new.empty</span>() <span class="co">#creates a skeleton of a landscape</span>
 rland &lt;-<span class="st"> </span><span class="kw">landscape.new.intparam</span>(rland, <span class="dt">h=</span><span class="dv">2</span>, <span class="dt">s=</span><span class="dv">2</span>) 
 
-<span class="kw">names</span>(rland<span class="op">$</span>intparam)</code></pre></div>
+<span class="kw">names</span>(rland$intparam)</code></pre></div>
 <pre><code>##  [1] &quot;habitats&quot;     &quot;stages&quot;       &quot;locusnum&quot;     &quot;numepochs&quot;   
 ##  [5] &quot;currentgen&quot;   &quot;currentepoch&quot; &quot;totalgens&quot;    &quot;numdemos&quot;    
 ##  [9] &quot;maxlandsize&quot;  &quot;xdim&quot;         &quot;ydim&quot;</code></pre>
@@ -123,7 +123,7 @@ rland &lt;-<span class="st"> </span><span class="kw">landscape.new.intparam</spa
 <div id="switchparam" class="section level3">
 <h3>switchparam</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rland &lt;-<span class="st"> </span><span class="kw">landscape.new.switchparam</span>(rland)
-<span class="kw">names</span>(rland<span class="op">$</span>switchparam)</code></pre></div>
+<span class="kw">names</span>(rland$switchparam)</code></pre></div>
 <pre><code>## [1] &quot;randepoch&quot;   &quot;randdemo&quot;    &quot;multp&quot;       &quot;densdepdemo&quot;</code></pre>
 <p>These values represent:</p>
 <ul>
@@ -136,7 +136,7 @@ rland &lt;-<span class="st"> </span><span class="kw">landscape.new.intparam</spa
 <div id="floatparam" class="section level3">
 <h3>floatparam</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rland &lt;-<span class="st"> </span><span class="kw">landscape.new.floatparam</span>(rland)
-<span class="kw">names</span>(rland<span class="op">$</span>floatparam)</code></pre></div>
+<span class="kw">names</span>(rland$floatparam)</code></pre></div>
 <pre><code>## [1] &quot;selfing&quot;</code></pre>
 <ul>
 <li><em>selfing</em> This value is the selfing rate of the species (between 0 and 1 inclusive) assuming a mixed mating model where selfing occurs S proportion of the time and random mating occurs (1-S) proportion of the time.</li>
@@ -166,13 +166,13 @@ M &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">
 
 rland &lt;-<span class="st"> </span><span class="kw">landscape.new.epoch</span>(rland,<span class="dt">S=</span>S,<span class="dt">R=</span>R,<span class="dt">M=</span>M,<span class="dt">extinct=</span><span class="kw">c</span>(.<span class="dv">01</span>,<span class="dv">0</span>),<span class="dt">carry=</span><span class="kw">c</span>(<span class="dv">100</span>,<span class="dv">200</span>))
 
-<span class="kw">names</span>(rland<span class="op">$</span>demography)</code></pre></div>
+<span class="kw">names</span>(rland$demography)</code></pre></div>
 <pre><code>## [1] &quot;localdem&quot;  &quot;localdemK&quot; &quot;epochs&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(rland<span class="op">$</span>demography<span class="op">$</span>localdem[[<span class="dv">1</span>]])</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(rland$demography$localdem[[<span class="dv">1</span>]])</code></pre></div>
 <pre><code>## [1] &quot;LocalS&quot; &quot;LocalR&quot; &quot;LocalM&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(rland<span class="op">$</span>demography<span class="op">$</span>localdemK[[<span class="dv">1</span>]])</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(rland$demography$localdemK[[<span class="dv">1</span>]])</code></pre></div>
 <pre><code>## NULL</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(rland<span class="op">$</span>demography<span class="op">$</span>epochs[[<span class="dv">1</span>]])</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(rland$demography$epochs[[<span class="dv">1</span>]])</code></pre></div>
 <pre><code>## [1] &quot;RndChooseProb&quot; &quot;StartGen&quot;      &quot;Extinct&quot;       &quot;Carry&quot;        
 ## [5] &quot;Localprob&quot;     &quot;S&quot;             &quot;R&quot;             &quot;M&quot;</code></pre>
 <p>These are the local S, R, and M matricies for each subpopulation (localdem) and the S, R, and M matrices for the interpopulation movement of individuals (epochs). Notice the subscripts [[1]] after the localdem and epochs. Both localdem and epochs are lists of individual local demographies and epochs respectively. Since both localdem and epochs are lists the subscripts are necessary to view the contents of a single local demography or epoch.</p>
@@ -198,9 +198,9 @@ rland &lt;-<span class="st"> </span><span class="kw">landscape.new.locus</span>(
                    <span class="dt">transmission=</span><span class="dv">0</span>,<span class="dt">numalleles=</span><span class="dv">6</span>,<span class="dt">allelesize=</span><span class="dv">75</span>)
 
 
-<span class="kw">names</span>(rland<span class="op">$</span>loci[[<span class="dv">1</span>]])</code></pre></div>
+<span class="kw">names</span>(rland$loci[[<span class="dv">1</span>]])</code></pre></div>
 <pre><code>## [1] &quot;type&quot;    &quot;ploidy&quot;  &quot;trans&quot;   &quot;rate&quot;    &quot;alleles&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(rland<span class="op">$</span>loci[[<span class="dv">1</span>]]<span class="op">$</span>alleles[[<span class="dv">1</span>]])</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(rland$loci[[<span class="dv">1</span>]]$alleles[[<span class="dv">1</span>]])</code></pre></div>
 <pre><code>## [1] &quot;aindex&quot; &quot;birth&quot;  &quot;prop&quot;   &quot;state&quot;</code></pre>
 <p>Both loci and alleles are lists with elements of the structure shown above.</p>
 <ul>
@@ -224,8 +224,8 @@ rland &lt;-<span class="st"> </span><span class="kw">landscape.new.locus</span>(
 <h4>individuals</h4>
 <p>The last major section is individuals. The structure is merely a large matrix with one individual per row. An example row may look like:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rland &lt;-<span class="st"> </span><span class="kw">landscape.new.individuals</span>(rland,<span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">15</span>,<span class="dv">20</span>,<span class="dv">8</span>))
-<span class="kw">print</span>(rland<span class="op">$</span>individuals[<span class="dv">1</span>,])</code></pre></div>
-<pre><code>##  [1] 0 0 0 1 0 0 2 1 3 2 5</code></pre>
+<span class="kw">print</span>(rland$individuals[<span class="dv">1</span>,])</code></pre></div>
+<pre><code>##  [1] 0 0 0 1 0 0 1 1 3 5 6</code></pre>
 <p>A (static) example of an individual record with 3 loci (last one haploid) looks like this:.</p>
 <p>stage notused birthdate ID matID patID loc1a1 loc1a2 loc2a1 loc2a2 loc3a1</p>
 <p>The first six columns are always present and the last five shown here are a product of the choice of number of loci. The first column contains the individuals subpopulation and lifecycle stage (subpopulation = floor(x/rland$intparam$stages), lifecycle stage = x mod rland$intparam$stages). The second column is currently unused, always 0. The third column contains the generation in which the individual was born or created. The next three contain numerical ids for the individual, its mother and its father. After the first six columns the indivduals genetic code begins. The loci are shown in order with 2 columns for diploid loci and 1 column for haploid loci. The value of these columns represent the allele index of the allele the individual carries.</p>
@@ -278,21 +278,21 @@ R.epoch &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class
 M.epoch &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">rep</span>(<span class="dv">0</span>, <span class="dv">16</span>), <span class="dt">nrow =</span> <span class="dv">4</span>)
 
 ##now create the landscape
-rland &lt;-<span class="st"> </span><span class="kw">landscape.new.empty</span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">    </span><span class="kw">landscape.new.intparam</span>(<span class="dt">h=</span><span class="dv">2</span>,<span class="dt">s=</span><span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">    </span><span class="kw">landscape.new.switchparam</span>(<span class="dt">mp=</span><span class="dv">0</span>) <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw">landscape.new.floatparam</span>() <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw">landscape.new.local.demo</span>( S, R, M) <span class="op">%&gt;%</span>
+rland &lt;-<span class="st"> </span><span class="kw">landscape.new.empty</span>() %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">landscape.new.intparam</span>(<span class="dt">h=</span><span class="dv">2</span>,<span class="dt">s=</span><span class="dv">2</span>) %&gt;%<span class="st"> </span>
+<span class="st">    </span><span class="kw">landscape.new.switchparam</span>(<span class="dt">mp=</span><span class="dv">0</span>) %&gt;%
+<span class="st">    </span><span class="kw">landscape.new.floatparam</span>() %&gt;%
+<span class="st">    </span><span class="kw">landscape.new.local.demo</span>( S, R, M) %&gt;%
 <span class="st">    </span><span class="kw">landscape.new.epoch</span>(<span class="dt">S =</span> S.epoch, <span class="dt">R =</span> R.epoch, <span class="dt">M =</span> M.epoch, 
-                        <span class="dt">carry =</span> <span class="kw">c</span>(<span class="dv">1000</span>, <span class="dv">1000</span>)) <span class="op">%&gt;%</span>
+                        <span class="dt">carry =</span> <span class="kw">c</span>(<span class="dv">1000</span>, <span class="dv">1000</span>)) %&gt;%
 <span class="st">    </span><span class="kw">landscape.new.locus</span>(<span class="dt">type =</span> <span class="dv">0</span>, <span class="dt">ploidy =</span> <span class="dv">2</span>, 
-                        <span class="dt">mutationrate =</span> <span class="fl">0.001</span>, <span class="dt">transmission =</span> <span class="dv">0</span>, <span class="dt">numalleles =</span> <span class="dv">5</span>) <span class="op">%&gt;%</span>
+                        <span class="dt">mutationrate =</span> <span class="fl">0.001</span>, <span class="dt">transmission =</span> <span class="dv">0</span>, <span class="dt">numalleles =</span> <span class="dv">5</span>) %&gt;%
 <span class="st">    </span><span class="kw">landscape.new.locus</span>(<span class="dt">type =</span> <span class="dv">1</span>, <span class="dt">ploidy =</span> <span class="dv">1</span>, 
                         <span class="dt">mutationrate =</span> <span class="fl">0.005</span>, <span class="dt">numalleles =</span> <span class="dv">3</span>, <span class="dt">frequencies =</span> <span class="kw">c</span>(<span class="fl">0.2</span>, 
-                                                                  <span class="fl">0.2</span>, <span class="fl">0.6</span>)) <span class="op">%&gt;%</span>
+                                                                  <span class="fl">0.2</span>, <span class="fl">0.6</span>)) %&gt;%
 <span class="st">    </span><span class="kw">landscape.new.locus</span>(<span class="dt">type =</span> <span class="dv">2</span>, <span class="dt">ploidy =</span> <span class="dv">2</span>, 
                         <span class="dt">mutationrate =</span> <span class="fl">0.007</span>, <span class="dt">transmission =</span> <span class="dv">0</span>, <span class="dt">numalleles =</span> <span class="dv">6</span>, 
-                        <span class="dt">allelesize =</span> <span class="dv">75</span>) <span class="op">%&gt;%</span>
+                        <span class="dt">allelesize =</span> <span class="dv">75</span>) %&gt;%
 <span class="st">    </span><span class="kw">landscape.new.individuals</span>(<span class="kw">c</span>(<span class="dv">50</span>, <span class="dv">0</span>, <span class="dv">50</span>, <span class="dv">0</span>))</code></pre></div>
 </div>
 </div>
@@ -303,13 +303,13 @@ rland &lt;-<span class="st"> </span><span class="kw">landscape.new.empty</span>(
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rland &lt;-<span class="st"> </span><span class="kw">landscape.simulate</span>(rland,<span class="dv">10</span>)
 <span class="kw">landscape.amova</span>(rland)</code></pre></div>
 <pre><code>##        Phi        Phi        Phi 
-## 0.06007679 0.06626925 0.02858099</code></pre>
+## 0.03108987 0.00817443 0.05378088</code></pre>
 <div id="with-not-pipes" class="section level2">
 <h2>With (not) pipes…</h2>
 <p>Here is the same analysis as the previous section.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rland <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">landscape.simulate</span>(<span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">landscape.amova</span>()</code></pre></div>
-<pre><code>##        Phi        Phi        Phi 
-## 0.09131558 0.03562648 0.03740079</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rland %&gt;%<span class="st"> </span><span class="kw">landscape.simulate</span>(<span class="dv">10</span>) %&gt;%<span class="st"> </span><span class="kw">landscape.amova</span>()</code></pre></div>
+<pre><code>##         Phi         Phi         Phi 
+## 0.001351983 0.111311393 0.030911611</code></pre>
 </div>
 </div>
 

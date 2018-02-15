@@ -12,7 +12,7 @@
 
 <meta name="author" content="A Strand" />
 
-<meta name="date" content="2018-01-03" />
+<meta name="date" content="2018-02-15" />
 
 <title>Setting up simulations in rmetasim</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Setting up simulations in rmetasim</h1>
 <h4 class="author"><em>A Strand</em></h4>
-<h4 class="date"><em>2018-01-03</em></h4>
+<h4 class="date"><em>2018-02-15</em></h4>
 
 
 
@@ -93,11 +93,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 rland &lt;-<span class="st"> </span><span class="kw">landscape.new.example</span>()
 rland &lt;-<span class="st"> </span><span class="kw">landscape.simulate</span>(rland,<span class="dv">10</span>)
 <span class="kw">landscape.amova</span>(rland)</code></pre></div>
-<pre><code>##         Phi         Phi         Phi 
-##  0.08478025 -0.00747118  0.06374813</code></pre>
+<pre><code>##        Phi        Phi        Phi 
+## 0.06164592 0.02391392 0.05345661</code></pre>
 <p>Here is the same simulation with the individual steps implemented in R functions (which call corresponding C++ functions)</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rland &lt;-<span class="st"> </span><span class="kw">landscape.new.example</span>()
-<span class="cf">for</span> (gen <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)
+for (gen in <span class="dv">1</span>:<span class="dv">10</span>)
     {
         rland &lt;-<span class="st"> </span><span class="kw">landscape.extinct</span>(rland)
         rland &lt;-<span class="st"> </span><span class="kw">landscape.reproduce</span>(rland)
@@ -106,20 +106,20 @@ rland &lt;-<span class="st"> </span><span class="kw">landscape.simulate</span>(r
         rland &lt;-<span class="st"> </span><span class="kw">landscape.advance</span>(rland)
     }
 <span class="kw">landscape.amova</span>(rland)</code></pre></div>
-<pre><code>##        Phi        Phi        Phi 
-## 0.06889342 0.03009405 0.05359149</code></pre>
+<pre><code>##         Phi         Phi         Phi 
+## 0.020090844 0.003931029 0.038866870</code></pre>
 <div id="or-with-magrittr" class="section level3">
 <h3>or with magrittr</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(magrittr)
 rland &lt;-<span class="st"> </span><span class="kw">landscape.new.example</span>()
-<span class="cf">for</span> (gen <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">10</span>)
+for (gen in <span class="dv">1</span>:<span class="dv">10</span>)
     {
-        rland &lt;-<span class="st"> </span>rland <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">landscape.extinct</span>() <span class="op">%&gt;%</span><span class="st">  </span><span class="kw">landscape.reproduce</span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">            </span><span class="kw">landscape.survive</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">landscape.carry</span>()<span class="op">%&gt;%</span><span class="kw">landscape.advance</span>()
+        rland &lt;-<span class="st"> </span>rland %&gt;%<span class="st"> </span><span class="kw">landscape.extinct</span>() %&gt;%<span class="st">  </span><span class="kw">landscape.reproduce</span>() %&gt;%<span class="st"> </span>
+<span class="st">            </span><span class="kw">landscape.survive</span>() %&gt;%<span class="st"> </span><span class="kw">landscape.carry</span>()%&gt;%<span class="kw">landscape.advance</span>()
     }
 <span class="kw">landscape.amova</span>(rland)</code></pre></div>
 <pre><code>##        Phi        Phi        Phi 
-## 0.06303234 0.07895600 0.07627561</code></pre>
+## 0.02724437 0.04691483 0.04399875</code></pre>
 <p>These approaches are a little slower because there is conversion between the R version of a landscape (a list) and the internal C++ backend representation more often.</p>
 </div>
 </div>
@@ -128,7 +128,7 @@ rland &lt;-<span class="st"> </span><span class="kw">landscape.new.example</span
 <p>You can see in the previous section how the same landscape can be the input and output of a simulation. You can use this with loops to examine the temporal dynamics of a simulation through time.</p>
 <p>The following runs a simulation for 100 years and checks the among-population differentiation every 5 years. Finally it plots the results. This landscape has no migration among the two populations, so the among-pop differentiation should be an increasing function, with some potentially interesting patterns.</p>
 <p>In general it is advisable to make the rmetasim sessions less script-like and more a set of functions. The following is a new function to create landscapes.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">create.land &lt;-<span class="st"> </span><span class="cf">function</span>()
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">create.land &lt;-<span class="st"> </span>function()
     {
 ### CREATE A LANDSCAPE
 ###first set up the matrices for local demographies
@@ -144,20 +144,20 @@ rland &lt;-<span class="st"> </span><span class="kw">landscape.new.example</span
         
         
         ##now create the landscape
-        <span class="kw">landscape.new.empty</span>() <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">            </span><span class="kw">landscape.new.intparam</span>(<span class="dt">h=</span><span class="dv">3</span>,<span class="dt">s=</span><span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">                </span><span class="kw">landscape.new.switchparam</span>(<span class="dt">mp=</span><span class="dv">0</span>) <span class="op">%&gt;%</span>
-<span class="st">                    </span><span class="kw">landscape.new.floatparam</span>() <span class="op">%&gt;%</span>
-<span class="st">                        </span><span class="kw">landscape.new.local.demo</span>( S, R, M) <span class="op">%&gt;%</span>
+        <span class="kw">landscape.new.empty</span>() %&gt;%<span class="st"> </span>
+<span class="st">            </span><span class="kw">landscape.new.intparam</span>(<span class="dt">h=</span><span class="dv">3</span>,<span class="dt">s=</span><span class="dv">2</span>) %&gt;%<span class="st"> </span>
+<span class="st">                </span><span class="kw">landscape.new.switchparam</span>(<span class="dt">mp=</span><span class="dv">0</span>) %&gt;%
+<span class="st">                    </span><span class="kw">landscape.new.floatparam</span>() %&gt;%
+<span class="st">                        </span><span class="kw">landscape.new.local.demo</span>( S, R, M) %&gt;%
 <span class="st">                            </span><span class="kw">landscape.new.epoch</span>(<span class="dt">S =</span> S.epoch, <span class="dt">R =</span> R.epoch, <span class="dt">M =</span> M.epoch, 
-                              <span class="dt">carry =</span> <span class="kw">c</span>(<span class="dv">1000</span>, <span class="dv">1000</span>, <span class="dv">1000</span>)) <span class="op">%&gt;%</span>
+                              <span class="dt">carry =</span> <span class="kw">c</span>(<span class="dv">1000</span>, <span class="dv">1000</span>, <span class="dv">1000</span>)) %&gt;%
 <span class="st">                                </span><span class="kw">landscape.new.locus</span>(<span class="dt">type =</span> <span class="dv">1</span>, <span class="dt">ploidy =</span> <span class="dv">2</span>, 
-                                  <span class="dt">mutationrate =</span> <span class="fl">0.001</span>, <span class="dt">transmission =</span> <span class="dv">0</span>, <span class="dt">numalleles =</span> <span class="dv">5</span>) <span class="op">%&gt;%</span>
+                                  <span class="dt">mutationrate =</span> <span class="fl">0.001</span>, <span class="dt">transmission =</span> <span class="dv">0</span>, <span class="dt">numalleles =</span> <span class="dv">5</span>) %&gt;%
 <span class="st">                                </span><span class="kw">landscape.new.locus</span>(<span class="dt">type =</span> <span class="dv">0</span>, <span class="dt">ploidy =</span> <span class="dv">1</span>, 
-                                  <span class="dt">mutationrate =</span> <span class="fl">0.005</span>, <span class="dt">numalleles =</span> <span class="dv">3</span>, <span class="dt">frequencies =</span> <span class="kw">c</span>(<span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="fl">0.6</span>)) <span class="op">%&gt;%</span>
+                                  <span class="dt">mutationrate =</span> <span class="fl">0.005</span>, <span class="dt">numalleles =</span> <span class="dv">3</span>, <span class="dt">frequencies =</span> <span class="kw">c</span>(<span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="fl">0.6</span>)) %&gt;%
 <span class="st">                                </span><span class="kw">landscape.new.locus</span>(<span class="dt">type =</span> <span class="dv">2</span>, <span class="dt">ploidy =</span> <span class="dv">1</span>, 
                                   <span class="dt">mutationrate =</span> <span class="fl">0.007</span>, <span class="dt">transmission =</span> <span class="dv">1</span>, <span class="dt">numalleles =</span> <span class="dv">3</span>, 
-                                  <span class="dt">allelesize =</span> <span class="dv">75</span>) <span class="op">%&gt;%</span>
+                                  <span class="dt">allelesize =</span> <span class="dv">75</span>) %&gt;%
 <span class="st">                                </span><span class="kw">landscape.new.individuals</span>(<span class="kw">rep</span>(<span class="kw">c</span>(<span class="dv">500</span>,<span class="dv">500</span>),<span class="dv">3</span>))
     }</code></pre></div>
 <p>Now this function is used in the experiment described above. We are choosing 30 individuals from each population to analyze for phiST (see the landscape.sample function calls below)</p>
@@ -165,41 +165,41 @@ rland &lt;-<span class="st"> </span><span class="kw">landscape.new.example</span
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rland &lt;-<span class="st"> </span><span class="kw">create.land</span>()
 retval &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>,<span class="dt">ncol=</span><span class="dv">4</span>,<span class="dt">nrow=</span><span class="dv">11</span>) <span class="co">#store the results col1 = gen, cols2-3 PhiST</span>
 retval[<span class="dv">1</span>,] &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>,<span class="kw">landscape.amova</span>(<span class="kw">landscape.sample</span>(rland,<span class="dt">ns=</span><span class="dv">30</span>))) <span class="co">#before any evolution occurs. Both populations from same source</span>
-<span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="op">:</span><span class="dv">11</span>)
+for (i in <span class="dv">2</span>:<span class="dv">11</span>)
     {
         rland &lt;-<span class="st"> </span><span class="kw">landscape.simulate</span>(rland,<span class="dv">10</span>)
-        retval[i,] &lt;-<span class="st"> </span><span class="kw">c</span>(rland<span class="op">$</span>intparam<span class="op">$</span>currentgen,<span class="kw">landscape.amova</span>(<span class="kw">landscape.sample</span>(rland,<span class="dt">ns=</span><span class="dv">30</span>))) 
+        retval[i,] &lt;-<span class="st"> </span><span class="kw">c</span>(rland$intparam$currentgen,<span class="kw">landscape.amova</span>(<span class="kw">landscape.sample</span>(rland,<span class="dt">ns=</span><span class="dv">30</span>))) 
     }
 ###the rest is just plotting the matrix of PhiSTs
 ###you can use any kind of graphics, of course.  using lattice here.
 <span class="kw">colnames</span>(retval) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;gen&quot;</span>,<span class="st">&quot;Loc1&quot;</span>,<span class="st">&quot;Loc2&quot;</span>,<span class="st">&quot;Loc3&quot;</span>)
 <span class="kw">library</span>(lattice)
-<span class="kw">xyplot</span>(Loc1<span class="op">+</span>Loc2<span class="op">+</span>Loc3<span class="op">~</span>gen, <span class="dt">data=</span><span class="kw">as.data.frame</span>(retval), <span class="dt">type=</span><span class="kw">c</span>(<span class="st">&quot;p&quot;</span>,<span class="st">&quot;smooth&quot;</span>),<span class="dt">auto.key=</span>T,<span class="dt">ylab=</span><span class="st">&quot;phiST&quot;</span>,<span class="dt">main=</span><span class="st">&quot;Change in phiST over time&quot;</span>)</code></pre></div>
+<span class="kw">xyplot</span>(Loc1+Loc2+Loc3~gen, <span class="dt">data=</span><span class="kw">as.data.frame</span>(retval), <span class="dt">type=</span><span class="kw">c</span>(<span class="st">&quot;p&quot;</span>,<span class="st">&quot;smooth&quot;</span>),<span class="dt">auto.key=</span>T,<span class="dt">ylab=</span><span class="st">&quot;phiST&quot;</span>,<span class="dt">main=</span><span class="st">&quot;Change in phiST over time&quot;</span>)</code></pre></div>
 <div id="replicating-this-experiment" class="section level3">
 <h3>Replicating this “experiment”</h3>
 <p>The graph in the previous section may be a little bit interesting. Does it hold up over multiple replicates? The following code replicates the previous experiment 3 times, a more useful number of replicates for understanding these time-series would be much higher (30? 100?). The data are then plotted like before.</p>
 <p>The starting point is the same landscape creation function in the previous section.</p>
 <p>Using lapply here is really useful because it parallelizes well using routines from the ``parallel’’ package (see mclapply).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">number.reps=<span class="dv">3</span>
-retlst &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="dv">1</span><span class="op">:</span>number.reps,<span class="cf">function</span>(x) 
+retlst &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="dv">1</span>:number.reps,function(x) 
                  {
                      rland &lt;-<span class="st"> </span><span class="kw">create.land</span>()
                      retval &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>,<span class="dt">ncol=</span><span class="dv">5</span>,<span class="dt">nrow=</span><span class="dv">11</span>) 
                      retval[<span class="dv">1</span>,] &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>,<span class="kw">landscape.amova</span>(<span class="kw">landscape.sample</span>(rland,<span class="dt">ns=</span><span class="dv">30</span>)),x)
-                     <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="op">:</span><span class="dv">11</span>)
+                     for (i in <span class="dv">2</span>:<span class="dv">11</span>)
                          {
                              rland &lt;-<span class="st"> </span><span class="kw">landscape.simulate</span>(rland,<span class="dv">10</span>)
-                             retval[i,] &lt;-<span class="st"> </span><span class="kw">c</span>(rland<span class="op">$</span>intparam<span class="op">$</span>currentgen,<span class="kw">landscape.amova</span>(<span class="kw">landscape.sample</span>(rland,<span class="dt">ns=</span><span class="dv">30</span>)),x) 
+                             retval[i,] &lt;-<span class="st"> </span><span class="kw">c</span>(rland$intparam$currentgen,<span class="kw">landscape.amova</span>(<span class="kw">landscape.sample</span>(rland,<span class="dt">ns=</span><span class="dv">30</span>)),x) 
                          }
                      <span class="kw">colnames</span>(retval) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;gen&quot;</span>,<span class="st">&quot;Loc1&quot;</span>,<span class="st">&quot;Loc2&quot;</span>,<span class="st">&quot;Loc3&quot;</span>,<span class="st">&quot;replicate&quot;</span>)
                      retval
                  })
 retdf &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">do.call</span>(rbind,retlst))
 mns =<span class="st"> </span><span class="kw">with</span>(retdf, <span class="kw">aggregate</span>(<span class="kw">cbind</span>(<span class="dt">Loc1=</span>Loc1,<span class="dt">Loc2=</span>Loc2,<span class="dt">Loc3=</span>Loc3),<span class="kw">list</span>(<span class="dt">gen=</span>gen),mean))
-mns<span class="op">$</span>gen=<span class="kw">as.numeric</span>(mns<span class="op">$</span>gen)
+mns$gen=<span class="kw">as.numeric</span>(mns$gen)
 
-<span class="kw">xyplot</span>(Loc1<span class="op">+</span>Loc2<span class="op">+</span>Loc3<span class="op">~</span>gen,<span class="dt">data=</span>mns,<span class="dt">auto.key=</span>T,<span class="dt">type=</span><span class="kw">c</span>(<span class="st">&quot;p&quot;</span>,<span class="st">&quot;smooth&quot;</span>),<span class="dt">ylab=</span><span class="st">&quot;phiST&quot;</span>,<span class="dt">main=</span><span class="kw">paste</span>(<span class="st">&quot;means of&quot;</span>,number.reps,<span class="st">&quot;replicates&quot;</span>))
-<span class="kw">xyplot</span>(Loc1<span class="op">+</span>Loc2<span class="op">+</span>Loc3<span class="op">~</span>gen,<span class="dt">data=</span>retdf,<span class="dt">auto.key=</span>T,<span class="dt">type=</span><span class="kw">c</span>(<span class="st">&quot;p&quot;</span>,<span class="st">&quot;smooth&quot;</span>),<span class="dt">ylab=</span><span class="st">&quot;phiST&quot;</span>,<span class="dt">main=</span><span class="kw">paste</span>(number.reps,<span class="st">&quot;replicates for each locus&quot;</span>))</code></pre></div>
+<span class="kw">xyplot</span>(Loc1+Loc2+Loc3~gen,<span class="dt">data=</span>mns,<span class="dt">auto.key=</span>T,<span class="dt">type=</span><span class="kw">c</span>(<span class="st">&quot;p&quot;</span>,<span class="st">&quot;smooth&quot;</span>),<span class="dt">ylab=</span><span class="st">&quot;phiST&quot;</span>,<span class="dt">main=</span><span class="kw">paste</span>(<span class="st">&quot;means of&quot;</span>,number.reps,<span class="st">&quot;replicates&quot;</span>))
+<span class="kw">xyplot</span>(Loc1+Loc2+Loc3~gen,<span class="dt">data=</span>retdf,<span class="dt">auto.key=</span>T,<span class="dt">type=</span><span class="kw">c</span>(<span class="st">&quot;p&quot;</span>,<span class="st">&quot;smooth&quot;</span>),<span class="dt">ylab=</span><span class="st">&quot;phiST&quot;</span>,<span class="dt">main=</span><span class="kw">paste</span>(number.reps,<span class="st">&quot;replicates for each locus&quot;</span>))</code></pre></div>
 </div>
 </div>
 </div>
