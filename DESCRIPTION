@@ -1,9 +1,9 @@
 Package: rmetasim
-Version: 3.1.7
+Version: 3.1.13
 Author: Allan Strand <stranda@cofc.edu>, 
 	James Niehaus
 Maintainer: Allan Strand <stranda@cofc.edu>
-Date: 2018-2-15
+Date: 2020-01-14
 Depends: R (>= 3.4.0)
 Imports: pegas, ade4, gtools, adegenet
 Suggests: magrittr, knitr, ggplot2, reshape2, rmarkdown, lattice
@@ -16,7 +16,7 @@ Description: An interface between R and the metasim simulation engine.
     See the rmetasim vignette to get an overview and to see important changes to the 
     code in the most recent version.
 VignetteBuilder: knitr
-Packaged: 2018-02-15 21:43:55 UTC; astrand
+Packaged: 2020-01-29 20:41:55 UTC; astrand
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2018-02-15 22:38:35 UTC
+Date/Publication: 2020-01-29 21:30:02 UTC

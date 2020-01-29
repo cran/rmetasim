@@ -1,4 +1,10 @@
-
+	Updated 2 functions to bring rmetasim into R 4.0 compliance
+	
+	Added an option to skip is.landscape check on some locus functions.
+	
+	Added in functions for allele frequency specification in populations and stages.
+	Changed the test for surv matrix norm 12/17/18
+	
 You can always use "install_github("stranda/rmetasim") to get the most up to date copy of rmetasim.
 	ver 3.1.2
 	found and fixed a memory leak in the sequence mutation routines
