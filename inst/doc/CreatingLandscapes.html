@@ -250,9 +250,9 @@ rland &lt;- landscape.new.intparam(rland, h=2, s=2)
 names(rland$intparam)
 </code></pre>
 
-<pre><code>##  [1] &quot;habitats&quot;     &quot;stages&quot;       &quot;locusnum&quot;     &quot;numepochs&quot;   
-##  [5] &quot;currentgen&quot;   &quot;currentepoch&quot; &quot;totalgens&quot;    &quot;numdemos&quot;    
-##  [9] &quot;maxlandsize&quot;  &quot;xdim&quot;         &quot;ydim&quot;
+<pre><code>##  [1] &quot;habitats&quot;     &quot;stages&quot;       &quot;locusnum&quot;     &quot;numepochs&quot;    &quot;currentgen&quot;  
+##  [6] &quot;currentepoch&quot; &quot;totalgens&quot;    &quot;numdemos&quot;     &quot;maxlandsize&quot;  &quot;xdim&quot;        
+## [11] &quot;ydim&quot;
 </code></pre>
 
 <p>These values represent:</p>
@@ -438,7 +438,7 @@ example row may look like:</p>
 print(rland$individuals[1,])
 </code></pre>
 
-<pre><code>##  [1] 0 0 0 1 0 0 2 2 1 3 2
+<pre><code>##  [1] 0 0 0 1 0 0 3 2 2 4 2
 </code></pre>
 
 <p>A (static) example of an individual record with 3 loci (last one haploid) looks like this:.</p>
@@ -546,7 +546,7 @@ landscape.amova(rland)
 </code></pre>
 
 <pre><code>##        Phi        Phi        Phi 
-## 0.04961499 0.13003837 0.05427234
+## 0.03553294 0.04724328 0.05565984
 </code></pre>
 
 <p>##With (not) pipes&hellip;
@@ -556,7 +556,7 @@ Here is the same analysis as the previous section.</p>
 </code></pre>
 
 <pre><code>##        Phi        Phi        Phi 
-## 0.07839990 0.09049644 0.04299967
+## 0.07162604 0.02265923 0.08733554
 </code></pre>
 
 </body>

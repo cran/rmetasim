@@ -239,8 +239,8 @@ rland &lt;- landscape.simulate(rland,10)
 landscape.amova(rland)
 </code></pre>
 
-<pre><code>##        Phi        Phi        Phi 
-## 0.05274063 0.18499919 0.05623263
+<pre><code>##          Phi          Phi          Phi 
+##  0.048777907 -0.006565997  0.034622393
 </code></pre>
 
 <p>Here is the same simulation with the individual steps implemented in R functions (which call corresponding C++ functions)</p>
@@ -258,7 +258,7 @@ landscape.amova(rland)
 </code></pre>
 
 <pre><code>##        Phi        Phi        Phi 
-## 0.07261612 0.36509730 0.10146266
+## 0.03898968 0.07842208 0.04409653
 </code></pre>
 
 <p>###or with magrittr</p>
@@ -274,7 +274,7 @@ landscape.amova(rland)
 </code></pre>
 
 <pre><code>##        Phi        Phi        Phi 
-## 0.03903125 0.04590600 0.01461125
+## 0.02359049 0.08946941 0.06822454
 </code></pre>
 
 <p>These approaches are a little slower because there is conversion

@@ -1,18 +1,18 @@
-## ----setup, include=FALSE------------------------------------------------
+## ----setup, include=FALSE-----------------------------------------------------
 knitr::opts_chunk$set(echo = TRUE)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 library(rmetasim)
 l <- landscape.new.example()
 
-## ----echo=F--------------------------------------------------------------
+## ----echo=F-------------------------------------------------------------------
 SK <- matrix(c(0.8,0.2,
                0.5,0.5),byrow=T,ncol=2)
 rownames(SK) <- paste("pop",1:2)
 colnames(SK) <- paste("stage",1:2)
 SK
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 landscape.stagecarry <- function(l,sk)
 {
     k=l$demography$epochs[[1]]$Carry # carrying capacities
@@ -40,7 +40,7 @@ landscape.stagecarry <- function(l,sk)
     l
 }
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 rland <- landscape.new.example()
 rland$demography$localdem[[1]]$LocalS <- matrix(c(0.5,0.5,0,0.05),nrow=2) #make sure that there is some complexity
 gens=400
@@ -59,7 +59,7 @@ for (gen in 1:gens)
         rland <- landscape.advance(rland)
     }
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 matplot(stagesize,type='l')
 matplot(stagesize[100:gens,],type="l") #clip the first 100 time clicks.  resets the index to zero for gen 100
 

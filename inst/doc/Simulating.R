@@ -1,10 +1,10 @@
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 library(rmetasim)
 rland <- landscape.new.example()
 rland <- landscape.simulate(rland,10)
 landscape.amova(rland)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 rland <- landscape.new.example()
 for (gen in 1:10)
     {
@@ -16,7 +16,7 @@ for (gen in 1:10)
     }
 landscape.amova(rland)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 library(magrittr)
 rland <- landscape.new.example()
 for (gen in 1:10)
@@ -26,7 +26,7 @@ for (gen in 1:10)
     }
 landscape.amova(rland)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 create.land <- function()
     {
 ### CREATE A LANDSCAPE
@@ -60,7 +60,7 @@ create.land <- function()
                                 landscape.new.individuals(rep(c(500,500),3))
     }
 
-## ----eval=FALSE----------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  rland <- create.land()
 #  retval <- matrix(0,ncol=4,nrow=11) #store the results col1 = gen, cols2-3 PhiST
 #  retval[1,] <- c(0,landscape.amova(landscape.sample(rland,ns=30))) #before any evolution occurs. Both populations from same source
@@ -75,7 +75,7 @@ create.land <- function()
 #  library(lattice)
 #  xyplot(Loc1+Loc2+Loc3~gen, data=as.data.frame(retval), type=c("p","smooth"),auto.key=T,ylab="phiST",main="Change in phiST over time")
 
-## ----eval=FALSE----------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  number.reps=3
 #  retlst <- lapply(1:number.reps,function(x)
 #                   {
